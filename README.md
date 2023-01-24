@@ -14,7 +14,7 @@ The page includes news and weather API integration.
 - User Login (Sprint 4) 
 
 Members:
-1. Duncan Stewart
-2. Endrick Lafosse
-3. Scott Barcomb
-4. Sean McNeil
+1. Duncan Stewart (Frontend)
+2. Endrick Lafosse (Backend)
+3. Scott Barcomb (Backend)
+4. Sean McNeil (Frontend)

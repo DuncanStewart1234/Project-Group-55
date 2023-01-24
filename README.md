@@ -1,8 +1,11 @@
 # Project-Group-55
 
-Project Name:
+Project Name: Gator Hub
 
 Project Description:
+
+An interactive home web-page where you can organize your class schedule and take short notes.
+The page includes news and weather API integration.
 - Date & Time API (Sprint 1)
 - Notes (Sprint 2)
 - Schedule (Sprint 2) w/ maps API (Sprint 3)

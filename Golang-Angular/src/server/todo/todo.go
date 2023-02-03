@@ -1,10 +1,12 @@
 package todo
 
 import (
-    "errors"
-    "sync"
-
-    "github.com/rs/xid"
+	"database/sql"
+	"errors"
+	"strconv"
+	"sync"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/rs/xid"
 )
 
 var (
@@ -19,6 +21,7 @@ func init() {
 
 func initialiseList() {
     list = []Todo{}
+    initDatabase()
 }
 
 // Todo data structure for a task with a description of what to do
@@ -39,6 +42,7 @@ func Add(message string) string {
     mtx.Lock()
     list = append(list, t)
     mtx.Unlock()
+    insertDBEntry(t.ID, 1005, message)
     return t.ID
 }
 
@@ -49,6 +53,7 @@ func Delete(id string) error {
         return err
     }
     removeElementByLocation(location)
+    deleteDBEntry(id)
     return nil
 }
 
@@ -60,6 +65,7 @@ func Complete(id string) error {
         return err
     }
     setTodoCompleteByLocation(location)
+    completeDBEntry(id)
     return nil
 }
 
@@ -96,4 +102,45 @@ func setTodoCompleteByLocation(location int) {
 
 func isMatchingID(a string, b string) bool {
     return a == b
+}
+
+func initDatabase() {
+    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+    create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS todo (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, message TEXT NOT NULL, is_complete bool NOT NULL)")
+    create.Exec()
+
+    rows, _ := db.Query("SELECT id, message, is_complete FROM todo")
+
+    var id string
+    var message string
+    var is_complete bool
+
+    for rows.Next() {
+        rows.Scan(&id, &message, &is_complete)
+        Add(message)
+        if is_complete {
+            Complete(id)
+        }
+    }
+
+    rows.Close()
+}
+
+func deleteDBEntry(id string) {
+    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+    statement, _ := db.Prepare("DELETE FROM todo WHERE id=?")
+    statement.Exec(id)
+}
+
+func completeDBEntry(id string) {
+    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+    statement, _ := db.Prepare("UPDATE todo SET is_complete=true WHERE id=?")
+    statement.Exec(id)
+}
+
+func insertDBEntry(id string, user_id int, message string) {
+    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+    statement, _ := db.Prepare("INSERT INTO todo VALUES (?, ?, ?, ?)")
+    statement.Exec(id, strconv.Itoa(user_id), message , false)
+    statement.Exec()
 }

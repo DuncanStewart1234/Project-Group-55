@@ -108,33 +108,33 @@ func isMatchingID(a string, b string) bool {
     create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS todo (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, message TEXT NOT NULL, is_complete bool NOT NULL)")
     create.Exec()
 
-    rows, _ := db.Query("SELECT id, message, is_complete FROM todo")
+	rows, _ := db.Query("SELECT id, message, is_complete FROM todo")
 
-    var id string
-    var message string
-    var is_complete bool
+	var id string
+	var message string
+	var is_complete bool
 
-    for rows.Next() {
-        rows.Scan(&id, &message, &is_complete)
-        Add(message)
-        if is_complete {
-            Complete(id)
-        }
-    }
+	for rows.Next() {
+		rows.Scan(&id, &message, &is_complete)
+		Add(message)
+		if is_complete {
+			Complete(id)
+		}
+	}
 
-    rows.Close()
+	rows.Close()
 }
 
 func deleteDBEntry(id string) {
-    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-    statement, _ := db.Prepare("DELETE FROM todo WHERE id=?")
-    statement.Exec(id)
+	db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+	statement, _ := db.Prepare("DELETE FROM todo WHERE id=?")
+	statement.Exec(id)
 }
 
 func completeDBEntry(id string) {
-    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-    statement, _ := db.Prepare("UPDATE todo SET is_complete=true WHERE id=?")
-    statement.Exec(id)
+	db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+	statement, _ := db.Prepare("UPDATE todo SET is_complete=true WHERE id=?")
+	statement.Exec(id)
 }
 
 func insertDBEntry(id string, user_id int, message string) {

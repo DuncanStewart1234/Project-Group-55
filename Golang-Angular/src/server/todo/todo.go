@@ -20,7 +20,7 @@ func init() {
 
 func initialiseList() {
 	list = []Todo{}
-	//////initDatabase()
+	/////initDatabase()
 }
 
 // Todo data structure for a task with a description of what to do
@@ -52,7 +52,7 @@ func Delete(id string) error {
 		return err
 	}
 	removeElementByLocation(location)
-	/////deleteDBEntry(id)
+	//////deleteDBEntry(id)
 	return nil
 }
 
@@ -104,9 +104,9 @@ func isMatchingID(a string, b string) bool {
 }
 
 /*func initDatabase() {
-	db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-	create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS todo (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, message TEXT NOT NULL, is_complete bool NOT NULL)")
-	create.Exec()
+    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+    create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS todo (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, message TEXT NOT NULL, is_complete bool NOT NULL)")
+    create.Exec()
 
 	rows, _ := db.Query("SELECT id, message, is_complete FROM todo")
 
@@ -138,8 +138,8 @@ func completeDBEntry(id string) {
 }
 
 func insertDBEntry(id string, user_id int, message string) {
-	db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-	statement, _ := db.Prepare("INSERT INTO todo VALUES (?, ?, ?, ?)")
-	statement.Exec(id, strconv.Itoa(user_id), message, false)
-	statement.Exec()
+    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
+    statement, _ := db.Prepare("INSERT INTO todo VALUES (?, ?, ?, ?)")
+    statement.Exec(id, strconv.Itoa(user_id), message , false)
+    statement.Exec()
 }*/

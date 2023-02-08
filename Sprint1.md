@@ -18,8 +18,11 @@
 
 
 ## Issues our team planned to address:
-  For the first sprint, our team planned to create a boiler-plate for our project and implement the first design feature.
+* For the first sprint, our team planned to create a boiler-plate for our project and implement the first design feature.
 
 ## Issues that were successfully completed:
+* Date and Time Display successfully implemented and shows up on frontend
+
+* Todo list implemented with "completion" and "deletion" capabilities. Connected to SQLite to maintain persistant tasks.
 
 ## Issues that were not completed and why:

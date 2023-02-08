@@ -117,7 +117,12 @@ func initDatabase() {
 
     for rows.Next() {
         rows.Scan(&id, &message, &is_complete)
-        Add(message)
+        t := Todo {
+            ID:       id,
+            Message:  message,
+            Complete: is_complete,
+        }
+        list = append(list, t)
         if is_complete {
             Complete(id)
         }
@@ -142,5 +147,4 @@ func insertDBEntry(id string, user_id int, message string) {
     db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
     statement, _ := db.Prepare("INSERT INTO todo VALUES (?, ?, ?, ?)")
     statement.Exec(id, strconv.Itoa(user_id), message , false)
-    statement.Exec()
 }

@@ -1,7 +1,9 @@
 package todo
 
 import (
+	"database/sql"
 	"errors"
+	"strconv"
 	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -20,7 +22,7 @@ func init() {
 
 func initialiseList() {
 	list = []Todo{}
-	/////initDatabase()
+	initDatabase()
 }
 
 // Todo data structure for a task with a description of what to do
@@ -41,7 +43,8 @@ func Add(message string) string {
 	mtx.Lock()
 	list = append(list, t)
 	mtx.Unlock()
-	/////insertDBEntry(t.ID, 1005, message)
+	// Example UserID 1005
+	insertDBEntry(t.ID, 1005, message)
 	return t.ID
 }
 
@@ -52,7 +55,7 @@ func Delete(id string) error {
 		return err
 	}
 	removeElementByLocation(location)
-	//////deleteDBEntry(id)
+	deleteDBEntry(id)
 	return nil
 }
 
@@ -64,7 +67,7 @@ func Complete(id string) error {
 		return err
 	}
 	setTodoCompleteByLocation(location)
-	/////completeDBEntry(id)
+	completeDBEntry(id)
 	return nil
 }
 
@@ -103,7 +106,7 @@ func isMatchingID(a string, b string) bool {
 	return a == b
 }
 
-/*func initDatabase() {
+func initDatabase() {
     db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
     create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS todo (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, message TEXT NOT NULL, is_complete bool NOT NULL)")
     create.Exec()
@@ -114,13 +117,18 @@ func isMatchingID(a string, b string) bool {
 	var message string
 	var is_complete bool
 
-	for rows.Next() {
-		rows.Scan(&id, &message, &is_complete)
-		Add(message)
-		if is_complete {
-			Complete(id)
-		}
-	}
+    for rows.Next() {
+        rows.Scan(&id, &message, &is_complete)
+        t := Todo {
+            ID:       id,
+            Message:  message,
+            Complete: is_complete,
+        }
+        list = append(list, t)
+        if is_complete {
+            Complete(id)
+        }
+    }
 
 	rows.Close()
 }
@@ -141,5 +149,4 @@ func insertDBEntry(id string, user_id int, message string) {
     db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
     statement, _ := db.Prepare("INSERT INTO todo VALUES (?, ?, ?, ?)")
     statement.Exec(id, strconv.Itoa(user_id), message , false)
-    statement.Exec()
-}*/
+}

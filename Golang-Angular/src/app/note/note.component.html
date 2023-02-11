@@ -1,0 +1,27 @@
+<h2>Notes</h2>
+<!-- <input placeholder="Note..." [(ngModel)]="noteMessage" (keyup.enter)="addNote()"> -->
+
+<textarea id="freeform" name="freeform" rows="4" cols="50" [(ngModel)]="noteMessage" (keyup.enter)="addNote()">
+    Enter text here...
+</textarea>
+
+<button class="btn btn-primary" (click)="addNote()">Add</button>
+<table class="table">
+  <thead>
+  <tr>
+    <th>Notes</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let todo of activeNotes">
+    <td>{{todo.message}}</td>
+    <td>
+
+      <button class="btn btn-success" disabled>
+        <i class="fa fa-check"></i>
+      </button>
+
+    </td>
+  </tr>
+  </tbody>
+</table>

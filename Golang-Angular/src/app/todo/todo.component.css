@@ -1,0 +1,12 @@
+button {
+    width: auto;
+    margin: 5px;
+}
+
+td {
+    vertical-align: unset;
+}
+
+th {
+    padding-right: 4em;
+}

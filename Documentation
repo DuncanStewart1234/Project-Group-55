@@ -1,0 +1,15 @@
+Todo
+-JSON Format
+{
+    'id'
+    'message'
+    'complete'
+}
+
+Notes
+-JSON Format
+{
+    'id'
+    'title'
+    'message'
+}

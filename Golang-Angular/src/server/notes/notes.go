@@ -1,10 +1,13 @@
 package notes
 
 import (
+    "database/sql"
 	"errors"
 	"sync"
+    "strconv"
 
-	"github.com/rs/xid"
+	_ "github.com/mattn/go-sqlite3"
+    "github.com/rs/xid"
 )
 
 var (
@@ -19,6 +22,7 @@ func init() {
 
 func initialiseList() {
 	list = []Note{}
+    initDatabase()
 }
 
 type Note struct {
@@ -36,6 +40,8 @@ func Add(title string, message string) string {
     mtx.Lock()
     list = append(list, t)
     mtx.Unlock()
+    // Example UserID 1005
+    insertDBEntry(t.ID, 1005, title, message)
     return t.ID
 }
 
@@ -45,6 +51,7 @@ func Delete(id string) error {
         return err
     }
     removeElementByLocation(location)
+    deleteDBEntry(id)
     return nil
 }
 
@@ -54,6 +61,7 @@ func Edit(id string, new_msg string) error {
         return err
     }
     EditNoteByLocation(location, new_msg)
+    editDBEntry(id, new_msg)
     return nil
 }
 
@@ -92,3 +100,44 @@ func isMatchingID(a string, b string) bool {
     return a == b
 }
 
+func initDatabase() {
+    db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
+    create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, title TEXT NOT NULL, message TEXT NOT NULL)")
+    create.Exec()
+
+	rows, _ := db.Query("SELECT id, title, message FROM notes")
+
+	var id string
+	var title string
+	var message string
+
+    for rows.Next() {
+        rows.Scan(&id, &title, &message)
+        t := Note {
+            ID:       id,
+            Title: title,
+            Message:  message,
+        }
+        list = append(list, t)
+    }
+
+	rows.Close()
+}
+
+func deleteDBEntry(id string) {
+	db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
+	statement, _ := db.Prepare("DELETE FROM notes WHERE id=?")
+	statement.Exec(id)
+}
+
+func editDBEntry(id string, msg string) {
+	db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
+	statement, _ := db.Prepare("UPDATE notes SET message=? WHERE id=?")
+	statement.Exec(msg, id)
+}
+
+func insertDBEntry(id string, user_id int, title string, message string) {
+    db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
+    statement, _ := db.Prepare("INSERT INTO notes VALUES (?, ?, ?, ?)")
+    statement.Exec(id, strconv.Itoa(user_id), title, message)
+}

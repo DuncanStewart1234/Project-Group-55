@@ -8,7 +8,14 @@ import (
 func main() {
     r := gin.Default()
     r.Use(CORSMiddleware())
+	
+	// Notes REST API
+    r.GET("/notes", handlers.GetNotesHandler)
+    r.POST("/notes", handlers.AddNotesHandler)
+    r.DELETE("/notes/:id", handlers.DeleteNotesHandler)
+    r.PUT("/notes", handlers.EditNotesHandler)
 
+	// Todo REST API
     r.GET("/todo", handlers.GetTodoListHandler)
     r.POST("/todo", handlers.AddTodoHandler)
     r.DELETE("/todo/:id", handlers.DeleteTodoHandler)

@@ -5,6 +5,11 @@ Todo
     'message'
     'complete'
 }
+-REST
+--GET: /todo
+--POST: /todo
+--PUT: /todo
+--DELETE: /todo/id
 
 Notes
 -JSON Format
@@ -13,3 +18,8 @@ Notes
     'title'
     'message'
 }
+-REST
+--GET: /notes (Get all notes)
+--POST: /notes (Add new note)
+--PUT: /notes (Edit note message)
+--DELETE: /notes/id (Delete note)

@@ -7,16 +7,16 @@ export class NoteService {
   constructor(private httpClient: HttpClient) {}
 
   getNoteList() {
-    return this.httpClient.get(environment.gateway + '/note');
+    return this.httpClient.get(environment.gateway + '/notes');
   }
 
   addNote(note: Note) {
-    return this.httpClient.post(environment.gateway + '/note', note);
+    return this.httpClient.post(environment.gateway + '/notes', note);
   }
 
 
   deleteNote(note: Note) {
-    return this.httpClient.delete(environment.gateway + '/note/' + note.id);
+    return this.httpClient.delete(environment.gateway + '/notes/' + note.id);
   }
 }
 

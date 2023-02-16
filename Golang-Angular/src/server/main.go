@@ -1,48 +1,43 @@
 package main
 
 import (
-	"path"
-	"path/filepath"
-
-	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
 	"github.com/gin-gonic/gin"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
 )
 
 func main() {
-	r := gin.Default()
-	r.Use(CORSMiddleware())
-	r.NoRoute(func(c *gin.Context) {
-		dir, file := path.Split(c.Request.RequestURI)
-		ext := filepath.Ext(file)
-		if file == "" || ext == "" {
-			c.File("./ui/dist/ui/index.html")
-		} else {
-			c.File("./ui/dist/ui/" + path.Join(dir, file))
-		}
-	})
+    r := gin.Default()
+    r.Use(CORSMiddleware())
+	
+	// Notes REST API
+    r.GET("/notes", handlers.GetNotesHandler)
+    r.POST("/notes", handlers.AddNotesHandler)
+    r.DELETE("/notes/:id", handlers.DeleteNotesHandler)
+    r.PUT("/notes", handlers.EditNotesHandler)
 
-	r.GET("/todo", handlers.GetTodoListHandler)
-	r.POST("/todo", handlers.AddTodoHandler)
-	r.DELETE("/todo/:id", handlers.DeleteTodoHandler)
-	r.PUT("/todo", handlers.CompleteTodoHandler)
+	// Todo REST API
+    r.GET("/todo", handlers.GetTodoListHandler)
+    r.POST("/todo", handlers.AddTodoHandler)
+    r.DELETE("/todo/:id", handlers.DeleteTodoHandler)
+    r.PUT("/todo", handlers.CompleteTodoHandler)
 
-	err := r.Run(":3000")
-	if err != nil {
-		panic(err)
-	}
+    err := r.Run(":3000")
+    if err != nil {
+        panic(err)
+    }
 }
 
 func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE, GET, OPTIONS, POST, PUT")
+    return func(c *gin.Context) {
+        c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+        c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+        c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE, GET, OPTIONS, POST, PUT")
 
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
+        if c.Request.Method == "OPTIONS" {
+            c.AbortWithStatus(204)
+            return
+        }
 
-		c.Next()
-	}
+        c.Next()
+    }
 }

@@ -6,3 +6,7 @@ button {
 td {
     vertical-align: unset;
 }
+
+th {
+    padding-right: 4em;
+}

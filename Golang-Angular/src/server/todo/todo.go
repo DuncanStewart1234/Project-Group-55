@@ -25,19 +25,16 @@ func initialiseList() {
 	initDatabase()
 }
 
-// Todo data structure for a task with a description of what to do
 type Todo struct {
 	ID       string `json:"id"`
 	Message  string `json:"message"`
 	Complete bool   `json:"complete"`
 }
 
-// Get retrieves all elements from the todo list
 func Get() []Todo {
 	return list
 }
 
-// Add will add a new todo based on a message
 func Add(message string) string {
 	t := newTodo(message)
 	mtx.Lock()

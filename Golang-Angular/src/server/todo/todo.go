@@ -1,20 +1,28 @@
 package todo
 
 import (
-	"database/sql"
 	"errors"
-	"strconv"
 	"sync"
+    "gorm.io/gorm"
 
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/rs/xid"
+    "github.com/rs/xid"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 )
 
 var (
 	list []Todo
+	db *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
 )
+
+type Todo struct {
+	gorm.Model
+	ID       string `json:"id"`
+	User_ID	 string `json:"uid"`
+	Message  string `json:"message"`
+	Complete bool   `json:"complete"`
+}
 
 func init() {
 	once.Do(initialiseList)
@@ -25,10 +33,15 @@ func initialiseList() {
 	initDatabase()
 }
 
-type Todo struct {
-	ID       string `json:"id"`
-	Message  string `json:"message"`
-	Complete bool   `json:"complete"`
+func initDatabase() {
+	db = utils.GetDB("src/server/databases/todo_list.db")
+
+    db.AutoMigrate(&Todo{})
+
+	result := db.Find(&list)
+    if result.Error	!= nil {
+        panic("failed to connect database")
+    }
 }
 
 func Get() []Todo {
@@ -39,38 +52,36 @@ func Add(message string) string {
 	t := newTodo(message)
 	mtx.Lock()
 	list = append(list, t)
+	db.Create(&t)
 	mtx.Unlock()
-	// Example UserID 1005
-	insertDBEntry(t.ID, 1005, message)
 	return t.ID
 }
 
-// Delete will remove a Todo from the Todo list
-func Delete(id string) error {
-	location, err := findTodoLocation(id)
-	if err != nil {
-		return err
-	}
-	removeElementByLocation(location)
-	deleteDBEntry(id)
-	return nil
-}
-
-// Complete will set the complete boolean to true, marking a todo as
-// completed
 func Complete(id string) error {
 	location, err := findTodoLocation(id)
 	if err != nil {
 		return err
 	}
 	setTodoCompleteByLocation(location)
-	completeDBEntry(id)
+	db.Save(&list[location])
+	return nil
+}
+
+func Delete(id string) error {
+	location, err := findTodoLocation(id)
+	if err != nil {
+		return err
+	}
+	db.Delete(&list[location])
+	removeElementByLocation(location)
 	return nil
 }
 
 func newTodo(msg string) Todo {
-	return Todo{
+	// TODO: Get UID
+	return Todo {
 		ID:       xid.New().String(),
+		User_ID: "1005",
 		Message:  msg,
 		Complete: false,
 	}
@@ -80,7 +91,7 @@ func findTodoLocation(id string) (int, error) {
 	mtx.RLock()
 	defer mtx.RUnlock()
 	for i, t := range list {
-		if isMatchingID(t.ID, id) {
+		if t.ID == id {
 			return i, nil
 		}
 	}
@@ -97,53 +108,4 @@ func setTodoCompleteByLocation(location int) {
 	mtx.Lock()
 	list[location].Complete = true
 	mtx.Unlock()
-}
-
-func isMatchingID(a string, b string) bool {
-	return a == b
-}
-
-func initDatabase() {
-    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-    create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS todo (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, message TEXT NOT NULL, is_complete bool NOT NULL)")
-    create.Exec()
-
-	rows, _ := db.Query("SELECT id, message, is_complete FROM todo")
-
-	var id string
-	var message string
-	var is_complete bool
-
-    for rows.Next() {
-        rows.Scan(&id, &message, &is_complete)
-        t := Todo {
-            ID:       id,
-            Message:  message,
-            Complete: is_complete,
-        }
-        list = append(list, t)
-        if is_complete {
-            Complete(id)
-        }
-    }
-
-	rows.Close()
-}
-
-func deleteDBEntry(id string) {
-	db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-	statement, _ := db.Prepare("DELETE FROM todo WHERE id=?")
-	statement.Exec(id)
-}
-
-func completeDBEntry(id string) {
-	db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-	statement, _ := db.Prepare("UPDATE todo SET is_complete=true WHERE id=?")
-	statement.Exec(id)
-}
-
-func insertDBEntry(id string, user_id int, message string) {
-    db, _ := sql.Open("sqlite3", "src/server/databases/todo_list.db")
-    statement, _ := db.Prepare("INSERT INTO todo VALUES (?, ?, ?, ?)")
-    statement.Exec(id, strconv.Itoa(user_id), message , false)
 }

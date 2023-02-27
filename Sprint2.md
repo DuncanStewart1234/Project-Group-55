@@ -1,13 +1,14 @@
-**Work We've Completed in Sprint 2:**
-  Frontend:
-    We've completed the schedule and notes widgets, while also having addition unexpected additions with a dark mode to the overall design.
-  Backend:
+##Work We've Completed in Sprint 2:
 
-**Unit Tests and Cypress Tests in Frontend:**
+  *Frontend:
+    *We've completed the schedule and notes widgets, while also having addition unexpected additions with a dark mode to the overall design.
+  *Backend:
 
-
-**Unit Test in Backend:**
+##Unit Tests and Cypress Tests in Frontend:
 
 
-**Documentation For Backend API:**
+##Unit Test in Backend:
+
+
+##Documentation For Backend API:
 

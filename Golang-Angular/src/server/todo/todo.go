@@ -48,13 +48,16 @@ func Get() []Todo {
 	return list
 }
 
-func Add(message string) string {
+func Add(message string) (string, error) {
 	t := newTodo(message)
+	if message == "" {
+		return "", errors.New("message cannot be empty")
+	}
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
-	return t.ID
+	return t.ID, nil
 }
 
 func Complete(id string) error {
@@ -72,7 +75,7 @@ func Delete(id string) error {
 	if err != nil {
 		return err
 	}
-	db.Delete(&list[location])
+	db.Where("ID = ?", list[location].ID).Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
 }

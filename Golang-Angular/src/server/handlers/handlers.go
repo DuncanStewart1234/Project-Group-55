@@ -24,7 +24,9 @@ func AddTodoHandler(c *gin.Context) {
         c.JSON(statusCode, err)
         return
     }
-    c.JSON(statusCode, gin.H{"id": todo.Add(todoItem.Message)})
+
+    id, _ := todo.Add(todoItem.Message)
+    c.JSON(statusCode, gin.H{"id": id})
 }
 
 func DeleteTodoHandler(c *gin.Context) {

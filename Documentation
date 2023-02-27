@@ -1,22 +1,24 @@
 Todo
 -JSON Format
 {
-    'id'
-    'message'
-    'complete'
+    'id': (string) "Unique ID for Todo Task"
+    'uid': (string) "User ID"
+    'message': (string) "Task Message"
+    'complete': (bool) "Completion Status"
 }
 -REST
---GET: /todo
---POST: /todo
---PUT: /todo
---DELETE: /todo/id
+--GET: /todo (Get all todo tasks)
+--POST: /todo (Add new todo task)
+--PUT: /todo (Set task as complete)
+--DELETE: /todo/id (Delete todo task)
 
 Notes
 -JSON Format
 {
-    'id'
-    'title'
-    'message'
+    'id': (string) "Unique ID for "
+    'uid': (string) "User ID"
+    'title': (string) "Note Title"
+    'message': (string) "Note Message"
 }
 -REST
 --GET: /notes (Get all notes)

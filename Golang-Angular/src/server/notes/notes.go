@@ -1,20 +1,28 @@
 package notes
 
 import (
-    "database/sql"
 	"errors"
 	"sync"
-    "strconv"
+    "gorm.io/gorm"
 
-	_ "github.com/mattn/go-sqlite3"
     "github.com/rs/xid"
+    "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 )
 
 var (
 	list []Note
+    db *gorm.DB
 	mtx  sync.RWMutex
     once sync.Once
 )
+
+type Note struct {
+    gorm.Model
+	ID		string `json:"id"`
+    User_ID string `json:"uid"`
+	Title	string `json:"title"`
+	Message	string `json:"message"`
+}
 
 func init() {
 	once.Do(initialiseList)
@@ -25,10 +33,15 @@ func initialiseList() {
     initDatabase()
 }
 
-type Note struct {
-	ID		string `json:"id"`
-	Title	string `json:"title"`
-	Message	string `json:"message"`
+func initDatabase() {
+    db = utils.GetDB("src/server/databases/notes_list.db")
+
+    db.AutoMigrate(&Note{})
+
+    result := db.Find(&list)
+    if result.Error	!= nil {
+        panic("failed to connect database")
+    }
 }
 
 func Get() []Note {
@@ -39,10 +52,20 @@ func Add(title string, message string) string {
     t := newNote(title, message)
     mtx.Lock()
     list = append(list, t)
+    db.Create(&t);
     mtx.Unlock()
-    // Example UserID 1005
-    insertDBEntry(t.ID, 1005, title, message)
     return t.ID
+}
+
+func Edit(id string, new_msg string) error {
+    // TODO: Allow for title edit
+    location, err := findNoteLocation(id)
+    if err != nil {
+        return err
+    }
+    editNoteByLocation(location, new_msg)
+    db.Save(&list[location])
+    return nil
 }
 
 func Delete(id string) error {
@@ -50,24 +73,16 @@ func Delete(id string) error {
     if err != nil {
         return err
     }
+    db.Delete(&list[location])
     removeElementByLocation(location)
-    deleteDBEntry(id)
-    return nil
-}
-
-func Edit(id string, new_msg string) error {
-    location, err := findNoteLocation(id)
-    if err != nil {
-        return err
-    }
-    EditNoteByLocation(location, new_msg)
-    editDBEntry(id, new_msg)
     return nil
 }
 
 func newNote(title string, msg string) Note {
-    return Note{
+    // TODO: Get UID
+    return Note {
         ID:		xid.New().String(),
+        User_ID: "1005",
         Title: 	title,
         Message: msg,
     }
@@ -77,7 +92,7 @@ func findNoteLocation(id string) (int, error) {
     mtx.RLock()
     defer mtx.RUnlock()
     for i, t := range list {
-        if isMatchingID(t.ID, id) {
+        if t.ID == id {
             return i, nil
         }
     }
@@ -90,54 +105,8 @@ func removeElementByLocation(i int) {
     mtx.Unlock()
 }
 
-func EditNoteByLocation(location int, msg string) {
+func editNoteByLocation(location int, msg string) {
     mtx.Lock()
     list[location].Message = msg
     mtx.Unlock()
-}
-
-func isMatchingID(a string, b string) bool {
-    return a == b
-}
-
-func initDatabase() {
-    db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
-    create, _ := db.Prepare("CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, title TEXT NOT NULL, message TEXT NOT NULL)")
-    create.Exec()
-
-	rows, _ := db.Query("SELECT id, title, message FROM notes")
-
-	var id string
-	var title string
-	var message string
-
-    for rows.Next() {
-        rows.Scan(&id, &title, &message)
-        t := Note {
-            ID:       id,
-            Title: title,
-            Message:  message,
-        }
-        list = append(list, t)
-    }
-
-	rows.Close()
-}
-
-func deleteDBEntry(id string) {
-	db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
-	statement, _ := db.Prepare("DELETE FROM notes WHERE id=?")
-	statement.Exec(id)
-}
-
-func editDBEntry(id string, msg string) {
-	db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
-	statement, _ := db.Prepare("UPDATE notes SET message=? WHERE id=?")
-	statement.Exec(msg, id)
-}
-
-func insertDBEntry(id string, user_id int, title string, message string) {
-    db, _ := sql.Open("sqlite3", "src/server/databases/notes_list.db")
-    statement, _ := db.Prepare("INSERT INTO notes VALUES (?, ?, ?, ?)")
-    statement.Exec(id, strconv.Itoa(user_id), title, message)
 }

@@ -20,7 +20,7 @@ type Todo struct {
 	gorm.Model
 	ID       string `json:"id"`
 	User_ID	 string `json:"uid"`
-	Message  string `json:"message"`
+	Message  string `json:"message" gorm:"size:256"`
 	Complete bool   `json:"complete"`
 }
 

@@ -1,27 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Todo } from './todo.component';
+import { TodoComponent } from './todo.component';
 
-describe('Todo', () => {
-  let component: Todo;
-  let fixture: ComponentFixture<Todo>;
+describe('TodoComponent', () => {
+  let component: TodoComponent;
+  let fixture: ComponentFixture<TodoComponent>;
 
   beforeEach(async(() => {
    TestBed.configureTestingModule({
       declarations: [
-         Todo
+         TodoComponent
       ],
    }).compileComponents();
 }));
 
   it('component should be created', async(() => {
-    const fixture = TestBed.createComponent(Todo);
+    const fixture = TestBed.createComponent(TodoComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   });
 }));
 
   it(`component should have title 'app-todo'`, async(() => {
-     const fixture = TestBed.createComponent(Todo);
+     const fixture = TestBed.createComponent(TodoComponent);
      const app = fixture.debugElement.componentInstance;
      expect(app.title).toEqual('app-todo');
 }));

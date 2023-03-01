@@ -9,7 +9,16 @@
   Backend:
 
 **Unit Tests and Cypress Tests in Frontend:**
-
+  
+  Unit Tests:
+  
+    If they're able to add a todo item
+    
+    Able to see the date and time
+    
+    Able to see the map
+    
+  Cypress:
 
 **Unit Test in Backend:**
 

@@ -1,23 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Note } from './todo.component';
 
-import { NoteComponent } from './note.component';
+describe('Note', () => {
+  let component: Note;
+  let fixture: ComponentFixture<Note>;
 
-describe('NoteComponent', () => {
-  let component: NoteComponent;
-  let fixture: ComponentFixture<NoteComponent>;
+  beforeEach(async(() => {
+   TestBed.configureTestingModule({
+      declarations: [
+         Note
+      ],
+   }).compileComponents();
+}));
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ NoteComponent ]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(NoteComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  it('component should be created', async(() => {
+    const fixture = TestBed.createComponent(Note);
+    const app = fixture.debugElement.componentInstance;
+    expect(app).toBeTruthy();
   });
+}));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  it(`component should have title 'app-note'`, async(() => {
+     const fixture = TestBed.createComponent(Note);
+     const app = fixture.debugElement.componentInstance;
+     expect(app.title).toEqual('app-note');
+}));
+

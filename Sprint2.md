@@ -22,7 +22,7 @@
     
   Cypress:
   
-  
+    We tested the addition of the Todos button widget and if the textbox along with it worked
 
 **Unit Test in Backend:**
 

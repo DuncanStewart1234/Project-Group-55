@@ -2,7 +2,7 @@
 
   Frontend:
   
-    We've completed the schedule and notes widgets
+    We've completed notes widget and are continuing to work on the schedule widget and will integrate it to the backend in the upcoming sprint.
     
     While also having addition unexpected additions with a dark mode to the overall design.
     
@@ -12,13 +12,17 @@
   
   Unit Tests:
   
-    If they're able to add a todo item
+    If they're able to see the Todo widget
     
     Able to see the date and time
     
     Able to see the map
     
+    Able to see the Note Widget
+    
   Cypress:
+  
+  
 
 **Unit Test in Backend:**
 

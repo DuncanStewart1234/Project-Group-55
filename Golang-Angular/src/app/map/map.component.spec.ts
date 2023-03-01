@@ -1,23 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Map } from './todo.component';
 
-import { MapComponent } from './map.component';
+describe('Map', () => {
+  let component: Map;
+  let fixture: ComponentFixture<Map>;
 
-describe('MapComponent', () => {
-  let component: MapComponent;
-  let fixture: ComponentFixture<MapComponent>;
+  beforeEach(async(() => {
+   TestBed.configureTestingModule({
+      declarations: [
+         Map
+      ],
+   }).compileComponents();
+}));
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ MapComponent ]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(MapComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  it('component should be created', async(() => {
+    const fixture = TestBed.createComponent(Map);
+    const app = fixture.debugElement.componentInstance;
+    expect(app).toBeTruthy();
   });
+}));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  it(`component should have title 'app-map'`, async(() => {
+     const fixture = TestBed.createComponent(Map);
+     const app = fixture.debugElement.componentInstance;
+     expect(app.title).toEqual('app-map');
+}));

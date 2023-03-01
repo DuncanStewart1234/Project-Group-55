@@ -3,7 +3,7 @@ import { DatetimeComponent } from './todo.component';
 
 describe('DatetimeComponent', () => {
   let component: DatetimeComponent;
-  let fixture: ComponentFixture<DateTime>;
+  let fixture: ComponentFixture<DatetimeComponent>;
 
   beforeEach(async(() => {
    TestBed.configureTestingModule({

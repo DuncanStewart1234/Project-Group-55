@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DatetimeComponent } from './todo.component';
+import { DatetimeComponent } from './datetime.component';
 
 describe('DatetimeComponent', () => {
   let component: DatetimeComponent;

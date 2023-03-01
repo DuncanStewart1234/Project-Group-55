@@ -13,6 +13,7 @@ export class MapComponent {
   markers: Leaflet.Marker[] = [];
   index: number;
   options = {
+	attributionControl: false,
     layers: [
       Leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png')
     ],

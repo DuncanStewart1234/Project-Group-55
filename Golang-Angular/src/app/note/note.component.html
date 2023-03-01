@@ -13,14 +13,19 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let todo of activeNotes">
-    <td>{{todo.message}}</td>
+  <tr *ngFor="let note of activeNotes">
+    <td>{{note.message}}</td>
     <td>
 
-      <button class="btn btn-success" disabled>
+      <!-- <button class="btn btn-success" disabled>
         <i class="fa fa-check"></i>
+      </button> -->
+      
+    </td>
+    <td>
+      <button class="btn btn-danger" (click)="deleteNote(note)">
+        <i class="fa fa-trash">☓</i>
       </button>
-
     </td>
   </tr>
   </tbody>

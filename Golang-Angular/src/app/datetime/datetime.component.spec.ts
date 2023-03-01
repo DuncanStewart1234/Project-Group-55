@@ -1,27 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DateTime } from './todo.component';
+import { DateTimeComponent } from './todo.component';
 
-describe('DateTime', () => {
-  let component: DateTime;
+describe('DateTimeComponent', () => {
+  let component: DateTimeComponent;
   let fixture: ComponentFixture<DateTime>;
 
   beforeEach(async(() => {
    TestBed.configureTestingModule({
       declarations: [
-         DateTime
+         DateTimeComponent
       ],
    }).compileComponents();
 }));
 
   it('component should be created', async(() => {
-    const fixture = TestBed.createComponent(DateTime);
+    const fixture = TestBed.createComponent(DateTimeComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   });
 }));
 
   it(`component should have title 'app-datetime'`, async(() => {
-     const fixture = TestBed.createComponent(DateTime);
+     const fixture = TestBed.createComponent(DateTimeComponent);
      const app = fixture.debugElement.componentInstance;
      expect(app.title).toEqual('app-datetime');
 }));

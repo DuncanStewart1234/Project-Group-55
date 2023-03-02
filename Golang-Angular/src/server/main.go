@@ -1,26 +1,23 @@
+// This package is the main file of the application and what is called on the backend to run it
 package main
 
 import (
-	"path"
-	"path/filepath"
-
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
 	"github.com/gin-gonic/gin"
 )
 
+// main is used to set up the application and implements the API for the todo and notes lists
 func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-	r.NoRoute(func(c *gin.Context) {
-		dir, file := path.Split(c.Request.RequestURI)
-		ext := filepath.Ext(file)
-		if file == "" || ext == "" {
-			c.File("./ui/dist/ui/index.html")
-		} else {
-			c.File("./ui/dist/ui/" + path.Join(dir, file))
-		}
-	})
 
+	// Notes REST API
+	r.GET("/notes", handlers.GetNotesHandler)
+	r.POST("/notes", handlers.AddNotesHandler)
+	r.DELETE("/notes/:id", handlers.DeleteNotesHandler)
+	r.PUT("/notes", handlers.EditNotesHandler)
+
+	// Todo REST API
 	r.GET("/todo", handlers.GetTodoListHandler)
 	r.POST("/todo", handlers.AddTodoHandler)
 	r.DELETE("/todo/:id", handlers.DeleteTodoHandler)

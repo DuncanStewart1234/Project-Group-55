@@ -1,25 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TodoService } from '../todo.service';
-import { TodoComponent } from './todo.component';
+import { NoteComponent } from './note.component';
+import { NoteService } from '../note.service';
 
 import {HttpClientModule} from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
-describe('TodoComponent', () => {
-  let component: TodoComponent;
-  let fixture: ComponentFixture<TodoComponent>;
+describe('NoteComponent', () => {
+  let component: NoteComponent;
+  let fixture: ComponentFixture<NoteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TodoComponent ],
+      declarations: [ NoteComponent ],
       imports: [HttpClientModule, FormsModule, BrowserModule],
-      providers: [TodoService]
+      providers: [NoteService]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TodoComponent);
+    fixture = TestBed.createComponent(NoteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -27,8 +27,4 @@ describe('TodoComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  // it('should create', () => {
-  //   expect(fixture.title).toEqual('app-todo');
-  // });
 });

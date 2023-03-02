@@ -8,6 +8,8 @@
     
   Backend:
 
+    We completed the notes backend and started progress on making a schedule API. Additionally, we were able to convert from pure SQLite code to a GORM implementation.
+
 **Unit Tests and Cypress Tests in Frontend:**
   
   Unit Tests:

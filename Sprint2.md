@@ -28,7 +28,8 @@
 
 
 **Documentation For Backend API:**
-Package notes
+
+**Package notes**
 
 import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"
 
@@ -70,3 +71,45 @@ type Note struct {
 func Get  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Note`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the notes list  
+  
+**Package todo**
+
+import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
+
+Overview:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This package implements and maintains a todo list for the user to work with.  
+
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(message string) (string, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Complete(id string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(id string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`type Todo`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Todo`  
+Package files:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;todo.go  
+
+func Add  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(message string) (string, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a new item to the Todo list based off message input  
+
+func Complete  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Complete(id string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Complete marks a Todo list item as complete  
+
+func Delete  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(id string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete a Todo list item  
+
+type Todo  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Todo is a struct model containing the Todo list item info  
+
+type Todo struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gorm.Model  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID       string `json:"id"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User_ID  string `json:"uid"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message  string `json:"message" gorm:"size:256"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Complete bool   `json:"complete"`  
+}  
+func Get  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Todo`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the Todo list  

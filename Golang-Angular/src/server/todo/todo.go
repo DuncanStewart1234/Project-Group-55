@@ -42,7 +42,7 @@ func initialiseList() {
 
 // initDatabase initalises the database
 func initDatabase() {
-	db = utils.GetDB("C:/Users/scott/go/src/github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/databases/todo_list.db")
+	db = utils.GetDB("src/server/databases/todo_list.db")
 
 	db.AutoMigrate(&Todo{})
 

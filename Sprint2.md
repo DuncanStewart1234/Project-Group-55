@@ -24,14 +24,13 @@
   
     We tested the addition of the Todos button widget and if the textbox along with it worked
 
-**Unit Test in Backend:**
+# Unit Test in Backend:
 
+## Documentation For Backend API:
 
-**Documentation For Backend API:**
+### Package **notes**
 
-**Package notes**
-
-import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"
+*import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"*
 
 Overview:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The notes package implements and maintains a list of notes entered by the user
@@ -72,9 +71,9 @@ func Get
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Note`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the notes list  
   
-**Package todo**
+### Package **todo**
 
-import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
+*import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"*
 
 Overview:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This package implements and maintains a todo list for the user to work with.  
@@ -114,9 +113,9 @@ func Get
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Todo`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the Todo list  
 
-**Package handlers**
+### Package **handlers**
 
-import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
+*import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"*
 
 Overview:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This package implements and maintains handler functions for our application  
@@ -165,7 +164,7 @@ func GetTodoListHandler
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetTodoListHandler(c *gin.Context)`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To Do Handlers GetTodoListHandler is a handler to request the todo list from the Todo package  
 
-**Package utils**
+### Package **utils**
 
 import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 

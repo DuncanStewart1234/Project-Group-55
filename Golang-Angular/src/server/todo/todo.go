@@ -1,53 +1,63 @@
+// This package implements and maintains a todo list for the user to work with.
 package todo
 
 import (
+	// errors is responsible for error checkingg
 	"errors"
+	//sync is used for basic exclusion locks
 	"sync"
-    "gorm.io/gorm"
 
-    "github.com/rs/xid"
+	"gorm.io/gorm"
+
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
+	"github.com/rs/xid"
 )
 
 var (
 	list []Todo
-	db *gorm.DB
+	db   *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
 )
 
+// Todo is a struct model containing the Todo list item info
 type Todo struct {
 	gorm.Model
 	ID       string `json:"id"`
-	User_ID	 string `json:"uid"`
+	User_ID  string `json:"uid"`
 	Message  string `json:"message" gorm:"size:256"`
 	Complete bool   `json:"complete"`
 }
 
+// init a constructor, calls the initialise list function
 func init() {
 	once.Do(initialiseList)
 }
 
+// initialiseList initialises the Todo list
 func initialiseList() {
 	list = []Todo{}
 	initDatabase()
 }
 
+// initDatabase initalises the database
 func initDatabase() {
-	db = utils.GetDB("src/server/databases/todo_list.db")
+	db = utils.GetDB("C:/Users/scott/go/src/github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/databases/todo_list.db")
 
-    db.AutoMigrate(&Todo{})
+	db.AutoMigrate(&Todo{})
 
 	result := db.Find(&list)
-    if result.Error	!= nil {
-        panic("failed to connect database")
-    }
+	if result.Error != nil {
+		panic("failed to connect database")
+	}
 }
 
+// Get returns the Todo list
 func Get() []Todo {
 	return list
 }
 
+// Add a new item to the Todo list based off message input
 func Add(message string) (string, error) {
 	t := newTodo(message)
 	if message == "" {
@@ -60,6 +70,7 @@ func Add(message string) (string, error) {
 	return t.ID, nil
 }
 
+// Complete marks a Todo list item as complete
 func Complete(id string) error {
 	location, err := findTodoLocation(id)
 	if err != nil {
@@ -70,6 +81,7 @@ func Complete(id string) error {
 	return nil
 }
 
+// Delete a Todo list item
 func Delete(id string) error {
 	location, err := findTodoLocation(id)
 	if err != nil {
@@ -80,16 +92,18 @@ func Delete(id string) error {
 	return nil
 }
 
+// newTodo creates a new Todo item, helper function to Add
 func newTodo(msg string) Todo {
 	// TODO: Get UID
-	return Todo {
+	return Todo{
 		ID:       xid.New().String(),
-		User_ID: "1005",
+		User_ID:  "1005",
 		Message:  msg,
 		Complete: false,
 	}
 }
 
+// findTodoLocation searches the list for an item
 func findTodoLocation(id string) (int, error) {
 	mtx.RLock()
 	defer mtx.RUnlock()
@@ -101,12 +115,14 @@ func findTodoLocation(id string) (int, error) {
 	return 0, errors.New("could not find todo based on id")
 }
 
+// removeElementByLocation removes an item
 func removeElementByLocation(i int) {
 	mtx.Lock()
 	list = append(list[:i], list[i+1:]...)
 	mtx.Unlock()
 }
 
+// setTodoCompleteByLocation is a helper function to Complete
 func setTodoCompleteByLocation(location int) {
 	mtx.Lock()
 	list[location].Complete = true

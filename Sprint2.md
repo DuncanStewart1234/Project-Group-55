@@ -113,3 +113,54 @@ type Todo struct {
 func Get  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Todo`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the Todo list  
+
+**Package handlers**
+
+import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
+
+Overview:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This package implements and maintains handler functions for our application  
+
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func AddNotesHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func AddTodoHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func CompleteTodoHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func DeleteNotesHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func DeleteTodoHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func EditNotesHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetNotesHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetTodoListHandler(c *gin.Context)`  
+Package files:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handlers.go  
+
+func AddNotesHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func AddNotesHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddNotesHandler is used to add a note to the notes list from the Notes package  
+
+func AddTodoHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func AddTodoHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddTodoHandler is used to add to the todo list from the Todo package  
+
+func CompleteTodoHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func CompleteTodoHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CompleteTodoHandler is used to mark a todo list item as complete  
+
+func DeleteNotesHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func DeleteNotesHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeleteNotesHandler is used to delete a note from the notes list  
+
+func DeleteTodoHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func DeleteTodoHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeleteTodoHandler is used to delete an item from the todo list  
+
+func EditNotesHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func EditNotesHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EditNotesHandler is used to edit a note from the notes list  
+
+func GetNotesHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetNotesHandler(c *gin.Context)`  
+Notes Handlers GetNotesHandler is used to request the notes list from the Notes package  
+
+func GetTodoListHandler  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetTodoListHandler(c *gin.Context)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To Do Handlers GetTodoListHandler is a handler to request the todo list from the Todo package  

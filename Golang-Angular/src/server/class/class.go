@@ -41,7 +41,7 @@ func initialiseList() {
 
 // initDatabase initialises the databse for this package
 func initDatabase() {
-	db = utils.GetDB("C:/Users/scott/go/src/github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/databases/classes.db")
+	db = utils.GetDB("src/server/databases/classes.db")
 
 	db.AutoMigrate(&Class{})
 

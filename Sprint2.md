@@ -35,37 +35,38 @@ import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/
 Overview:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The notes package implements and maintains a list of notes entered by the user
 
-Index ▾
-func Add(title string, message string) string
-func Delete(id string) error
-func Edit(id string, new_msg string) error
-type Note
-    func Get() []Note
-Package files
-notes.go
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(title string, message string) string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(id string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Edit(id string, new_msg string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`type Note`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Note`  
 
-func Add
-func Add(title string, message string) string
-Add creates and adds a note to the notes list
+Package files:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notes.go  
 
-func Delete
-func Delete(id string) error
-Delete removes and deletes a note from the notes list
+func Add  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(title string, message string) string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add creates and adds a note to the notes list  
 
-func Edit
-func Edit(id string, new_msg string) error
-Edit finds a note in the list and edits its message
+func Delete  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(id string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete removes and deletes a note from the notes list  
 
-type Note
-Note is a struct that holds info needed for notes list
+func Edit  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Edit(id string, new_msg string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit finds a note in the list and edits its message  
 
-type Note struct {
-    gorm.Model
-    ID      string `json:"id"`
-    User_ID string `json:"uid"`
-    Title   string `json:"title"`
-    Message string `json:"message"`
-}
-func Get
-func Get() []Note
-Get returns the notes list
+type Note  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note is a struct that holds info needed for notes list  
+
+type Note struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gorm.Model  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID      string `json:"id"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User_ID string `json:"uid"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Title   string `json:"title"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message string `json:"message"`  
+}  
+func Get  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Note`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the notes list  

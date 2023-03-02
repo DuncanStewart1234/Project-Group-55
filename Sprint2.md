@@ -4,7 +4,7 @@
   
     We've completed notes widget and are continuing to work on the schedule widget and will integrate it to the backend in the upcoming sprint.
     
-    While also having addition unexpected additions with a dark mode to the overall design.
+    While also having additional unexpected additions with a dark mode to the overall design.
     
   Backend:
 

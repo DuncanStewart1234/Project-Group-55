@@ -164,3 +164,19 @@ Notes Handlers GetNotesHandler is used to request the notes list from the Notes 
 func GetTodoListHandler  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetTodoListHandler(c *gin.Context)`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To Do Handlers GetTodoListHandler is a handler to request the todo list from the Todo package  
+
+**Package utils**
+
+import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
+
+Overview:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This package contains a utility function for the sqlite databases  
+
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetDB(path string) *gorm.DB`  
+Package files:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;utils.go  
+
+func GetDB  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetDB(path string) *gorm.DB`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetDB returns the specified database for use in other packages  

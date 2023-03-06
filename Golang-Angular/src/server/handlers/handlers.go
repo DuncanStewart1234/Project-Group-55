@@ -9,6 +9,7 @@ import (
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"
 	"github.com/gin-gonic/gin"
 )
 
@@ -96,8 +97,51 @@ func EditNotesHandler(c *gin.Context) {
 
 // Schedule + Maps Handlers
 
+
+
+
+// Class Handlers
+func GetClassesHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, course.Get())
+}
+
+func AddClassHandler(c *gin.Context) {
+	classItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
+		return
+	}
+	c.JSON(statusCode, gin.H{"id": course.Add(classItem.Title, classItem.Message)})
+}
+
+func DeleteClassHandler(c *gin.Context) {
+	classID := c.Param("cid")
+	if err := course.Delete(classID); err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, "peration Completed Successfully!")
+}
+
+func EditClassHandler(c *gin.Context) {
+	classItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
+		return
+	}
+	if course.Edit(classItem.ID, classItem.Message) != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, "Operation Completed Successfully!")
+}
+
+
+
+
+
+
 // User Login Handlers
-// convertHTTPBodyToTodo is used to convert user input on the frontend for use with the backend Todo List
 func convertHTTPBodyToTodo(httpBody io.ReadCloser) (todo.Todo, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
@@ -107,7 +151,6 @@ func convertHTTPBodyToTodo(httpBody io.ReadCloser) (todo.Todo, int, error) {
 	return convertJSONBodyToTodo(body)
 }
 
-// convertHTTPBodyToNote is used to convert user input on the frontend for use with the backend Notes list
 func convertHTTPBodyToNote(httpBody io.ReadCloser) (notes.Note, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
@@ -115,6 +158,15 @@ func convertHTTPBodyToNote(httpBody io.ReadCloser) (notes.Note, int, error) {
 	}
 	defer httpBody.Close()
 	return convertJSONBodyToNote(body)
+}
+
+func convertHTTPBodyToClass(httpBody io.ReadCloser) (course.Class, int, error) {
+	body, err := ioutil.ReadAll(httpBody)
+	if err != nil {
+		return course.Class{}, http.StatusInternalServerError, err
+	}
+	defer httpBody.Close()
+	return convertJSONBodyToClass(body)
 }
 
 func convertJSONBodyToTodo(jsonBody []byte) (todo.Todo, int, error) {
@@ -133,4 +185,13 @@ func convertJSONBodyToNote(jsonBody []byte) (notes.Note, int, error) {
 		return notes.Note{}, http.StatusBadRequest, err
 	}
 	return noteItem, http.StatusOK, nil
+}
+
+func convertJSONBodyToClass(jsonBody []byte) (course.Class, int, error) {
+	var classItem course.Class
+	err := json.Unmarshal(jsonBody, &classItem)
+	if err != nil {
+		return course.Class{}, http.StatusBadRequest, err
+	}
+	return classItem, http.StatusOK, nil
 }

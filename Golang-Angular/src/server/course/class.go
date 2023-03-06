@@ -1,12 +1,14 @@
 // A package used to create a schedule of classes that a college student
 // may use.
-package schedule
+package course
 
 import (
 	"errors"
 	"sync"
 
 	"gorm.io/gorm"
+	"encoding/json"
+	"time"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	"github.com/rs/xid"
@@ -22,10 +24,32 @@ var (
 // Class is a struct used to contain info about a student's class
 type Class struct {
 	gorm.Model
-	// ID       string `json:"id"`
 	Class_ID string `json:"cid"`
-	Location string `json:"loc"`
-	// Add Schedule
+	Name string `json:"name"`
+	Abbrv string `json:"abbrv"`
+	Location []byte `json:"loc"`
+	Schedule []byte `json:"schedule"`
+}
+
+type Location struct {
+	Lat float64
+	Long float64
+}
+
+type Period struct {
+	// TODO: TIME + DURATION OR STARTTIME + ENDTIME
+	S_Time time.Time
+	E_Time time.Time
+}
+
+type Schedule struct {
+	Mon []Period `json:"Mon"`
+    Tues []Period `json:"Tues"`
+    Wed []Period `json:"Wed"`
+    Thur []Period `json:"Thur"`
+    Fri []Period `json:"Fri"`
+    Sat []Period `json:"Sat"`
+    Sun []Period `json:"Sun"`
 }
 
 // init is a constructor that calls initialiseList
@@ -46,6 +70,7 @@ func initDatabase() {
 	db.AutoMigrate(&Class{})
 
 	result := db.Find(&list)
+	// TODO: Convert Schedule and location
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
@@ -57,11 +82,9 @@ func Get() []Class {
 }
 
 // Add creates and adds a class element to the list
-func Add(loc string) (string, error) {
-	t := newClass(loc)
-	// if loc == "" {
-	// return "", errors.New("lo cannot be empty")
-	// }
+// TODO: Define scheduleBlock using frontend API
+func Add(name string, abbrv string, lat float64, long float64, scheduleBlock string) (string, error) {
+	t := newClass(name, abbrv, lat, long, []byte(scheduleBlock))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
@@ -81,12 +104,34 @@ func Delete(cid string) error {
 }
 
 // newClass is a helper function to Add
-func newClass(loc string) Class {
+func newClass(name string, abbrv string, lat float64, long float64, s []byte) Class {
 	return Class{
 		Class_ID: xid.New().String(),
-		Location: loc,
+		Name: name,
+		Abbrv: abbrv,
+		Location: newLocation(lat, long),
+		Schedule: s,
 	}
 }
+
+func newLocation(lat float64, long float64) []byte {
+	loc := &Location{
+		Lat: lat,
+		Long: long,
+	}
+	b, _ := json.Marshal(loc)
+	return b
+}
+
+// func newSchedule(blocks string) []byte {
+// 	// periods := []Period
+// 	// TODO: Complete function
+// 	var m Message
+// 	l := Schedule{
+// 	}
+// 	b, _ := json.Marshal(l)
+// 	return b
+// }
 
 // findClassLocation is a helper function to Delete
 func findClassLocation(cid string) (int, error) {

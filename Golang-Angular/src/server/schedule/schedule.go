@@ -26,6 +26,7 @@ type StudentSchedule struct {
 	Class_ID string `json:"cid"`
 }
 
+
 // init is a constructor, calls initialiseList
 func init() {
 	once.Do(initialiseList)

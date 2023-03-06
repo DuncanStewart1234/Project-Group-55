@@ -11,6 +11,7 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+
 	// Notes REST API
 	r.GET("/notes", handlers.GetNotesHandler)
 	r.POST("/notes", handlers.AddNotesHandler)

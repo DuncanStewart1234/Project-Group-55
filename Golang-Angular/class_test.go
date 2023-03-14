@@ -5,14 +5,21 @@ import (
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"
 )
 
+func TestGet(t *testing.T) {
+	list := course.Get()
+	if list == nil {
+		t.Errorf("Get error")
+	}
+}
+
+
 func TestAdd(t *testing.T) {
-	name := "Software Engineering"
-	ab := "CEN3031"
-	lat := -56.36
-	long := 66.20
-	str := `{"Mon": [(3:00,3:50)], "Wed": [(11:30,12:20), (3:00,3:50)]}`
+	name := "Software Engineering 2"
+	ab := "CEN3032"
+	lat := "[-56.36,66.20]"
+	str := `{"Mon":[["3:00","3:50"]],"Wed":[["11:30","12:20"],["3:00","3:50"]]}`
 	
-    _, err := course.Add(name, ab, lat, long, str)
+    _, err := course.Add(name, ab, lat, str)
     if err != nil {
 		t.Errorf("Add error")
 	}

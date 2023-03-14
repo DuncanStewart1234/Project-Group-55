@@ -18,6 +18,12 @@ func main() {
 	r.DELETE("/notes/:id", handlers.DeleteNotesHandler)
 	r.PUT("/notes", handlers.EditNotesHandler)
 
+	// Notes REST API
+	r.GET("/course", handlers.GetClassesHandler)
+	r.POST("/course", handlers.AddClassHandler)
+	r.DELETE("/course/:id", handlers.DeleteClassHandler)
+	// r.PUT("/course", handlers.EditClassHandler)
+
 	// Todo REST API
 	r.GET("/todo", handlers.GetTodoListHandler)
 	r.POST("/todo", handlers.AddTodoHandler)

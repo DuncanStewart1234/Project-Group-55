@@ -8,7 +8,6 @@ import (
 
 	"gorm.io/gorm"
 	"encoding/json"
-	"time"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	"github.com/rs/xid"
@@ -27,8 +26,8 @@ type Class struct {
 	Class_ID string `json:"cid"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
-	Location []byte `json:"loc"`
-	Schedule []byte `json:"schedule"`
+	Location Location `json:"loc" gorm:"serializer:json"`
+	Schedule Schedule `json:"schedule" gorm:"serializer:json"`
 }
 
 type Location struct {
@@ -37,9 +36,8 @@ type Location struct {
 }
 
 type Period struct {
-	// TODO: TIME + DURATION OR STARTTIME + ENDTIME
-	S_Time time.Time
-	E_Time time.Time
+	S_Time string
+	E_Time string
 }
 
 type Schedule struct {
@@ -70,7 +68,6 @@ func initDatabase() {
 	db.AutoMigrate(&Class{})
 
 	result := db.Find(&list)
-	// TODO: Convert Schedule and location
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
@@ -83,8 +80,8 @@ func Get() []Class {
 
 // Add creates and adds a class element to the list
 // TODO: Define scheduleBlock using frontend API
-func Add(name string, abbrv string, lat float64, long float64, scheduleBlock string) (string, error) {
-	t := newClass(name, abbrv, lat, long, []byte(scheduleBlock))
+func Add(name string, abbrv string, loc string, scheduleBlock string) (string, error) {
+	t := newClass(name, abbrv, getLocationFromJSON(loc), getScheduleFromJSON(scheduleBlock))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
@@ -104,34 +101,56 @@ func Delete(cid string) error {
 }
 
 // newClass is a helper function to Add
-func newClass(name string, abbrv string, lat float64, long float64, s []byte) Class {
+func newClass(name string, abbrv string, loc Location, s Schedule) Class {
 	return Class{
 		Class_ID: xid.New().String(),
 		Name: name,
 		Abbrv: abbrv,
-		Location: newLocation(lat, long),
+		Location: loc,
 		Schedule: s,
 	}
 }
 
-func newLocation(lat float64, long float64) []byte {
-	loc := &Location{
-		Lat: lat,
-		Long: long,
+func newPeriod(l [][]string) []Period {
+	var periods []Period
+	for _, t := range l {
+		periods = append(periods, Period{
+			S_Time: t[0],
+			E_Time: t[1],
+		})
 	}
-	b, _ := json.Marshal(loc)
-	return b
+
+	return periods
 }
 
-// func newSchedule(blocks string) []byte {
-// 	// periods := []Period
-// 	// TODO: Complete function
-// 	var m Message
-// 	l := Schedule{
-// 	}
-// 	b, _ := json.Marshal(l)
-// 	return b
-// }
+func getLocationFromJSON(jsonLoc string) Location {
+	var loc []float64
+	json.Unmarshal([]byte(jsonLoc), &loc)
+	return Location{
+		Lat: loc[0],
+		Long: loc[1],
+	}
+}
+
+func getScheduleFromJSON(jsonSchedule string) Schedule {
+	var data map[string][][]string
+	err := json.Unmarshal([]byte(jsonSchedule), &data)
+	if err != nil {
+		panic(err)
+	}
+
+	s := Schedule {
+		Mon: newPeriod(data["Mon"]),
+		Tues: newPeriod(data["Tues"]),
+		Wed: newPeriod(data["Wed"]),
+		Thur: newPeriod(data["Thur"]),
+		Fri: newPeriod(data["Fri"]),
+		Sat: newPeriod(data["Sat"]),
+		Sun: newPeriod(data["Sun"]),
+	}
+
+	return s
+}
 
 // findClassLocation is a helper function to Delete
 func findClassLocation(cid string) (int, error) {

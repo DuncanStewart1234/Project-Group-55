@@ -106,12 +106,14 @@ func GetClassesHandler(c *gin.Context) {
 }
 
 func AddClassHandler(c *gin.Context) {
-	classItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
+	classItem, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
-	c.JSON(statusCode, gin.H{"id": course.Add(classItem.Title, classItem.Message)})
+
+	cid, _ := course.Add(classItem.Name, classItem.Abbrv, classItem.Location, classItem.Schedule)
+	c.JSON(statusCode, gin.H{"cid": cid})
 }
 
 func DeleteClassHandler(c *gin.Context) {
@@ -120,21 +122,21 @@ func DeleteClassHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusOK, "peration Completed Successfully!")
-}
-
-func EditClassHandler(c *gin.Context) {
-	classItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
-	if err != nil {
-		c.JSON(statusCode, err)
-		return
-	}
-	if course.Edit(classItem.ID, classItem.Message) != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
 }
+
+// func EditClassHandler(c *gin.Context) {
+// 	classItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
+// 	if err != nil {
+// 		c.JSON(statusCode, err)
+// 		return
+// 	}
+// 	if course.Edit(classItem.ID, classItem.Message) != nil {
+// 		c.JSON(http.StatusInternalServerError, err)
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
+// }
 
 
 
@@ -160,10 +162,10 @@ func convertHTTPBodyToNote(httpBody io.ReadCloser) (notes.Note, int, error) {
 	return convertJSONBodyToNote(body)
 }
 
-func convertHTTPBodyToClass(httpBody io.ReadCloser) (course.Class, int, error) {
+func convertHTTPBodyToClass(httpBody io.ReadCloser) (Handler_Class, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
-		return course.Class{}, http.StatusInternalServerError, err
+		return Handler_Class{}, http.StatusInternalServerError, err
 	}
 	defer httpBody.Close()
 	return convertJSONBodyToClass(body)
@@ -187,11 +189,25 @@ func convertJSONBodyToNote(jsonBody []byte) (notes.Note, int, error) {
 	return noteItem, http.StatusOK, nil
 }
 
-func convertJSONBodyToClass(jsonBody []byte) (course.Class, int, error) {
-	var classItem course.Class
+func convertJSONBodyToClass(jsonBody []byte) (Handler_Class, int, error) {
+	var classItem Handler_Class
 	err := json.Unmarshal(jsonBody, &classItem)
 	if err != nil {
-		return course.Class{}, http.StatusBadRequest, err
+		return Handler_Class{}, http.StatusBadRequest, err
 	}
 	return classItem, http.StatusOK, nil
+}
+
+
+
+
+
+type Handler_Class struct {
+	Class_ID string `json:"cid"`
+	Name string `json:"name"`
+	Abbrv string `json:"abbrv"`
+	// Location string `json:"loc"` 
+	// Schedule string `json:"schedule"`
+	Location string `json:"loc"` 
+	Schedule string `json:"schedule"`
 }

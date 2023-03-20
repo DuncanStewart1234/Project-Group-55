@@ -5,12 +5,14 @@ package course
 import (
 	"errors"
 	"sync"
+	"math/rand"
+	"time"
+	"strconv"
 
 	"gorm.io/gorm"
 	"encoding/json"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
-	"github.com/rs/xid"
 )
 
 var (
@@ -18,12 +20,13 @@ var (
 	db   *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
+	r *rand.Rand
 )
 
 // Class is a struct used to contain info about a student's class
 type Class struct {
 	gorm.Model
-	Class_ID string `json:"cid"`
+	Class_ID int `json:"cid" gorm:"primaryKey"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
 	Location Location `json:"loc" gorm:"serializer:json"`
@@ -52,6 +55,7 @@ type Schedule struct {
 
 // init is a constructor that calls initialiseList
 func init() {
+	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	once.Do(initialiseList)
 }
 
@@ -80,7 +84,7 @@ func Get() []Class {
 
 // Add creates and adds a class element to the list
 // TODO: Define scheduleBlock using frontend API
-func Add(name string, abbrv string, loc string, scheduleBlock string) (string, error) {
+func Add(name string, abbrv string, loc string, scheduleBlock string) (int, error) {
 	t := newClass(name, abbrv, getLocationFromJSON(loc), getScheduleFromJSON(scheduleBlock))
 	mtx.Lock()
 	list = append(list, t)
@@ -103,7 +107,7 @@ func Delete(cid string) error {
 // newClass is a helper function to Add
 func newClass(name string, abbrv string, loc Location, s Schedule) Class {
 	return Class{
-		Class_ID: xid.New().String(),
+		Class_ID: r.Intn(899999) + 100000,
 		Name: name,
 		Abbrv: abbrv,
 		Location: loc,
@@ -157,7 +161,7 @@ func findClassLocation(cid string) (int, error) {
 	mtx.RLock()
 	defer mtx.RUnlock()
 	for i, t := range list {
-		if t.Class_ID == cid {
+		if strconv.Itoa(t.Class_ID) == cid {
 			return i, nil
 		}
 	}

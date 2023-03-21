@@ -26,6 +26,7 @@ var (
 // Class is a struct used to contain info about a student's class
 type Class struct {
 	gorm.Model
+	ID uint
 	Class_ID int `json:"cid" gorm:"primaryKey"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
@@ -100,6 +101,7 @@ func Delete(cid string) error {
 		return err
 	}
 	db.Where("Class_ID = ?", list[location].Class_ID).Delete(&list[location])
+
 	removeElementByLocation(location)
 	return nil
 }

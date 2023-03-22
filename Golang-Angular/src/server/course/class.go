@@ -107,7 +107,6 @@ func Delete(cid string) error {
 }
 
 func Edit(id string, name string, abbrv string, loc string, scheduleBlock string) error {
-	// TODO: Allow for title edit
 	location, err := findClassLocation(id)
 	if err != nil {
 		return err

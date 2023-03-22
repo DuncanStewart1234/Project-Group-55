@@ -42,18 +42,3 @@ func TestCourseEdit(t *testing.T) {
 		t.Errorf("error with delete function")
 	}
 }
-
-// func Test_newPeriod(t *testing.T) {
-// 	period := [["0","56"]]
-// 	periods := course.newPeriod(period)
-// }
-
-// func Test_getLocationFromJSON(t *testing.T) {
-// 	loc := "[0,56]"
-// 	location := course.getLocationFromJSON(loc)
-// }
-
-// func Test_getScheduleFromJSON(t *testing.T) {
-// 	sch := `{"Mon":[["3:00","3:50"]],"Wed":[["3:00","3:50"]], "Fri":[["3:00","3:50"]]}`
-// 	schedule := course.getScheduleFromJSON(sch)
-// }

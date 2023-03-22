@@ -106,6 +106,17 @@ func Delete(cid string) error {
 	return nil
 }
 
+func Edit(id string, name string, abbrv string, loc string, scheduleBlock string) error {
+	// TODO: Allow for title edit
+	location, err := findClassLocation(id)
+	if err != nil {
+		return err
+	}
+	editClassByLocation(location, name, abbrv, loc, scheduleBlock)
+	db.Save(&list[location])
+	return nil
+}
+
 // newClass is a helper function to Add
 func newClass(name string, abbrv string, loc Location, s Schedule) Class {
 	return Class{
@@ -174,5 +185,14 @@ func findClassLocation(cid string) (int, error) {
 func removeElementByLocation(i int) {
 	mtx.Lock()
 	list = append(list[:i], list[i+1:]...)
+	mtx.Unlock()
+}
+
+func editClassByLocation(location int, name string, abbrv string, loc string, scheduleBlock string) {
+	mtx.Lock()
+	list[location].Name = name
+	list[location].Abbrv = abbrv
+	list[location].Location = getLocationFromJSON(loc)
+	list[location].Schedule = getScheduleFromJSON(scheduleBlock)
 	mtx.Unlock()
 }

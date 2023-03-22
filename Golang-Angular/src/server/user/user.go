@@ -1,14 +1,16 @@
 // This package implements and maintains a list of users for the application
-package schedule
+package user
 
 import (
 	"errors"
 	"sync"
+	"math/rand"
+	"time"
+	"strconv"
 
 	"gorm.io/gorm"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
-	"github.com/rs/xid"
 )
 
 var (
@@ -16,18 +18,21 @@ var (
 	db   *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
+	r *rand.Rand
 )
 
 // User is the struct used in this package to contain info about the User of this application
 type User struct {
 	gorm.Model
-	User_ID    string `json:"cid"`
+	ID uint
+	User_ID    int `json:"uid" gorm:"primaryKey"`
 	First_Name string `json:"first"`
 	Last_Name  string `json:"last"`
 }
 
 // init is a constructor that calls initialiseList
 func init() {
+	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	once.Do(initialiseList)
 }
 
@@ -55,10 +60,10 @@ func Get() []User {
 }
 
 // Add creates and stores a new User in the list and database
-func Add(fname string, lname string) (string, error) {
+func Add(fname string, lname string) (int, error) {
 	t := newUser(fname, lname)
 	if fname == "" || lname == "" {
-		return "", errors.New("name cannot be empty")
+		return 0, errors.New("name cannot be empty")
 	}
 	mtx.Lock()
 	list = append(list, t)
@@ -81,7 +86,7 @@ func Delete(uid string) error {
 // newUser is a helper function to Add
 func newUser(fname string, lname string) User {
 	return User{
-		User_ID:    xid.New().String(),
+		User_ID:    r.Intn(89999999) + 10000000,
 		First_Name: fname,
 		Last_Name:  lname,
 	}
@@ -92,7 +97,7 @@ func findUserLocation(uid string) (int, error) {
 	mtx.RLock()
 	defer mtx.RUnlock()
 	for i, t := range list {
-		if t.User_ID == uid {
+		if strconv.Itoa(t.User_ID) == uid {
 			return i, nil
 		}
 	}

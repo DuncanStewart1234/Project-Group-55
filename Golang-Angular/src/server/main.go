@@ -12,17 +12,28 @@ func main() {
 	r.Use(CORSMiddleware())
 
 
+	// Users REST API
+	r.GET("/users", handlers.GetUsersHandler)
+	r.POST("/users", handlers.AddUsersHandler)
+	r.DELETE("/users/:uid", handlers.DeleteUsersHandler)
+
+	// Schedules REST API
+	r.GET("/schedule", handlers.GetSchedulesHandler)
+	r.POST("/schedule", handlers.AddSchedulesHandler)
+	r.DELETE("/schedule/:id", handlers.DeleteSchedulesHandler)
+	r.PUT("/schedule", handlers.EditSchedulesHandler)
+
+	// Course REST API
+	r.GET("/course", handlers.GetClassesHandler)
+	r.POST("/course", handlers.AddClassHandler)
+	r.DELETE("/course/:id", handlers.DeleteClassHandler)
+	r.PUT("/course", handlers.EditClassHandler)
+
 	// Notes REST API
 	r.GET("/notes", handlers.GetNotesHandler)
 	r.POST("/notes", handlers.AddNotesHandler)
 	r.DELETE("/notes/:id", handlers.DeleteNotesHandler)
 	r.PUT("/notes", handlers.EditNotesHandler)
-
-	// Notes REST API
-	r.GET("/course", handlers.GetClassesHandler)
-	r.POST("/course", handlers.AddClassHandler)
-	r.DELETE("/course/:id", handlers.DeleteClassHandler)
-	// r.PUT("/course", handlers.EditClassHandler)
 
 	// Todo REST API
 	r.GET("/todo", handlers.GetTodoListHandler)

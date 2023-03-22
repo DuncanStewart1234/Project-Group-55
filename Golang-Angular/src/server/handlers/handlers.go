@@ -7,11 +7,15 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/schedules"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"
 	"github.com/gin-gonic/gin"
 )
+
+
 
 // To Do Handlers
 // GetTodoListHandler is a handler to request the todo list from the Todo package
@@ -55,6 +59,8 @@ func CompleteTodoHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, "")
 }
 
+
+
 // Notes Handlers
 // GetNotesHandler is used to request the notes list from the Notes package
 func GetNotesHandler(c *gin.Context) {
@@ -95,7 +101,43 @@ func EditNotesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
 }
 
+
+
 // Schedule + Maps Handlers
+func GetSchedulesHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, schedule.Get())
+}
+
+func AddSchedulesHandler(c *gin.Context) {
+	scheduleItem, statusCode, err := convertHTTPBodyToSchedule(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
+		return
+	}
+	c.JSON(statusCode, gin.H{"id": notes.Add(scheduleItem.Title, scheduleItem.Message)})
+}
+
+func DeleteSchedulesHandler(c *gin.Context) {
+
+}
+
+func EditSchedulesHandler(c *gin.Context) {
+
+}
+
+
+// Users Handlers
+func GetUsersHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, user.Get())
+}
+
+func AddUsersHandler(c *gin.Context) {
+
+}
+
+func DeleteUsersHandler(c *gin.Context) {
+
+}
 
 
 
@@ -125,18 +167,18 @@ func DeleteClassHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
 }
 
-// func EditClassHandler(c *gin.Context) {
-// 	classItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
-// 	if err != nil {
-// 		c.JSON(statusCode, err)
-// 		return
-// 	}
-// 	if course.Edit(classItem.ID, classItem.Message) != nil {
-// 		c.JSON(http.StatusInternalServerError, err)
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
-// }
+func EditClassHandler(c *gin.Context) {
+	classItem, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
+		return
+	}
+	if course.Edit(classItem.Class_ID, classItem.Name, classItem.Abbrv, classItem.Location, classItem.Schedule) != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, "Operation Completed Successfully!")
+}
 
 
 

@@ -106,8 +106,8 @@ func Delete(cid string) error {
 	return nil
 }
 
-func Edit(id string, name string, abbrv string, loc string, scheduleBlock string) error {
-	location, err := findClassLocation(id)
+func Edit(id int, name string, abbrv string, loc string, scheduleBlock string) error {
+	location, err := findClassLocation(strconv.Itoa(id))
 	if err != nil {
 		return err
 	}

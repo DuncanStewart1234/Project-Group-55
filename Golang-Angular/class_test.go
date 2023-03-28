@@ -37,7 +37,7 @@ func TestCourseEdit(t *testing.T) {
 	loc := "[-566.36,665.20]"
 	str := `{"Mon":[["3:00","3:50"]],"Wed":[["3:00","3:50"]]}`
 
-	err := course.Edit("215679", name, abv, loc, str)
+	err := course.Edit(215679, name, abv, loc, str)
 	if err != nil {
 		t.Errorf("error with delete function")
 	}

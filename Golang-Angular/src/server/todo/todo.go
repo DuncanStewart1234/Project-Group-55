@@ -62,7 +62,7 @@ func Add(message string) (string, error) {
 	mtx.Lock()
 	t := newTodo(message)
 	if message == "" || len(message) > 250 {
-		return "", errors.New("message cannot be empty")
+		return "", errors.New("message cannot be empty nor longer than 250 chars")
 	}
 	list = append(list, t)
 	db.Create(&t)
@@ -94,7 +94,7 @@ func Delete(id string) error {
 
 // newTodo creates a new Todo item, helper function to Add
 func newTodo(msg string) Todo {
-	return Todo{
+	return Todo {
 		ID:       xid.New().String(),
 		User_ID:  curr_uid,
 		Message:  msg,

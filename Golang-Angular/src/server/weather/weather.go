@@ -10,12 +10,14 @@ package weather
 import (
 	"encoding/json"
 	"flag"
+	// "fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"text/template"
+	"bytes"
 
 	owm "github.com/briandowns/openweathermap" // "owm" for easier use
 )
@@ -109,6 +111,50 @@ func getForecast5(location, units, lang string) (*owm.Forecast5WeatherData, erro
 	return forecast, err
 }
 
+func GetWeather(where string, unit string, lang string) (string) {
+	os.Setenv("OWM_API_KEY", "53a36ef9cff59aed0b8d724a358d9861")
+	var buf bytes.Buffer
+	
+	w, err := getCurrent(where, unit, lang)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	tmpl, err := template.New("weather").Parse(weatherTemplate)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	err = tmpl.Execute(&buf, w)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	
+	return buf.String()
+}
+
+func GetForecast(where string, unit string, lang string) (string) {
+	os.Setenv("OWM_API_KEY", "53a36ef9cff59aed0b8d724a358d9861")
+	var buf bytes.Buffer
+	
+	w, err := getForecast5(where, unit, lang)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	tmpl, err := template.New("forecast").Parse(forecastTemplate)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	err = tmpl.Execute(&buf, w)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	
+	return buf.String()
+}
+
 func main() {
 	os.Setenv("OWM_API_KEY", "53a36ef9cff59aed0b8d724a358d9861")
 	flag.Parse()
@@ -170,4 +216,5 @@ func main() {
 			log.Fatalln(err)
 		}
 	}
+
 }

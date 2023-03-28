@@ -8,10 +8,11 @@ import (
 	"net/http"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
-	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/schedules"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/schedule"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/weather"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,38 +26,38 @@ func GetTodoListHandler(c *gin.Context) {
 
 // AddTodoHandler is used to add to the todo list from the Todo package
 func AddTodoHandler(c *gin.Context) {
-	todoItem, statusCode, err := convertHTTPBodyToTodo(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToTodo(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
 
-	id, _ := todo.Add(todoItem.Message)
+	id, _ := todo.Add(item.Message)
 	c.JSON(statusCode, gin.H{"id": id})
 }
 
 // DeleteTodoHandler is used to delete an item from the todo list
 func DeleteTodoHandler(c *gin.Context) {
-	todoID := c.Param("id")
-	if err := todo.Delete(todoID); err != nil {
+	id := c.Param("id")
+	if err := todo.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusOK, "")
+	c.JSON(http.StatusOK, "task deleted successfully")
 }
 
 // CompleteTodoHandler is used to mark a todo list item as complete
 func CompleteTodoHandler(c *gin.Context) {
-	todoItem, statusCode, err := convertHTTPBodyToTodo(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToTodo(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
-	if todo.Complete(todoItem.ID) != nil {
+	if todo.Complete(item.ID) != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusOK, "")
+	c.JSON(http.StatusOK, "task completed successfully")
 }
 
 
@@ -69,36 +70,37 @@ func GetNotesHandler(c *gin.Context) {
 
 // AddNotesHandler is used to add a note to the notes list from the Notes package
 func AddNotesHandler(c *gin.Context) {
-	notesItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
-	c.JSON(statusCode, gin.H{"id": notes.Add(notesItem.Title, notesItem.Message)})
+	id, _ := notes.Add(item.Title, item.Message)
+	c.JSON(statusCode, gin.H{"id": id})
 }
 
 // DeleteNotesHandler is used to delete a note from the notes list
 func DeleteNotesHandler(c *gin.Context) {
-	noteID := c.Param("id")
-	if err := notes.Delete(noteID); err != nil {
+	id := c.Param("id")
+	if err := notes.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusOK, "peration Completed Successfully!")
+	c.JSON(http.StatusOK, "note added successfully")
 }
 
 // EditNotesHandler is used to edit a note from the notes list
 func EditNotesHandler(c *gin.Context) {
-	noteItem, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToNote(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
-	if notes.Edit(noteItem.ID, noteItem.Message) != nil {
+	if notes.Edit(item.ID, item.Title, item.Message) != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusOK, "Operation Completed Successfully!")
+	c.JSON(http.StatusOK, "note edited successfully")
 }
 
 
@@ -114,7 +116,9 @@ func AddSchedulesHandler(c *gin.Context) {
 		c.JSON(statusCode, err)
 		return
 	}
-	c.JSON(statusCode, gin.H{"id": notes.Add(scheduleItem.Title, scheduleItem.Message)})
+
+	cid, _ := schedule.Add(scheduleItem.Class_ID)
+	c.JSON(statusCode, gin.H{"cid": cid})
 }
 
 func DeleteSchedulesHandler(c *gin.Context) {
@@ -181,7 +185,14 @@ func EditClassHandler(c *gin.Context) {
 }
 
 
+// Weather Handlers
+func GetWeatherHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, weather.GetWeather("Gainesville", "f", "en"))
+}
 
+func GetWeatherForecastHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, weather.GetForecast("Gainesville", "f", "en"))
+}
 
 
 
@@ -204,13 +215,22 @@ func convertHTTPBodyToNote(httpBody io.ReadCloser) (notes.Note, int, error) {
 	return convertJSONBodyToNote(body)
 }
 
-func convertHTTPBodyToClass(httpBody io.ReadCloser) (Handler_Class, int, error) {
+func convertHTTPBodyToClass(httpBody io.ReadCloser) (HandlerClass, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
-		return Handler_Class{}, http.StatusInternalServerError, err
+		return HandlerClass{}, http.StatusInternalServerError, err
 	}
 	defer httpBody.Close()
 	return convertJSONBodyToClass(body)
+}
+
+func convertHTTPBodyToSchedule(httpBody io.ReadCloser) (schedule.StudentSchedule, int, error) {
+	body, err := ioutil.ReadAll(httpBody)
+	if err != nil {
+		return schedule.StudentSchedule{}, http.StatusInternalServerError, err
+	}
+	defer httpBody.Close()
+	return convertJSONBodyToSchedule(body)
 }
 
 func convertJSONBodyToTodo(jsonBody []byte) (todo.Todo, int, error) {
@@ -223,19 +243,28 @@ func convertJSONBodyToTodo(jsonBody []byte) (todo.Todo, int, error) {
 }
 
 func convertJSONBodyToNote(jsonBody []byte) (notes.Note, int, error) {
-	var noteItem notes.Note
-	err := json.Unmarshal(jsonBody, &noteItem)
+	var item notes.Note
+	err := json.Unmarshal(jsonBody, &item)
 	if err != nil {
 		return notes.Note{}, http.StatusBadRequest, err
 	}
-	return noteItem, http.StatusOK, nil
+	return item, http.StatusOK, nil
 }
 
-func convertJSONBodyToClass(jsonBody []byte) (Handler_Class, int, error) {
-	var classItem Handler_Class
+func convertJSONBodyToClass(jsonBody []byte) (HandlerClass, int, error) {
+	var classItem HandlerClass
 	err := json.Unmarshal(jsonBody, &classItem)
 	if err != nil {
-		return Handler_Class{}, http.StatusBadRequest, err
+		return HandlerClass{}, http.StatusBadRequest, err
+	}
+	return classItem, http.StatusOK, nil
+}
+
+func convertJSONBodyToSchedule(jsonBody []byte) (schedule.StudentSchedule, int, error) {
+	var classItem schedule.StudentSchedule
+	err := json.Unmarshal(jsonBody, &classItem)
+	if err != nil {
+		return schedule.StudentSchedule{}, http.StatusBadRequest, err
 	}
 	return classItem, http.StatusOK, nil
 }
@@ -243,13 +272,11 @@ func convertJSONBodyToClass(jsonBody []byte) (Handler_Class, int, error) {
 
 
 
-
-type Handler_Class struct {
-	Class_ID string `json:"cid"`
+type HandlerClass struct {
+	ID uint
+	Class_ID int `json:"cid"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
-	// Location string `json:"loc"` 
-	// Schedule string `json:"schedule"`
-	Location string `json:"loc"` 
+	Location string `json:"loc"`
 	Schedule string `json:"schedule"`
 }

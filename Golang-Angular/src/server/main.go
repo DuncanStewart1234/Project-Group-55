@@ -11,6 +11,9 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+	// Weather API
+	r.GET("/weather/forecast", handlers.GetWeatherForecastHandler)
+	r.GET("/weather", handlers.GetWeatherHandler)
 
 	// Users REST API
 	r.GET("/users", handlers.GetUsersHandler)

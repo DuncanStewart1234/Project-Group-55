@@ -24,7 +24,6 @@ func main() {
 	r.GET("/schedule", handlers.GetSchedulesHandler)
 	r.POST("/schedule", handlers.AddSchedulesHandler)
 	r.DELETE("/schedule/:id", handlers.DeleteSchedulesHandler)
-	r.PUT("/schedule", handlers.EditSchedulesHandler)
 
 	// Course REST API
 	r.GET("/course", handlers.GetClassesHandler)

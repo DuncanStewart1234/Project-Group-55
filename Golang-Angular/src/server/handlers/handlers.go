@@ -86,7 +86,7 @@ func DeleteNotesHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusOK, "note added successfully")
+	c.JSON(http.StatusOK, "note deleted successfully")
 }
 
 // EditNotesHandler is used to edit a note from the notes list
@@ -111,23 +111,25 @@ func GetSchedulesHandler(c *gin.Context) {
 }
 
 func AddSchedulesHandler(c *gin.Context) {
-	scheduleItem, statusCode, err := convertHTTPBodyToSchedule(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToSchedule(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
 
-	cid, _ := schedule.Add(scheduleItem.Class_ID)
-	c.JSON(statusCode, gin.H{"cid": cid})
+	id, _ := schedule.Add(item.Class_ID)
+	c.JSON(statusCode, gin.H{"id": id})
 }
 
 func DeleteSchedulesHandler(c *gin.Context) {
-
+	id := c.Param("id")
+	if err := schedule.Delete(id); err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, "schedule deleted successfully")
 }
 
-func EditSchedulesHandler(c *gin.Context) {
-
-}
 
 
 // Users Handlers
@@ -136,13 +138,24 @@ func GetUsersHandler(c *gin.Context) {
 }
 
 func AddUsersHandler(c *gin.Context) {
+	item, statusCode, err := convertHTTPBodyToUser(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
+		return
+	}
 
+	uid, _ := user.Add(item.First_Name, item.Last_Name)
+	c.JSON(statusCode, gin.H{"uid": uid})
 }
 
 func DeleteUsersHandler(c *gin.Context) {
-
+	id := c.Param("uid")
+	if err := user.Delete(id); err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, "user deleted successfully")
 }
-
 
 
 
@@ -152,19 +165,19 @@ func GetClassesHandler(c *gin.Context) {
 }
 
 func AddClassHandler(c *gin.Context) {
-	classItem, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
 
-	cid, _ := course.Add(classItem.Name, classItem.Abbrv, classItem.Location, classItem.Schedule)
+	cid, _ := course.Add(item.Name, item.Abbrv, item.Location, item.Schedule)
 	c.JSON(statusCode, gin.H{"cid": cid})
 }
 
 func DeleteClassHandler(c *gin.Context) {
-	classID := c.Param("cid")
-	if err := course.Delete(classID); err != nil {
+	id := c.Param("cid")
+	if err := course.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
@@ -172,17 +185,18 @@ func DeleteClassHandler(c *gin.Context) {
 }
 
 func EditClassHandler(c *gin.Context) {
-	classItem, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}
-	if course.Edit(classItem.Class_ID, classItem.Name, classItem.Abbrv, classItem.Location, classItem.Schedule) != nil {
+	if course.Edit(item.Class_ID, item.Name, item.Abbrv, item.Location, item.Schedule) != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
 }
+
 
 
 // Weather Handlers
@@ -233,13 +247,23 @@ func convertHTTPBodyToSchedule(httpBody io.ReadCloser) (schedule.StudentSchedule
 	return convertJSONBodyToSchedule(body)
 }
 
+func convertHTTPBodyToUser(httpBody io.ReadCloser) (user.User, int, error) {
+	body, err := ioutil.ReadAll(httpBody)
+	if err != nil {
+		return user.User{}, http.StatusInternalServerError, err
+	}
+	defer httpBody.Close()
+	return convertJSONBodyToUser(body)
+}
+
+
 func convertJSONBodyToTodo(jsonBody []byte) (todo.Todo, int, error) {
-	var todoItem todo.Todo
-	err := json.Unmarshal(jsonBody, &todoItem)
+	var item todo.Todo
+	err := json.Unmarshal(jsonBody, &item)
 	if err != nil {
 		return todo.Todo{}, http.StatusBadRequest, err
 	}
-	return todoItem, http.StatusOK, nil
+	return item, http.StatusOK, nil
 }
 
 func convertJSONBodyToNote(jsonBody []byte) (notes.Note, int, error) {
@@ -252,24 +276,31 @@ func convertJSONBodyToNote(jsonBody []byte) (notes.Note, int, error) {
 }
 
 func convertJSONBodyToClass(jsonBody []byte) (HandlerClass, int, error) {
-	var classItem HandlerClass
-	err := json.Unmarshal(jsonBody, &classItem)
+	var item HandlerClass
+	err := json.Unmarshal(jsonBody, &item)
 	if err != nil {
 		return HandlerClass{}, http.StatusBadRequest, err
 	}
-	return classItem, http.StatusOK, nil
+	return item, http.StatusOK, nil
 }
 
 func convertJSONBodyToSchedule(jsonBody []byte) (schedule.StudentSchedule, int, error) {
-	var classItem schedule.StudentSchedule
-	err := json.Unmarshal(jsonBody, &classItem)
+	var item schedule.StudentSchedule
+	err := json.Unmarshal(jsonBody, &item)
 	if err != nil {
 		return schedule.StudentSchedule{}, http.StatusBadRequest, err
 	}
-	return classItem, http.StatusOK, nil
+	return item, http.StatusOK, nil
 }
 
-
+func convertJSONBodyToUser(jsonBody []byte) (user.User, int, error) {
+	var item user.User
+	err := json.Unmarshal(jsonBody, &item)
+	if err != nil {
+		return user.User{}, http.StatusBadRequest, err
+	}
+	return item, http.StatusOK, nil
+}
 
 
 type HandlerClass struct {

@@ -24,8 +24,8 @@ var (
 // User is the struct used in this package to contain info about the User of this application
 type User struct {
 	gorm.Model
-	ID uint
-	User_ID    int `json:"uid" gorm:"primaryKey"`
+	ID         uint
+	User_ID    int    `json:"uid" gorm:"primaryKey"`
 	First_Name string `json:"first"`
 	Last_Name  string `json:"last"`
 }

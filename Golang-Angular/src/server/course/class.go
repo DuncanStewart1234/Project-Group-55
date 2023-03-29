@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -158,8 +159,8 @@ func getLocationFromJSON(jsonLoc string) Location {
 }
 
 func getCalLocationFromJSON(jsonLoc string) Location {
-	// TODO: Convert jsonLoc to appropriate JSON
-	// ex. {lat: 32.2222} -> {"lat": 32.2222}
+	jsonLoc = strings.ReplaceAll(jsonLoc, ":", "\":")
+	jsonLoc = strings.ReplaceAll(jsonLoc, "l", "\"l")
 	var loc map[string]float64
 	json.Unmarshal([]byte(jsonLoc), &loc)
 	return Location{

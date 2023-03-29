@@ -1,5 +1,6 @@
 Work Completed in Spirit 3:
 
+    We've completed the schedule for the backend and frontend which was uncompleted in the previous sprint but we're currently trying to finishing the      weather and news api's. While also doing the unit tests for these new api's as they need to be finished as well, once the actual api's are finished. 
 
 FrontEnd Unit Tests:
 

@@ -13,6 +13,12 @@ import (
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 )
 
+type UserType int
+const (
+	Admin   UserType = 0
+	Student UserType = 1
+)
+
 var (
 	list []User
 	db   *gorm.DB
@@ -25,9 +31,10 @@ var (
 type User struct {
 	gorm.Model
 	ID         uint
-	User_ID    int    `json:"uid" gorm:"primaryKey"`
-	First_Name string `json:"first"`
-	Last_Name  string `json:"last"`
+	User_ID    int    	`json:"uid" gorm:"primaryKey"`
+	First_Name string 	`json:"first"`
+	Last_Name  string 	`json:"last"`
+	Type       UserType `json:"utype"`
 }
 
 // init is a constructor that calls initialiseList
@@ -66,7 +73,6 @@ func Add(fname string, lname string) (int, error) {
 	if fname == "" || lname == "" {
 		return 0, errors.New("name cannot be empty")
 	}
-
 	t := newUser(fname, lname)
 	list = append(list, t)
 	db.Create(&t)

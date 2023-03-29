@@ -11,10 +11,20 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+	// User Account Signup
+	r.GET("/signup", handlers.GetSignupHandler)
+	r.POST("/signup", handlers.AddSignupHandler)
+	
+	// User Account Login
+	r.GET("/login", handlers.GetLoginHandler)
+	r.POST("/login", handlers.AddLoginHandler)
+
+
 	// Weather API
 	r.GET("/weather/forecast", handlers.GetWeatherForecastHandler)
 	r.GET("/weather", handlers.GetWeatherHandler)
 
+	// TODO: Limit to Admin?
 	// Users REST API
 	r.GET("/users", handlers.GetUsersHandler)
 	r.POST("/users", handlers.AddUsersHandler)

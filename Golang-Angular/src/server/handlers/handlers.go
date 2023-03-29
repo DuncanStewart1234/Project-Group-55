@@ -212,6 +212,40 @@ func GetWeatherForecastHandler(c *gin.Context) {
 
 
 // User Login Handlers
+func GetLoginHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, nil)
+}
+
+func AddLoginHandler(c *gin.Context) {
+	item, statusCode, err := convertHTTPBodyToLoginRequest(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
+		return
+	}
+
+	cid, _ := course.AddCal(item.Title, item.ExtendedProps, item.Start, item.End)
+	c.JSON(statusCode, gin.H{"cid": cid})
+}
+
+// User Signup Handlers
+func GetSignupHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, nil)
+}
+
+func AddSignupHandler(c *gin.Context) {
+	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
+		return
+	}
+
+	cid, _ := course.AddCal(item.Title, item.ExtendedProps, item.Start, item.End)
+	c.JSON(statusCode, gin.H{"cid": cid})
+}
+
+
+
+// HTTP To Class Objects
 func convertHTTPBodyToTodo(httpBody io.ReadCloser) (todo.Todo, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
@@ -257,7 +291,7 @@ func convertHTTPBodyToUser(httpBody io.ReadCloser) (user.User, int, error) {
 	return convertJSONBodyToUser(body)
 }
 
-
+// JSON to Struct Objects
 func convertJSONBodyToTodo(jsonBody []byte) (todo.Todo, int, error) {
 	var item todo.Todo
 	err := json.Unmarshal(jsonBody, &item)
@@ -304,6 +338,7 @@ func convertJSONBodyToUser(jsonBody []byte) (user.User, int, error) {
 }
 
 
+// Struct Classes
 type HandlerClass struct {
 	ID uint
 	Class_ID int `json:"cid"`

@@ -24,6 +24,18 @@ func TestCourseAdd(t *testing.T) {
 	}
 }
 
+func TestCourseCalAdd(t *testing.T) {
+	name := "Software Engineering"
+	loc := `{"lat": 29.643946, "lng": -82.355659}`
+	start := "2023-03-27T14:30:00"
+	end := "2023-03-27T15:30:00"
+	
+    _, err := course.AddCal(name, loc, start, end)
+    if err != nil {
+		t.Errorf("error with add function")
+	}
+}
+
 func TestCourseDelete(t *testing.T) {
 	err := course.Delete("974174")
 	if err != nil {

@@ -171,7 +171,8 @@ func AddClassHandler(c *gin.Context) {
 		return
 	}
 
-	cid, _ := course.Add(item.Name, item.Abbrv, item.Location, item.Schedule)
+	// cid, _ := course.Add(item.Name, item.Abbrv, item.Location, item.Schedule)
+	cid, _ := course.AddCal(item.Title, item.ExtendedProps, item.Start, item.End)
 	c.JSON(statusCode, gin.H{"cid": cid})
 }
 
@@ -184,18 +185,18 @@ func DeleteClassHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
 }
 
-func EditClassHandler(c *gin.Context) {
-	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
-	if err != nil {
-		c.JSON(statusCode, err)
-		return
-	}
-	if course.Edit(item.Class_ID, item.Name, item.Abbrv, item.Location, item.Schedule) != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-	c.JSON(http.StatusOK, "Operation Completed Successfully!")
-}
+// func EditClassHandler(c *gin.Context) {
+// 	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
+// 	if err != nil {
+// 		c.JSON(statusCode, err)
+// 		return
+// 	}
+// 	if course.Edit(item.Class_ID, item.Name, item.Abbrv, item.Location, item.Schedule) != nil {
+// 		c.JSON(http.StatusInternalServerError, err)
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
+// }
 
 
 
@@ -229,10 +230,10 @@ func convertHTTPBodyToNote(httpBody io.ReadCloser) (notes.Note, int, error) {
 	return convertJSONBodyToNote(body)
 }
 
-func convertHTTPBodyToClass(httpBody io.ReadCloser) (HandlerClass, int, error) {
+func convertHTTPBodyToClass(httpBody io.ReadCloser) (CalClass, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
-		return HandlerClass{}, http.StatusInternalServerError, err
+		return CalClass{}, http.StatusInternalServerError, err
 	}
 	defer httpBody.Close()
 	return convertJSONBodyToClass(body)
@@ -275,11 +276,11 @@ func convertJSONBodyToNote(jsonBody []byte) (notes.Note, int, error) {
 	return item, http.StatusOK, nil
 }
 
-func convertJSONBodyToClass(jsonBody []byte) (HandlerClass, int, error) {
-	var item HandlerClass
+func convertJSONBodyToClass(jsonBody []byte) (CalClass, int, error) {
+	var item CalClass
 	err := json.Unmarshal(jsonBody, &item)
 	if err != nil {
-		return HandlerClass{}, http.StatusBadRequest, err
+		return CalClass{}, http.StatusBadRequest, err
 	}
 	return item, http.StatusOK, nil
 }
@@ -310,4 +311,11 @@ type HandlerClass struct {
 	Abbrv string `json:"abbrv"`
 	Location string `json:"loc"`
 	Schedule string `json:"schedule"`
+}
+
+type CalClass struct {
+	Title string `json:"title"`
+	Start string `json:"start"`
+	End string `json:"end"`
+	ExtendedProps string `json:"extendedProps"`
 }

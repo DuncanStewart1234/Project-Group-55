@@ -4,13 +4,15 @@ package course
 
 import (
 	"errors"
-	"sync"
+	"fmt"
 	"math/rand"
-	"time"
 	"strconv"
+	"sync"
+	"time"
+
+	"encoding/json"
 
 	"gorm.io/gorm"
-	"encoding/json"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 )
@@ -84,9 +86,17 @@ func Get() []Class {
 }
 
 // Add creates and adds a class element to the list
-// TODO: Define scheduleBlock using frontend API
 func Add(name string, abbrv string, loc string, scheduleBlock string) (int, error) {
 	t := newClass(name, abbrv, getLocationFromJSON(loc), getScheduleFromJSON(scheduleBlock))
+	mtx.Lock()
+	list = append(list, t)
+	db.Create(&t)
+	mtx.Unlock()
+	return t.Class_ID, nil
+}
+
+func AddCal(title string, loc string, start string, end string) (int, error) {
+	t := newClass(title, "", getCalLocationFromJSON(loc), getTimeFromJSON(start, end))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
@@ -166,6 +176,50 @@ func getScheduleFromJSON(jsonSchedule string) Schedule {
 	}
 
 	return s
+}
+
+func getTimeFromJSON(start string, end string) Schedule {
+	const layout = "2006-01-02T15:04:05"
+	dayAbbrMap := make(map[int]string)
+	dayAbbrMap[0] = "Sun"
+	dayAbbrMap[1] = "Mon"
+	dayAbbrMap[2] = "Tues"
+	dayAbbrMap[3] = "Wed"
+	dayAbbrMap[4] = "Thur"
+	dayAbbrMap[5] = "Fri"
+	dayAbbrMap[6] = "Sat"
+
+	startTime, _ := time.Parse(layout, start)
+	startDay := startTime.Weekday()
+
+	endTime, _ := time.Parse(layout, end)
+
+	var sHour int
+	var eHour int
+
+	sHour = startTime.Hour()
+	eHour = endTime.Hour()
+	if sHour > 12 {
+		sHour = sHour - 12
+	}
+	if eHour > 12 {
+		eHour = eHour - 12
+	}
+
+	temp := fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
+	return getScheduleFromJSON(temp)
+	
+}
+
+func getCalLocationFromJSON(jsonLoc string) Location {
+	// TODO: Convert jsonLoc to appropriate JSON
+	// ex. {lat: 32.2222} -> {"lat": 32.2222}
+	var loc map[string]float64
+	json.Unmarshal([]byte(jsonLoc), &loc)
+	return Location{
+		Lat: loc["lat"],
+		Long: loc["lng"],
+	}
 }
 
 // findClassLocation is a helper function to Delete

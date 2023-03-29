@@ -29,7 +29,7 @@ func main() {
 	r.GET("/course", handlers.GetClassesHandler)
 	r.POST("/course", handlers.AddClassHandler)
 	r.DELETE("/course/:id", handlers.DeleteClassHandler)
-	r.PUT("/course", handlers.EditClassHandler)
+	// r.PUT("/course", handlers.EditClassHandler)
 
 	// Notes REST API
 	r.GET("/notes", handlers.GetNotesHandler)

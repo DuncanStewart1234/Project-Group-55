@@ -27,7 +27,6 @@ type StudentSchedule struct {
 	Class_ID string `json:"cid"`
 }
 
-
 // init is a constructor, calls initialiseList
 func init() {
 	once.Do(initialiseList)
@@ -47,7 +46,7 @@ func initDatabase() {
 
 	db.AutoMigrate(&StudentSchedule{})
 
-	result := db.Find(&list).Where("User_ID = ?", curr_uid)
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}

@@ -60,8 +60,8 @@ func Get() []StudentSchedule {
 // Add creates and adds a class to the schedule
 func Add(cid string) (string, error) {
 	// TODO: Check if cid in ClassDB
-	t := newStudentSchedule(cid)
 	mtx.Lock()
+	t := newStudentSchedule(cid)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()

@@ -48,6 +48,7 @@ func initDatabase() {
 
 	db.AutoMigrate(&User{})
 
+	// TODO: Return only curr user
 	result := db.Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
@@ -61,16 +62,19 @@ func Get() []User {
 
 // Add creates and stores a new User in the list and database
 func Add(fname string, lname string) (int, error) {
-	t := newUser(fname, lname)
+	mtx.Lock()
 	if fname == "" || lname == "" {
 		return 0, errors.New("name cannot be empty")
 	}
-	mtx.Lock()
+
+	t := newUser(fname, lname)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
 	return t.User_ID, nil
 }
+
+//TODO: Add Edit Function
 
 // Delete removes a User from the list and deletes them from the database
 func Delete(uid string) error {
@@ -110,3 +114,10 @@ func removeElementByLocation(i int) {
 	list = append(list[:i], list[i+1:]...)
 	mtx.Unlock()
 }
+
+// func editUserByLocation(location int, fname string, lname string) {
+// 	mtx.Lock()
+// 	list[location].First_Name = fname
+// 	list[location].Last_Name = lname
+// 	mtx.Unlock()
+// }

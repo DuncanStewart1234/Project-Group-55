@@ -87,8 +87,8 @@ func Get() []Class {
 
 // Add creates and adds a class element to the list
 func Add(name string, abbrv string, loc string, scheduleBlock string) (int, error) {
-	t := newClass(name, abbrv, getLocationFromJSON(loc), getScheduleFromJSON(scheduleBlock))
 	mtx.Lock()
+	t := newClass(name, abbrv, getLocationFromJSON(loc), getScheduleFromJSON(scheduleBlock))
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
@@ -96,24 +96,12 @@ func Add(name string, abbrv string, loc string, scheduleBlock string) (int, erro
 }
 
 func AddCal(title string, loc string, start string, end string) (int, error) {
-	t := newClass(title, "", getCalLocationFromJSON(loc), getTimeFromJSON(start, end))
+	t := newClass(title, "", getCalLocationFromJSON(loc), getCalScheduleFromJSON(start, end))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
 	return t.Class_ID, nil
-}
-
-// Delete removes and deletes a class element from the list
-func Delete(cid string) error {
-	location, err := findClassLocation(cid)
-	if err != nil {
-		return err
-	}
-	db.Where("Class_ID = ?", list[location].Class_ID).Delete(&list[location])
-
-	removeElementByLocation(location)
-	return nil
 }
 
 func Edit(id int, name string, abbrv string, loc string, scheduleBlock string) error {
@@ -123,6 +111,17 @@ func Edit(id int, name string, abbrv string, loc string, scheduleBlock string) e
 	}
 	editClassByLocation(location, name, abbrv, loc, scheduleBlock)
 	db.Save(&list[location])
+	return nil
+}
+
+// Delete removes and deletes a class element from the list
+func Delete(cid string) error {
+	location, err := findClassLocation(cid)
+	if err != nil {
+		return err
+	}
+	db.Where("Class_ID = ?", list[location].Class_ID).Delete(&list[location])
+	removeElementByLocation(location)
 	return nil
 }
 
@@ -158,6 +157,17 @@ func getLocationFromJSON(jsonLoc string) Location {
 	}
 }
 
+func getCalLocationFromJSON(jsonLoc string) Location {
+	// TODO: Convert jsonLoc to appropriate JSON
+	// ex. {lat: 32.2222} -> {"lat": 32.2222}
+	var loc map[string]float64
+	json.Unmarshal([]byte(jsonLoc), &loc)
+	return Location{
+		Lat: loc["lat"],
+		Long: loc["lng"],
+	}
+}
+
 func getScheduleFromJSON(jsonSchedule string) Schedule {
 	var data map[string][][]string
 	err := json.Unmarshal([]byte(jsonSchedule), &data)
@@ -178,7 +188,7 @@ func getScheduleFromJSON(jsonSchedule string) Schedule {
 	return s
 }
 
-func getTimeFromJSON(start string, end string) Schedule {
+func getCalScheduleFromJSON(start string, end string) Schedule {
 	const layout = "2006-01-02T15:04:05"
 	dayAbbrMap := make(map[int]string)
 	dayAbbrMap[0] = "Sun"
@@ -208,19 +218,8 @@ func getTimeFromJSON(start string, end string) Schedule {
 
 	temp := fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
 	return getScheduleFromJSON(temp)
-	
 }
 
-func getCalLocationFromJSON(jsonLoc string) Location {
-	// TODO: Convert jsonLoc to appropriate JSON
-	// ex. {lat: 32.2222} -> {"lat": 32.2222}
-	var loc map[string]float64
-	json.Unmarshal([]byte(jsonLoc), &loc)
-	return Location{
-		Lat: loc["lat"],
-		Long: loc["lng"],
-	}
-}
 
 // findClassLocation is a helper function to Delete
 func findClassLocation(cid string) (int, error) {

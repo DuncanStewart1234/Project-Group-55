@@ -36,6 +36,7 @@ func init() {
 // initialiseList initialises the Todo list
 func initialiseList() {
 	list = []Todo{}
+	// TODO: GET UID
 	curr_uid = 1005
 	initDatabase()
 }
@@ -46,7 +47,7 @@ func initDatabase() {
 
 	db.AutoMigrate(&Todo{})
 
-	result := db.Find(&list)
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
@@ -60,10 +61,12 @@ func Get() []Todo {
 // Add a new item to the Todo list based off message input
 func Add(message string) (string, error) {
 	mtx.Lock()
-	t := newTodo(message)
-	if message == "" || len(message) > 250 {
-		return "", errors.New("message cannot be empty nor longer than 250 chars")
+	err := utils.CheckIfEmptyOrTooLong(message)
+	if err != nil {
+		return "", err
 	}
+
+	t := newTodo(message)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()

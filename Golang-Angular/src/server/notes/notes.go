@@ -24,7 +24,7 @@ type Note struct {
 	gorm.Model
 	ID      string `json:"id"`
 	User_ID int    `json:"uid"`
-	Title   string `json:"title"`
+	Title   string `json:"title" gorm:"size:256"`
 	Message string `json:"message"`
 }
 
@@ -47,7 +47,7 @@ func initDatabase() {
 
 	db.AutoMigrate(&Note{})
 
-	result := db.Find(&list)
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
@@ -61,10 +61,12 @@ func Get() []Note {
 // Add creates and adds a note to the notes list
 func Add(title string, message string) (string, error) {
 	mtx.Lock()
-	t := newNote(title, message)
-	if title == "" || len(title) > 250 {
-		return "", errors.New("title cannot be empty nor longer than 250 chars")
+	err := utils.CheckIfEmptyOrTooLong(title)
+	if err != nil {
+		return "", err
 	}
+
+	t := newNote(title, message)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()

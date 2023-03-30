@@ -25,8 +25,8 @@ func TestCourseAdd(t *testing.T) {
 }
 
 func TestCourseCalAdd(t *testing.T) {
-	name := "Software Engineering"
-	loc := `{"lat": 29.643946, "lng": -82.355659}`
+	name := "Software Engineering 3"
+	loc := `{lat: 29.627246, lng: -82.35579}`
 	start := "2023-03-27T14:30:00"
 	end := "2023-03-27T15:30:00"
 	
@@ -37,7 +37,7 @@ func TestCourseCalAdd(t *testing.T) {
 }
 
 func TestCourseDelete(t *testing.T) {
-	err := course.Delete("974174")
+	err := course.Delete("563178")
 	if err != nil {
 		t.Errorf("error with delete function")
 	}
@@ -49,7 +49,7 @@ func TestCourseEdit(t *testing.T) {
 	loc := "[-566.36,665.20]"
 	str := `{"Mon":[["3:00","3:50"]],"Wed":[["3:00","3:50"]]}`
 
-	err := course.Edit(215679, name, abv, loc, str)
+	err := course.Edit(694946, name, abv, loc, str)
 	if err != nil {
 		t.Errorf("error with delete function")
 	}

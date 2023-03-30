@@ -21,7 +21,7 @@ func TestScheduleAdd(t *testing.T) {
 }
 
 func TestScheduleDelete(t *testing.T) {
-	err := schedule.Delete("cgdk46siuh41bo3t6100")
+	err := schedule.Delete("cgi4o4siuh429u2c3oig")
 	if err != nil {
 		t.Errorf("error with delete function")
 	}

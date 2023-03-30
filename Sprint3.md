@@ -460,21 +460,21 @@ type Data
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data will hold the result of the query to get the IP address of the caller.  
 
 type Data struct {  
-    Status      string  `json:"status"`  
-    Country     string  `json:"country"`  
-    CountryCode string  `json:"countryCode"`  
-    Region      string  `json:"region"`  
-    RegionName  string  `json:"regionName"`  
-    City        string  `json:"city"`  
-    Zip         string  `json:"zip"`  
-    Lat         float64 `json:"lat"`  
-    Lon         float64 `json:"lon"`  
-    Timezone    string  `json:"timezone"`  
-    ISP         string  `json:"isp"`  
-    ORG         string  `json:"org"`  
-    AS          string  `json:"as"`  
-    Message     string  `json:"message"`  
-    Query       string  `json:"query"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status      string  `json:"status"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Country     string  `json:"country"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CountryCode string  `json:"countryCode"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Region      string  `json:"region"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegionName  string  `json:"regionName"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;City        string  `json:"city"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Zip         string  `json:"zip"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lat         float64 `json:"lat"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lon         float64 `json:"lon"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Timezone    string  `json:"timezone"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ISP         string  `json:"isp"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORG         string  `json:"org"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AS          string  `json:"as"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message     string  `json:"message"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query       string  `json:"query"`  
 }  
 
 

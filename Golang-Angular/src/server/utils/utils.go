@@ -4,6 +4,7 @@ package utils
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"errors"
 )
 
 // GetDB returns the specified database for use in other packages
@@ -13,4 +14,12 @@ func GetDB(path string) *gorm.DB {
 		panic("failed to connect database")
 	}
 	return db
+}
+
+func CheckIfEmptyOrTooLong(msg string) (error) {
+	if msg == "" || len(msg) > 256 {
+		return errors.New("string cannot be empty nor longer than 256 chars")
+	}
+
+	return nil
 }

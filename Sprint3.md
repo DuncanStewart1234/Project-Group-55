@@ -1,4 +1,4 @@
-Work Completed in Spirit 3:
+Work Completed in Sprint 3:
 
     We've completed the schedule for the backend and frontend which was uncompleted in the previous sprint with some little issues to be resolved with the integreation between the backend and front end and being able to finish the front and backend of the weather widget while still working on the news widget. While also doing the unit tests for these new api's as they need to be finished as well, once the actual api's are finished. 
 
@@ -274,8 +274,6 @@ FrontEnd Unit Tests:
     Also testing the notes widgit as well
 
 
-# Unit Test in Backend:
-
 ## Updated Documentation For Backend API:
 
 ### Package **notes**
@@ -476,7 +474,6 @@ type Data struct {
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message     string  `json:"message"`  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query       string  `json:"query"`  
 }  
-
 
 # Backend Unit Tests
 

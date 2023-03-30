@@ -2,9 +2,7 @@
 package todo
 
 import (
-	// errors is responsible for error checkingg
 	"errors"
-	//sync is used for basic exclusion locks
 	"sync"
 
 	"gorm.io/gorm"
@@ -18,13 +16,14 @@ var (
 	db   *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
+	curr_uid int
 )
 
 // Todo is a struct model containing the Todo list item info
 type Todo struct {
 	gorm.Model
 	ID       string `json:"id"`
-	User_ID  string `json:"uid"`
+	User_ID  int	`json:"uid"`
 	Message  string `json:"message" gorm:"size:256"`
 	Complete bool   `json:"complete"`
 }
@@ -37,6 +36,8 @@ func init() {
 // initialiseList initialises the Todo list
 func initialiseList() {
 	list = []Todo{}
+	// TODO: GET UID
+	curr_uid = 1005
 	initDatabase()
 }
 
@@ -46,7 +47,7 @@ func initDatabase() {
 
 	db.AutoMigrate(&Todo{})
 
-	result := db.Find(&list)
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
@@ -59,11 +60,13 @@ func Get() []Todo {
 
 // Add a new item to the Todo list based off message input
 func Add(message string) (string, error) {
-	t := newTodo(message)
-	if message == "" {
-		return "", errors.New("message cannot be empty")
-	}
 	mtx.Lock()
+	err := utils.CheckIfEmptyOrTooLong(message)
+	if err != nil {
+		return "", err
+	}
+
+	t := newTodo(message)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
@@ -94,10 +97,9 @@ func Delete(id string) error {
 
 // newTodo creates a new Todo item, helper function to Add
 func newTodo(msg string) Todo {
-	// TODO: Get UID
-	return Todo{
+	return Todo {
 		ID:       xid.New().String(),
-		User_ID:  "1005",
+		User_ID:  curr_uid,
 		Message:  msg,
 		Complete: false,
 	}

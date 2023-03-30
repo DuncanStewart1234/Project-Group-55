@@ -11,7 +11,7 @@ The page includes news and weather API integration.
 - Schedule (Sprint 2) w/ maps API (Sprint 3)
 - Weather API (Sprint 3)
 - News API (Sprint 3)
-- User Login (Sprint 4) 
+- User Login (Sprint 4)
 
 Members:
 1. Duncan Stewart (Frontend)

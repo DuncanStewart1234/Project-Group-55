@@ -16,14 +16,15 @@ var (
 	db   *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
+	curr_uid int
 )
 
 // Note is a struct that holds info needed for notes list
 type Note struct {
 	gorm.Model
 	ID      string `json:"id"`
-	User_ID string `json:"uid"`
-	Title   string `json:"title"`
+	User_ID int    `json:"uid"`
+	Title   string `json:"title" gorm:"size:256"`
 	Message string `json:"message"`
 }
 
@@ -35,6 +36,8 @@ func init() {
 // initialiseList creates the notes list and calls initDatabase
 func initialiseList() {
 	list = []Note{}
+	// TODO: GET UID
+	curr_uid = 1005
 	initDatabase()
 }
 
@@ -44,7 +47,7 @@ func initDatabase() {
 
 	db.AutoMigrate(&Note{})
 
-	result := db.Find(&list)
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
@@ -56,23 +59,27 @@ func Get() []Note {
 }
 
 // Add creates and adds a note to the notes list
-func Add(title string, message string) string {
-	t := newNote(title, message)
+func Add(title string, message string) (string, error) {
 	mtx.Lock()
+	err := utils.CheckIfEmptyOrTooLong(title)
+	if err != nil {
+		return "", err
+	}
+
+	t := newNote(title, message)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
-	return t.ID
+	return t.ID, nil
 }
 
 // Edit finds a note in the list and edits its message
-func Edit(id string, new_msg string) error {
-	// TODO: Allow for title edit
+func Edit(id string, new_title string, new_msg string) error {
 	location, err := findNoteLocation(id)
 	if err != nil {
 		return err
 	}
-	editNoteByLocation(location, new_msg)
+	editNoteByLocation(location, new_title, new_msg)
 	db.Save(&list[location])
 	return nil
 }
@@ -90,10 +97,9 @@ func Delete(id string) error {
 
 // newNote is a helper function to Add
 func newNote(title string, msg string) Note {
-	// TODO: Get UID
-	return Note{
+	return Note {
 		ID:      xid.New().String(),
-		User_ID: "1005",
+		User_ID: curr_uid,
 		Title:   title,
 		Message: msg,
 	}
@@ -119,8 +125,9 @@ func removeElementByLocation(i int) {
 }
 
 // editNoteByLocation is a helper function to Edit
-func editNoteByLocation(location int, msg string) {
+func editNoteByLocation(location int, title string, msg string) {
 	mtx.Lock()
+	list[location].Title = title
 	list[location].Message = msg
 	mtx.Unlock()
 }

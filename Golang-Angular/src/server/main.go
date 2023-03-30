@@ -11,6 +11,26 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+	// Weather API
+	r.GET("/weather/forecast", handlers.GetWeatherForecastHandler)
+	r.GET("/weather", handlers.GetWeatherHandler)
+
+	// Users REST API
+	r.GET("/users", handlers.GetUsersHandler)
+	r.POST("/users", handlers.AddUsersHandler)
+	r.DELETE("/users/:uid", handlers.DeleteUsersHandler)
+
+	// Schedules REST API
+	r.GET("/schedule", handlers.GetSchedulesHandler)
+	r.POST("/schedule", handlers.AddSchedulesHandler)
+	r.DELETE("/schedule/:id", handlers.DeleteSchedulesHandler)
+
+	// Course REST API
+	r.GET("/course", handlers.GetClassesHandler)
+	r.POST("/course", handlers.AddClassHandler)
+	r.DELETE("/course/:id", handlers.DeleteClassHandler)
+	// r.PUT("/course", handlers.EditClassHandler)
+
 	// Notes REST API
 	r.GET("/notes", handlers.GetNotesHandler)
 	r.POST("/notes", handlers.AddNotesHandler)

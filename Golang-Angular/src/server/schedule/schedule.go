@@ -16,13 +16,14 @@ var (
 	db   *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
+	curr_uid int
 )
 
 // StudentSchedule is the struct used to create a class schedule
 type StudentSchedule struct {
 	gorm.Model
 	ID       string `json:"id"`
-	User_ID  string `json:"uid"`
+	User_ID  int `json:"uid"`
 	Class_ID string `json:"cid"`
 }
 
@@ -34,6 +35,8 @@ func init() {
 // initialiseList creates the schedule array and calls initDatabase
 func initialiseList() {
 	list = []StudentSchedule{}
+	// TODO: Get curr user uid
+	curr_uid = 1005
 	initDatabase()
 }
 
@@ -43,8 +46,7 @@ func initDatabase() {
 
 	db.AutoMigrate(&StudentSchedule{})
 
-	// TODO: Get only curr user elements
-	result := db.Find(&list)
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
@@ -57,11 +59,9 @@ func Get() []StudentSchedule {
 
 // Add creates and adds a class to the schedule
 func Add(cid string) (string, error) {
-	t := newStudentSchedule(cid)
-	if cid == "" {
-		return "", errors.New("message cannot be empty")
-	}
+	// TODO: Check if cid in ClassDB
 	mtx.Lock()
+	t := newStudentSchedule(cid)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
@@ -74,7 +74,6 @@ func Delete(id string) error {
 	if err != nil {
 		return err
 	}
-	// TODO: Get UID
 	db.Where("ID = ?", list[location].ID).Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
@@ -82,10 +81,9 @@ func Delete(id string) error {
 
 // newStudentSchedule is a helper function to Add
 func newStudentSchedule(cid string) StudentSchedule {
-	// TODO: Get UID
 	return StudentSchedule{
 		ID:       xid.New().String(),
-		User_ID:  "1005",
+		User_ID:  curr_uid,
 		Class_ID: cid,
 	}
 }

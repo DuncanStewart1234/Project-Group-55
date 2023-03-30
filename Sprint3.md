@@ -104,21 +104,21 @@ FrontEnd Unit Tests:
 
     import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-    import { WeatherWidgetMainComponent } from './weather.component';
+    import { WeatherComponent } from './weather.component';
 
-    describe('WeatherWidgetMainComponent', () => {
-      let component: WeatherWidgetMainComponent;
-      let fixture: ComponentFixture<WeatherWidgetMainComponent>;
+    describe('WeatherComponent', () => {
+      let component: WeatherComponent;
+      let fixture: ComponentFixture<WeatherComponent>;
 
       beforeEach(async(() => {
         TestBed.configureTestingModule({
-          declarations: [ WeatherWidgetMainComponent ]
+          declarations: [ WeatherComponent ]
         })
         .compileComponents();
       }));
 
       beforeEach(() => {
-        fixture = TestBed.createComponent(WeatherWidgetMainComponent);
+        fixture = TestBed.createComponent(WeatherComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
       });
@@ -129,6 +129,144 @@ FrontEnd Unit Tests:
     });
     
 ---
+
+    import { ComponentFixture, TestBed } from '@angular/core/testing';
+    import { MapComponent } from './map.component';
+
+    import {HttpClientModule} from '@angular/common/http';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { FormsModule } from '@angular/forms';
+    import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+
+    describe('MapComponent', () => {
+      let component: MapComponent;
+      let fixture: ComponentFixture<MapComponent>;
+
+      beforeEach(async () => {
+       TestBed.configureTestingModule({
+          declarations: [
+             MapComponent
+          ],
+          imports: [HttpClientModule, FormsModule, BrowserModule, LeafletModule],
+       }).compileComponents();
+
+        fixture = TestBed.createComponent(MapComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+      it('should create', () => {
+        expect(component).toBeTruthy();
+      });
+
+    });
+    
+---
+
+    import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+    import { EventComponent } from './event.component';
+    import { MapComponent } from '../map/map.component';
+    import {FullCalendarModule} from '@fullcalendar/angular';
+    import {HttpClientModule} from '@angular/common/http';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { FormsModule } from '@angular/forms';
+    import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+
+    describe('EventComponent', () => {
+      let component: EventComponent;
+      let fixture: ComponentFixture<EventComponent>;
+
+      beforeEach(async () => {
+        await TestBed.configureTestingModule({
+          declarations: [ EventComponent, MapComponent ],
+          imports: [HttpClientModule, FormsModule, BrowserModule, FullCalendarModule, LeafletModule],
+        })
+        .compileComponents();
+
+        fixture = TestBed.createComponent(EventComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+
+      it('should create', () => {
+        expect(component).toBeTruthy();
+      });
+    });
+
+---
+
+    import { TestBed } from '@angular/core/testing';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { NgModule } from '@angular/core';
+
+    import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+    import { AppComponent } from './app.component';
+    import { DatetimeComponent } from './datetime/datetime.component';
+    import { TodoComponent } from './todo/todo.component';
+    import { NoteComponent } from './note/note.component';
+
+    import { TodoService } from './todo.service';
+    import { NoteService } from './note.service';
+    import { FormsModule } from '@angular/forms';
+    import { MapComponent } from './map/map.component';
+
+
+    import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+    import { EventComponent } from './event/event.component';
+    import { EventService } from './event.service';
+    // import "leaflet/dist/leaflet.css";
+
+    import { FullCalendarModule } from '@fullcalendar/angular';
+
+    import { WeatherComponent } from './weather/weather.component';
+
+    describe('AppComponent', () => {
+      beforeEach(async () => {
+        await TestBed.configureTestingModule({
+          declarations: [
+            AppComponent,
+            DatetimeComponent,
+            TodoComponent,
+            MapComponent,
+            NoteComponent,
+            EventComponent,
+            WeatherComponent
+          ],
+          imports: [
+            BrowserModule,
+            FormsModule,
+            HttpClientModule,
+            LeafletModule,
+            FullCalendarModule,
+          ],
+          providers: [TodoService, NoteService, EventService],
+        }).compileComponents();
+      });
+
+      // it('should create the app', () => {
+      //   const fixture = TestBed.createComponent(AppComponent);
+      //   const app = fixture.componentInstance;
+      //   expect(app).toBeTruthy();
+      // });
+
+      // it(`should have as title 'ui'`, () => {
+      //   const fixture = TestBed.createComponent(AppComponent);
+      //   const app = fixture.componentInstance;
+      //   expect(app.title).toEqual('ui');
+      // });
+
+      it('should render title', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        const compiled = fixture.nativeElement as HTMLElement;
+        expect(compiled.querySelector('.content h2')?.textContent).toContain('Todos');
+      });
+    });
+
+---
+
   Cypress:
   
     We tested the addition of the Todos button widget and if the textbox along with it worked

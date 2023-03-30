@@ -430,6 +430,54 @@ func GetDB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetDB(path string) *gorm.DB`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetDB returns the specified database for use in other packages  
 
+### Package **weather**
+
+import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/weather"
+
+Overview:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This is a package using the openweathermap API to get local weather conditions  
+
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constants  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetForecast(where string, unit string, lang string) string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetWeather(where string, unit string, lang string) string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Data  
+Package files:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weather.go  
+
+Constants  
+URL is a constant that contains where to find the user IP info  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`const URL = "http://ip-api.com/json"`  
+func GetForecast  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetForecast(where string, unit string, lang string) string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetForecast gets the five day weather forecast at the location provided with a specified language and specified units.  
+
+func GetWeather  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetWeather(where string, unit string, lang string) string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetWeather gets the current weather at the location provided with a specified language and specified units.  
+
+type Data  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data will hold the result of the query to get the IP address of the caller.  
+
+type Data struct {
+    Status      string  `json:"status"`
+    Country     string  `json:"country"`
+    CountryCode string  `json:"countryCode"`
+    Region      string  `json:"region"`
+    RegionName  string  `json:"regionName"`
+    City        string  `json:"city"`
+    Zip         string  `json:"zip"`
+    Lat         float64 `json:"lat"`
+    Lon         float64 `json:"lon"`
+    Timezone    string  `json:"timezone"`
+    ISP         string  `json:"isp"`
+    ORG         string  `json:"org"`
+    AS          string  `json:"as"`
+    Message     string  `json:"message"`
+    Query       string  `json:"query"`
+}
+
+
 # Backend Unit Tests
 
     func TestDB(t *testing.T) {

@@ -26,3 +26,4 @@
 * Todo list implemented with "completion" and "deletion" capabilities. Connected to SQLite to maintain persistant tasks.
 
 ## Issues that were not completed and why:
+* All issues we planned to address in this sprint were completed.

@@ -2,9 +2,11 @@
 package utils
 
 import (
+	"errors"
+
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"errors"
 )
 
 // GetDB returns the specified database for use in other packages
@@ -22,4 +24,13 @@ func CheckIfEmptyOrTooLong(msg string) (error) {
 	}
 
 	return nil
+}
+
+func HashPasswrd(password string) []byte {
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		panic("failed to hash password")
+	}
+
+	return hashedPass
 }

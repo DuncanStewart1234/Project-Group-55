@@ -133,9 +133,9 @@ func DeleteSchedulesHandler(c *gin.Context) {
 
 
 // Users Handlers
-func GetUsersHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, user.Get())
-}
+// func GetUsersHandler(c *gin.Context) {
+// 	c.JSON(http.StatusOK, user.Get())
+// }
 
 func AddUsersHandler(c *gin.Context) {
 	item, statusCode, err := convertHTTPBodyToUser(c.Request.Body)
@@ -144,7 +144,7 @@ func AddUsersHandler(c *gin.Context) {
 		return
 	}
 
-	uid, _ := user.Add(item.First_Name, item.Last_Name)
+	uid, _ := user.Add(item.First_Name, item.Last_Name, item.User_Name, item.Email, string(item.Password))
 	c.JSON(statusCode, gin.H{"uid": uid})
 }
 
@@ -216,16 +216,16 @@ func GetLoginHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
-func AddLoginHandler(c *gin.Context) {
-	item, statusCode, err := convertHTTPBodyToLoginRequest(c.Request.Body)
-	if err != nil {
-		c.JSON(statusCode, err)
-		return
-	}
+// func AddLoginHandler(c *gin.Context) {
+// 	item, statusCode, err := convertHTTPBodyToLoginRequest(c.Request.Body)
+// 	if err != nil {
+// 		c.JSON(statusCode, err)
+// 		return
+// 	}
 
-	cid, _ := course.AddCal(item.Title, item.ExtendedProps, item.Start, item.End)
-	c.JSON(statusCode, gin.H{"cid": cid})
-}
+// 	cid, _ := course.AddCal(item.Title, item.ExtendedProps, item.Start, item.End)
+// 	c.JSON(statusCode, gin.H{"cid": cid})
+// }
 
 // User Signup Handlers
 func GetSignupHandler(c *gin.Context) {

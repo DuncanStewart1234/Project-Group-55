@@ -15,8 +15,8 @@ import (
 
 type UserType int
 const (
-	Admin   UserType = 0
-	Student UserType = 1
+	Student UserType = 0
+	Admin   UserType = 1
 )
 
 var (
@@ -30,11 +30,14 @@ var (
 // User is the struct used in this package to contain info about the User of this application
 type User struct {
 	gorm.Model
-	ID         uint
-	User_ID    int    	`json:"uid" gorm:"primaryKey"`
-	First_Name string 	`json:"first"`
-	Last_Name  string 	`json:"last"`
-	Type       UserType `json:"utype"`
+	ID         	uint
+	User_ID    	int   		`json:"uid" gorm:"primaryKey"`
+	First_Name 	string		`json:"first"`
+	Last_Name  	string		`json:"last"`
+	Email 	   	string		`json:"email"`
+	User_Name  	string		`json:"uname"`
+	Password	[]byte		`json:"hash"`
+	Type       	UserType	`json:"utype"`
 }
 
 // init is a constructor that calls initialiseList
@@ -45,7 +48,7 @@ func init() {
 
 // initialiseList creates the list of Users in this package and calls initDatabase
 func initialiseList() {
-	list = []User{}
+	// list = []User{}
 	initDatabase()
 }
 
@@ -55,26 +58,27 @@ func initDatabase() {
 
 	db.AutoMigrate(&User{})
 
-	// TODO: Return only curr user
-	result := db.Find(&list)
-	if result.Error != nil {
-		panic("failed to connect database")
-	}
+	// // TODO: Return only curr user
+	// result := db.Find(&list)
+	// if result.Error != nil {
+	// 	panic("failed to connect database")
+	// }
 }
 
 // Get returns the list of Users in this package when called
-func Get() []User {
-	return list
-}
+// func Get() []User {
+// 	return list
+// }
 
 // Add creates and stores a new User in the list and database
-func Add(fname string, lname string) (int, error) {
+func Add(fname string, lname string, uname string, email string, pass string) (int, error) {
 	mtx.Lock()
 	if fname == "" || lname == "" {
 		return 0, errors.New("name cannot be empty")
 	}
-	t := newUser(fname, lname)
-	list = append(list, t)
+	// TODO: Check if email/username already in database
+	t := newUser(fname, lname, uname, email, pass)
+	// list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
 	return t.User_ID, nil
@@ -94,11 +98,15 @@ func Delete(uid string) error {
 }
 
 // newUser is a helper function to Add
-func newUser(fname string, lname string) User {
+func newUser(fname string, lname string, uname string, email string, pass string) User {
 	return User{
 		User_ID:    r.Intn(89999999) + 10000000,
 		First_Name: fname,
 		Last_Name:  lname,
+		Email: email,
+		User_Name: uname,
+		Password: utils.HashPasswrd(pass),
+		Type: Student,
 	}
 }
 

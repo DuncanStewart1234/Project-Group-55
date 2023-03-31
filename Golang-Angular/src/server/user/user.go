@@ -6,7 +6,7 @@ import (
 	"sync"
 	"math/rand"
 	"time"
-	"strconv"
+	// "strconv"
 
 	"gorm.io/gorm"
 
@@ -20,7 +20,8 @@ const (
 )
 
 var (
-	list []User
+	// list []User
+	curr_user User
 	db   *gorm.DB
 	mtx  sync.RWMutex
 	once sync.Once
@@ -32,11 +33,11 @@ type User struct {
 	gorm.Model
 	ID         	uint
 	User_ID    	int   		`json:"uid" gorm:"primaryKey"`
-	First_Name 	string		`json:"first"`
-	Last_Name  	string		`json:"last"`
-	Email 	   	string		`json:"email"`
-	User_Name  	string		`json:"uname"`
-	Password	[]byte		`json:"hash"`
+	First_Name 	string		`json:"first" gorm:"not null"`
+	Last_Name  	string		`json:"last" gorm:"not null"`
+	Email 	   	string		`json:"email" gorm:"not null"`
+	User_Name  	string		`json:"uname" gorm:"not null;unique"`
+	Password	[]byte		`json:"password" gorm:"not null"`
 	Type       	UserType	`json:"utype"`
 }
 
@@ -84,18 +85,36 @@ func Add(fname string, lname string, uname string, email string, pass string) (i
 	return t.User_ID, nil
 }
 
+func Login(uname string, passwd string) (string, error) {
+	result := db.Where("User_Name = ", uname).Take(&curr_user)
+	if result.Error != nil {
+		return "", result.Error
+	}
+	
+	hashErr := utils.CheckHashedPasswrd(passwd, curr_user.Password)
+	if hashErr != nil {
+		return "", hashErr
+	}
+	
+	token, tokenErr := utils.GenerateToken(curr_user.User_ID)
+	if tokenErr != nil {
+		return "", tokenErr
+	}
+
+	return token, nil
+}
 //TODO: Add Edit Function
 
 // Delete removes a User from the list and deletes them from the database
-func Delete(uid string) error {
-	location, err := findUserLocation(uid)
-	if err != nil {
-		return err
-	}
-	db.Where("User_ID = ?", list[location].User_ID).Delete(&list[location])
-	removeElementByLocation(location)
-	return nil
-}
+// func Delete(uid string) error {
+// 	location, err := findUserLocation(uid)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	db.Where("User_ID = ?", list[location].User_ID).Delete(&list[location])
+// 	removeElementByLocation(location)
+// 	return nil
+// }
 
 // newUser is a helper function to Add
 func newUser(fname string, lname string, uname string, email string, pass string) User {
@@ -104,30 +123,30 @@ func newUser(fname string, lname string, uname string, email string, pass string
 		First_Name: fname,
 		Last_Name:  lname,
 		Email: email,
-		User_Name: uname,
+		User_Name: utils.Fix_Username(uname),
 		Password: utils.HashPasswrd(pass),
 		Type: Student,
 	}
 }
 
 // findUserLocation is a helper function to Delete
-func findUserLocation(uid string) (int, error) {
-	mtx.RLock()
-	defer mtx.RUnlock()
-	for i, t := range list {
-		if strconv.Itoa(t.User_ID) == uid {
-			return i, nil
-		}
-	}
-	return 0, errors.New("could not find user based on uid")
-}
+// func findUserLocation(uid string) (int, error) {
+// 	mtx.RLock()
+// 	defer mtx.RUnlock()
+// 	for i, t := range list {
+// 		if strconv.Itoa(t.User_ID) == uid {
+// 			return i, nil
+// 		}
+// 	}
+// 	return 0, errors.New("could not find user based on uid")
+// }
 
 // removeElementByLocation is a helper function to Delete
-func removeElementByLocation(i int) {
-	mtx.Lock()
-	list = append(list[:i], list[i+1:]...)
-	mtx.Unlock()
-}
+// func removeElementByLocation(i int) {
+// 	mtx.Lock()
+// 	list = append(list[:i], list[i+1:]...)
+// 	mtx.Unlock()
+// }
 
 // func editUserByLocation(location int, fname string, lname string) {
 // 	mtx.Lock()

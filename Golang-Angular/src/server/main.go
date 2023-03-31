@@ -12,12 +12,12 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	// User Account Signup
-	// r.GET("/signup", handlers.GetUsersHandler)
+	r.GET("/signup", handlers.GetSignupHandler)
 	r.POST("/signup", handlers.AddUsersHandler)
 	
 	// User Account Login
 	r.GET("/login", handlers.GetLoginHandler)
-	// r.POST("/login", handlers.AddLoginHandler)
+	r.POST("/login", handlers.LoginHandler)
 
 
 	// Weather API
@@ -28,7 +28,7 @@ func main() {
 	// Users REST API
 	// r.GET("/users", handlers.GetUsersHandler)
 	r.POST("/users", handlers.AddUsersHandler)
-	r.DELETE("/users/:uid", handlers.DeleteUsersHandler)
+	// r.DELETE("/users/:uid", handlers.DeleteUsersHandler)
 
 	// Schedules REST API
 	r.GET("/schedule", handlers.GetSchedulesHandler)

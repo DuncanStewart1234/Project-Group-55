@@ -148,15 +148,14 @@ func AddUsersHandler(c *gin.Context) {
 	c.JSON(statusCode, gin.H{"uid": uid})
 }
 
-func DeleteUsersHandler(c *gin.Context) {
-	id := c.Param("uid")
-	if err := user.Delete(id); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-	c.JSON(http.StatusOK, "user deleted successfully")
-}
-
+// func DeleteUsersHandler(c *gin.Context) {
+// 	id := c.Param("uid")
+// 	if err := user.Delete(id); err != nil {
+// 		c.JSON(http.StatusInternalServerError, err)
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, "user deleted successfully")
+// }
 
 
 // Class Handlers
@@ -216,16 +215,17 @@ func GetLoginHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
-// func AddLoginHandler(c *gin.Context) {
-// 	item, statusCode, err := convertHTTPBodyToLoginRequest(c.Request.Body)
-// 	if err != nil {
-// 		c.JSON(statusCode, err)
-// 		return
-// 	}
+func LoginHandler(c *gin.Context) {
+	var input LoginInput
 
-// 	cid, _ := course.AddCal(item.Title, item.ExtendedProps, item.Start, item.End)
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+
 // 	c.JSON(statusCode, gin.H{"cid": cid})
-// }
+}
 
 // User Signup Handlers
 func GetSignupHandler(c *gin.Context) {
@@ -233,6 +233,13 @@ func GetSignupHandler(c *gin.Context) {
 }
 
 func AddSignupHandler(c *gin.Context) {
+	var input RegisterInput
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
@@ -290,6 +297,18 @@ func convertHTTPBodyToUser(httpBody io.ReadCloser) (user.User, int, error) {
 	defer httpBody.Close()
 	return convertJSONBodyToUser(body)
 }
+
+// TODO: Fix types
+// func convertHTTPBodyToLoginRequest(httpBody io.ReadCloser) (user.User, int, error) {
+// 	body, err := ioutil.ReadAll(httpBody)
+// 	if err != nil {
+// 		return user.User{}, http.StatusInternalServerError, err
+// 	}
+// 	defer httpBody.Close()
+// 	return convertJSONBodyToUser(body)
+// }
+
+
 
 // JSON to Struct Objects
 func convertJSONBodyToTodo(jsonBody []byte) (todo.Todo, int, error) {
@@ -353,4 +372,17 @@ type CalClass struct {
 	Start string `json:"start"`
 	End string `json:"end"`
 	ExtendedProps string `json:"extendedProps"`
+}
+
+type RegisterInput struct {
+	First_Name string `json:"first" binding:"required"`
+	Last_Name string `json:"last" binding:"required"`
+	Email string `json:"email" binding:"required"`
+	User_Name string `json:"uname" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type LoginInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }

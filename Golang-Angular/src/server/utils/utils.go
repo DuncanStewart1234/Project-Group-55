@@ -3,13 +3,17 @@ package utils
 
 import (
 	"errors"
+	"html"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 // GetDB returns the specified database for use in other packages
+// TODO: Try setting environemnt variables
 func GetDB(path string) *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 	if err != nil {
@@ -26,6 +30,10 @@ func CheckIfEmptyOrTooLong(msg string) (error) {
 	return nil
 }
 
+func Fix_Username(uname string) (string) {
+	return html.EscapeString(strings.TrimSpace(uname))
+}
+
 func HashPasswrd(password string) []byte {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -33,4 +41,12 @@ func HashPasswrd(password string) []byte {
 	}
 
 	return hashedPass
+}
+
+func CheckHashedPasswrd(password string, hash []byte) (error) {
+	return bcrypt.CompareHashAndPassword(hash, []byte(password))
+}
+
+func GenerateToken(uid int) (string, error) {
+	return "", nil
 }

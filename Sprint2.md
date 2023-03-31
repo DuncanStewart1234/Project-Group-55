@@ -4,7 +4,7 @@
   
     We've completed notes widget and are continuing to work on the schedule widget and will integrate it to the backend in the upcoming sprint.
     
-    While also having addition unexpected additions with a dark mode to the overall design.
+    While also having additional unexpected additions with a dark mode to the overall design.
     
   Backend:
 
@@ -14,13 +14,104 @@
   
   Unit Tests:
   
-    If they're able to see the Todo widget
+    import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+    import { TodoService } from '../todo.service';
+    import { TodoComponent } from './todo.component';
+
+    import {HttpClientModule} from '@angular/common/http';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { FormsModule } from '@angular/forms';
+
+    describe('TodoComponent', () => {
+      let component: TodoComponent;
+      let fixture: ComponentFixture<TodoComponent>;
+
+      beforeEach(async () => {
+        await TestBed.configureTestingModule({
+          declarations: [ TodoComponent ],
+          imports: [HttpClientModule, FormsModule, BrowserModule],
+          providers: [TodoService]
+        })
+        .compileComponents();
+
+        fixture = TestBed.createComponent(TodoComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+
+      it('should create', () => {
+        expect(component).toBeTruthy();
+      });
+
+      // it('should create', () => {
+      //   expect(fixture.title).toEqual('app-todo');
+      // });
+    });
+---
     
-    Able to see the date and time
+    import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+    import { DatetimeComponent } from './datetime.component';
+
+    import {HttpClientModule} from '@angular/common/http';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { FormsModule } from '@angular/forms';
+
+
+    describe('DatetimeComponent', () => {
+      let component: DatetimeComponent;
+      let fixture: ComponentFixture<DatetimeComponent>;
+
+      beforeEach(async () => {
+        await TestBed.configureTestingModule({
+          declarations: [ DatetimeComponent ],
+          imports: [HttpClientModule, FormsModule, BrowserModule]
+        })
+        .compileComponents();
+
+        fixture = TestBed.createComponent(DatetimeComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+
+      it('should create', () => {
+        expect(component).toBeTruthy();
+      });
+    });
+---
     
-    Able to see the map
-    
-    Able to see the Note Widget
+    import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+    import { NoteComponent } from './note.component';
+    import { NoteService } from '../note.service';
+
+    import {HttpClientModule} from '@angular/common/http';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { FormsModule } from '@angular/forms';
+
+    describe('NoteComponent', () => {
+      let component: NoteComponent;
+      let fixture: ComponentFixture<NoteComponent>;
+
+      beforeEach(async () => {
+        await TestBed.configureTestingModule({
+          declarations: [ NoteComponent ],
+          imports: [HttpClientModule, FormsModule, BrowserModule],
+          providers: [NoteService]
+        })
+        .compileComponents();
+
+        fixture = TestBed.createComponent(NoteComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+
+      it('should create', () => {
+        expect(component).toBeTruthy();
+      });
+    });
+---
     
   Cypress:
   

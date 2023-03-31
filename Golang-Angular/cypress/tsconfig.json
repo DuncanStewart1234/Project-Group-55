@@ -1,0 +1,22 @@
+// {
+//   "extends": "../tsconfig.json",
+//   "include": ["**/*.ts"],
+//   "compilerOptions": {
+//     "sourceMap": false,
+//     "types": ["cypress"]
+//   }
+// }
+
+
+{
+  "extends": "../tsconfig.json",
+  "include": [
+    "../node_modules/cypress",
+    "*/*.ts"
+  ],
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true
+  }
+}

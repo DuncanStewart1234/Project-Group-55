@@ -4,19 +4,18 @@ package handlers
 import (
 	"encoding/json"
 	"io"
+	// TODO: Update
 	"io/ioutil"
 	"net/http"
 
-	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
-	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/schedule"
-	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"
-	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/schedule"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/weather"
 	"github.com/gin-gonic/gin"
 )
-
-
 
 // To Do Handlers
 // GetTodoListHandler is a handler to request the todo list from the Todo package
@@ -127,35 +126,45 @@ func DeleteSchedulesHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
 	c.JSON(http.StatusOK, "schedule deleted successfully")
 }
 
 
 
 // Users Handlers
-// func GetUsersHandler(c *gin.Context) {
-// 	c.JSON(http.StatusOK, user.Get())
-// }
-
-func AddUsersHandler(c *gin.Context) {
+func SignupHandler(c *gin.Context) {
 	item, statusCode, err := convertHTTPBodyToUser(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
-	}
+	}	
 
 	uid, _ := user.Add(item.First_Name, item.Last_Name, item.User_Name, item.Email, string(item.Password))
 	c.JSON(statusCode, gin.H{"uid": uid})
 }
 
-// func DeleteUsersHandler(c *gin.Context) {
-// 	id := c.Param("uid")
-// 	if err := user.Delete(id); err != nil {
-// 		c.JSON(http.StatusInternalServerError, err)
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, "user deleted successfully")
-// }
+func LoginHandler(c *gin.Context) {
+	var input LoginInput
+	
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error2": err.Error()})
+		return
+	}
+	
+	
+	// 	c.JSON(statusCode, gin.H{"cid": cid})
+}
+
+func DeleteUsersHandler(c *gin.Context) {
+	id := c.Param("uid")
+	if err := user.Delete(id); err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, "user deleted successfully")
+}
+
 
 
 // Class Handlers
@@ -210,48 +219,6 @@ func GetWeatherForecastHandler(c *gin.Context) {
 
 
 
-// User Login Handlers
-func GetLoginHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, nil)
-}
-
-func LoginHandler(c *gin.Context) {
-	var input LoginInput
-
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-
-// 	c.JSON(statusCode, gin.H{"cid": cid})
-}
-
-// User Signup Handlers
-func GetSignupHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, nil)
-}
-
-func AddSignupHandler(c *gin.Context) {
-	var input RegisterInput
-
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
-	if err != nil {
-		c.JSON(statusCode, err)
-		return
-	}
-
-	cid, _ := course.AddCal(item.Title, item.ExtendedProps, item.Start, item.End)
-	c.JSON(statusCode, gin.H{"cid": cid})
-}
-
-
-
 // HTTP To Class Objects
 func convertHTTPBodyToTodo(httpBody io.ReadCloser) (todo.Todo, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
@@ -289,10 +256,10 @@ func convertHTTPBodyToSchedule(httpBody io.ReadCloser) (schedule.StudentSchedule
 	return convertJSONBodyToSchedule(body)
 }
 
-func convertHTTPBodyToUser(httpBody io.ReadCloser) (user.User, int, error) {
+func convertHTTPBodyToUser(httpBody io.ReadCloser) (RegisterInput, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
-		return user.User{}, http.StatusInternalServerError, err
+		return RegisterInput{}, http.StatusInternalServerError, err
 	}
 	defer httpBody.Close()
 	return convertJSONBodyToUser(body)
@@ -347,11 +314,11 @@ func convertJSONBodyToSchedule(jsonBody []byte) (schedule.StudentSchedule, int, 
 	return item, http.StatusOK, nil
 }
 
-func convertJSONBodyToUser(jsonBody []byte) (user.User, int, error) {
-	var item user.User
+func convertJSONBodyToUser(jsonBody []byte) (RegisterInput, int, error) {
+	var item RegisterInput
 	err := json.Unmarshal(jsonBody, &item)
 	if err != nil {
-		return user.User{}, http.StatusBadRequest, err
+		return RegisterInput{}, http.StatusBadRequest, err
 	}
 	return item, http.StatusOK, nil
 }
@@ -375,12 +342,19 @@ type CalClass struct {
 }
 
 type RegisterInput struct {
-	First_Name string `json:"first" binding:"required"`
-	Last_Name string `json:"last" binding:"required"`
-	Email string `json:"email" binding:"required"`
-	User_Name string `json:"uname" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	First_Name string `json:"first"`
+	Last_Name string `json:"last"`
+	Email string `json:"email"`
+	User_Name string `json:"uname"`
+	Password string `json:"password"`
 }
+// type RegisterInput struct {
+// 	First_Name string `json:"first" binding:"required"`
+// 	Last_Name string `json:"last" binding:"required"`
+// 	Email string `json:"email" binding:"required"`
+// 	User_Name string `json:"uname" binding:"required"`
+// 	Password string `json:"password" binding:"required"`
+// }
 
 type LoginInput struct {
 	Username string `json:"username" binding:"required"`

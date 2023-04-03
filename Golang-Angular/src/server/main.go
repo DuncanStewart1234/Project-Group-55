@@ -6,19 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	r *gin.Engine
+)
 // main is used to set up the application and implements the API for the todo and notes lists
 func main() {
-	r := gin.Default()
+	r = gin.Default()
 	r.Use(CORSMiddleware())
 
-	// User Account Signup
-	r.GET("/signup", handlers.GetSignupHandler)
-	r.POST("/signup", handlers.AddUsersHandler)
-	
-	// User Account Login
-	r.GET("/login", handlers.GetLoginHandler)
+	// User Account Signup & Login
+	r.POST("/signup", handlers.SignupHandler)
 	r.POST("/login", handlers.LoginHandler)
-
+	r.POST("/:id/delete", handlers.DeleteUsersHandler)
 
 	// Weather API
 	r.GET("/weather/forecast", handlers.GetWeatherForecastHandler)
@@ -27,7 +26,7 @@ func main() {
 	// TODO: Limit to Admin?
 	// Users REST API
 	// r.GET("/users", handlers.GetUsersHandler)
-	r.POST("/users", handlers.AddUsersHandler)
+	// r.POST("/users", handlers.AddUsersHandler)
 	// r.DELETE("/users/:uid", handlers.DeleteUsersHandler)
 
 	// Schedules REST API

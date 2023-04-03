@@ -9,7 +9,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	jwt "github.com/dgrijalva/jwt-go"
 )
 
 // GetDB returns the specified database for use in other packages
@@ -17,7 +16,7 @@ import (
 func GetDB(path string) *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		panic("failed to connect database " + path)
 	}
 	return db
 }
@@ -45,8 +44,4 @@ func HashPasswrd(password string) []byte {
 
 func CheckHashedPasswrd(password string, hash []byte) (error) {
 	return bcrypt.CompareHashAndPassword(hash, []byte(password))
-}
-
-func GenerateToken(uid int) (string, error) {
-	return "", nil
 }

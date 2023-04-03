@@ -6,11 +6,12 @@ import (
 	"sync"
 	"math/rand"
 	"time"
-	// "strconv"
+	"strconv"
 
 	"gorm.io/gorm"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils/token"
 )
 
 type UserType int
@@ -96,7 +97,7 @@ func Login(uname string, passwd string) (string, error) {
 		return "", hashErr
 	}
 	
-	token, tokenErr := utils.GenerateToken(curr_user.User_ID)
+	token, tokenErr := token.GenerateToken(curr_user.User_ID)
 	if tokenErr != nil {
 		return "", tokenErr
 	}
@@ -106,15 +107,14 @@ func Login(uname string, passwd string) (string, error) {
 //TODO: Add Edit Function
 
 // Delete removes a User from the list and deletes them from the database
-// func Delete(uid string) error {
-// 	location, err := findUserLocation(uid)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	db.Where("User_ID = ?", list[location].User_ID).Delete(&list[location])
-// 	removeElementByLocation(location)
-// 	return nil
-// }
+func Delete(uid string) error {
+	uidValue, err := strconv.Atoi(uid)
+	if err != nil || uidValue != curr_user.User_ID {
+		return errors.New("cannot delete this account")
+	}
+	db.Where("User_ID = ?", curr_user.User_ID).Delete(&curr_user)
+	return nil
+}
 
 // newUser is a helper function to Add
 func newUser(fname string, lname string, uname string, email string, pass string) User {

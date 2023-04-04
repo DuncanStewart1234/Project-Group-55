@@ -136,3 +136,7 @@ func newUser(fname string, lname string, uname string, email string, pass string
 		Type:		Student,
 	}
 }
+
+func GetUID() (int) {
+	return curr_user.User_ID
+}

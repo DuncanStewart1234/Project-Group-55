@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
 	"github.com/rs/xid"
 )
 
@@ -36,8 +37,7 @@ func init() {
 // initialiseList creates the notes list and calls initDatabase
 func initialiseList() {
 	list = []Note{}
-	// TODO: GET UID
-	curr_uid = 1005
+	curr_uid = user.GetUID()
 	initDatabase()
 }
 

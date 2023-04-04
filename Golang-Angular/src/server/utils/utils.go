@@ -12,7 +12,6 @@ import (
 )
 
 // GetDB returns the specified database for use in other packages
-// TODO: Try setting environemnt variables
 func GetDB(path string) *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 	if err != nil {

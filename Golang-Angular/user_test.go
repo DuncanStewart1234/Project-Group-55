@@ -24,9 +24,26 @@ func TestUserAdd(t *testing.T) {
 	}
 }
 
-// func TestUserDelete(t *testing.T) {
-// 	err := user.Delete("419705")
-// 	if err != nil {
-// 		t.Errorf("error with delete function")
-// 	}
-// }
+func TestUserDelete(t *testing.T) {
+	err := user.Delete("419705")
+	if err != nil {
+		t.Errorf("error with delete function")
+	}
+}
+
+func TestUserLogin(t *testing.T) {
+	uname := "kungfukenny"
+	passwd := "evilsoflucy"
+	token, err := user.Login(uname, passwd)
+	if err != nil || token == "" {
+		t.Errorf("error with login function")
+	}
+	
+	data := user.Get(uname)
+	if data.First_Name == "" {
+		t.Errorf("error with get function")
+	}
+
+}
+
+

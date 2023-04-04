@@ -3,13 +3,14 @@ package user
 
 import (
 	"errors"
-	"sync"
 	"math/rand"
-	"time"
 	"strconv"
+	"sync"
+	"time"
 
 	"gorm.io/gorm"
 
+	"github.com/joho/godotenv"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils/token"
 )
@@ -27,6 +28,7 @@ var (
 	mtx  sync.RWMutex
 	once sync.Once
 	r *rand.Rand
+	currToken string
 )
 
 // User is the struct used in this package to contain info about the User of this application
@@ -56,6 +58,11 @@ func initialiseList() {
 
 // initDatabase initialises the database for this package
 func initDatabase() {
+	envErr := godotenv.Load("src/server/.env")
+	if envErr != nil {
+		panic(envErr)
+	}
+
 	db = utils.GetDB("src/server/databases/users.db")
 
 	db.AutoMigrate(&User{})
@@ -67,10 +74,14 @@ func initDatabase() {
 	// }
 }
 
-// Get returns the list of Users in this package when called
-// func Get() []User {
-// 	return list
-// }
+func Get(uname string) (User) {
+	returnUser := curr_user
+	if uname != returnUser.User_Name {
+		panic("not correct user")
+	}
+	returnUser.Password = nil
+	return returnUser
+}
 
 // Add creates and stores a new User in the list and database
 func Add(fname string, lname string, uname string, email string, pass string) (int, error) {
@@ -80,14 +91,13 @@ func Add(fname string, lname string, uname string, email string, pass string) (i
 	}
 	// TODO: Check if email/username already in database
 	t := newUser(fname, lname, uname, email, pass)
-	// list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
 	return t.User_ID, nil
 }
 
 func Login(uname string, passwd string) (string, error) {
-	result := db.Where("User_Name = ", uname).Take(&curr_user)
+	result := db.Where("User_Name = ?", uname).Take(&curr_user)
 	if result.Error != nil {
 		return "", result.Error
 	}
@@ -101,7 +111,8 @@ func Login(uname string, passwd string) (string, error) {
 	if tokenErr != nil {
 		return "", tokenErr
 	}
-
+	
+	currToken = token
 	return token, nil
 }
 //TODO: Add Edit Function

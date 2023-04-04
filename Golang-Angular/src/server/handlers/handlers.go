@@ -14,6 +14,8 @@ import (
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/weather"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils/token"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -133,27 +135,43 @@ func DeleteSchedulesHandler(c *gin.Context) {
 
 
 // Users Handlers
+func GetUserHandler (c *gin.Context) {
+	uname := c.Param("user")
+	err := token.TokenValid(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, err)
+		return
+	}	
+
+	c.JSON(http.StatusOK, gin.H{"User": user.Get(uname)})
+
+}
+
 func SignupHandler(c *gin.Context) {
-	item, statusCode, err := convertHTTPBodyToUser(c.Request.Body)
+	item, statusCode, err := convertHTTPBodyToUserSignup(c.Request.Body)
 	if err != nil {
 		c.JSON(statusCode, err)
 		return
 	}	
 
-	uid, _ := user.Add(item.First_Name, item.Last_Name, item.User_Name, item.Email, string(item.Password))
+	uid, _ := user.Add(item.First_Name, item.Last_Name, item.User_Name, item.Email, item.Password)
 	c.JSON(statusCode, gin.H{"uid": uid})
 }
 
 func LoginHandler(c *gin.Context) {
-	var input LoginInput
-	
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error2": err.Error()})
+	item, statusCode, err := convertHTTPBodyToUserLogin(c.Request.Body)
+	if err != nil {
+		c.JSON(statusCode, err)
 		return
-	}
+	}	
 	
-	
-	// 	c.JSON(statusCode, gin.H{"cid": cid})
+	token, err := user.Login(item.Username, item.Password)
+	if err != nil {
+		c.JSON(400, err)
+		return
+	}	
+
+	c.JSON(statusCode, gin.H{"token": token})
 }
 
 func DeleteUsersHandler(c *gin.Context) {
@@ -256,24 +274,23 @@ func convertHTTPBodyToSchedule(httpBody io.ReadCloser) (schedule.StudentSchedule
 	return convertJSONBodyToSchedule(body)
 }
 
-func convertHTTPBodyToUser(httpBody io.ReadCloser) (RegisterInput, int, error) {
+func convertHTTPBodyToUserSignup(httpBody io.ReadCloser) (RegisterInput, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
 	if err != nil {
 		return RegisterInput{}, http.StatusInternalServerError, err
 	}
 	defer httpBody.Close()
-	return convertJSONBodyToUser(body)
+	return convertJSONBodyToUserSignup(body)
 }
 
-// TODO: Fix types
-// func convertHTTPBodyToLoginRequest(httpBody io.ReadCloser) (user.User, int, error) {
-// 	body, err := ioutil.ReadAll(httpBody)
-// 	if err != nil {
-// 		return user.User{}, http.StatusInternalServerError, err
-// 	}
-// 	defer httpBody.Close()
-// 	return convertJSONBodyToUser(body)
-// }
+func convertHTTPBodyToUserLogin(httpBody io.ReadCloser) (LoginInput, int, error) {
+	body, err := ioutil.ReadAll(httpBody)
+	if err != nil {
+		return LoginInput{}, http.StatusInternalServerError, err
+	}
+	defer httpBody.Close()
+	return convertJSONBodyToUserLogin(body)
+}
 
 
 
@@ -314,11 +331,20 @@ func convertJSONBodyToSchedule(jsonBody []byte) (schedule.StudentSchedule, int, 
 	return item, http.StatusOK, nil
 }
 
-func convertJSONBodyToUser(jsonBody []byte) (RegisterInput, int, error) {
+func convertJSONBodyToUserSignup(jsonBody []byte) (RegisterInput, int, error) {
 	var item RegisterInput
 	err := json.Unmarshal(jsonBody, &item)
 	if err != nil {
 		return RegisterInput{}, http.StatusBadRequest, err
+	}
+	return item, http.StatusOK, nil
+}
+
+func convertJSONBodyToUserLogin(jsonBody []byte) (LoginInput, int, error) {
+	var item LoginInput
+	err := json.Unmarshal(jsonBody, &item)
+	if err != nil {
+		return LoginInput{}, http.StatusBadRequest, err
 	}
 	return item, http.StatusOK, nil
 }
@@ -348,15 +374,8 @@ type RegisterInput struct {
 	User_Name string `json:"uname"`
 	Password string `json:"password"`
 }
-// type RegisterInput struct {
-// 	First_Name string `json:"first" binding:"required"`
-// 	Last_Name string `json:"last" binding:"required"`
-// 	Email string `json:"email" binding:"required"`
-// 	User_Name string `json:"uname" binding:"required"`
-// 	Password string `json:"password" binding:"required"`
-// }
 
 type LoginInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

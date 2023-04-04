@@ -22,7 +22,6 @@ const (
 )
 
 var (
-	// list []User
 	curr_user User
 	db   *gorm.DB
 	mtx  sync.RWMutex
@@ -38,7 +37,7 @@ type User struct {
 	User_ID    	int   		`json:"uid" gorm:"primaryKey"`
 	First_Name 	string		`json:"first" gorm:"not null"`
 	Last_Name  	string		`json:"last" gorm:"not null"`
-	Email 	   	string		`json:"email" gorm:"not null"`
+	Email 	   	string		`json:"email" gorm:"not null;unique"`
 	User_Name  	string		`json:"uname" gorm:"not null;unique"`
 	Password	[]byte		`json:"password" gorm:"not null"`
 	Type       	UserType	`json:"utype"`
@@ -52,7 +51,6 @@ func init() {
 
 // initialiseList creates the list of Users in this package and calls initDatabase
 func initialiseList() {
-	// list = []User{}
 	initDatabase()
 }
 
@@ -66,12 +64,6 @@ func initDatabase() {
 	db = utils.GetDB("src/server/databases/users.db")
 
 	db.AutoMigrate(&User{})
-
-	// // TODO: Return only curr user
-	// result := db.Find(&list)
-	// if result.Error != nil {
-	// 	panic("failed to connect database")
-	// }
 }
 
 func Get(uname string) (User) {
@@ -79,6 +71,7 @@ func Get(uname string) (User) {
 	if uname != returnUser.User_Name {
 		panic("not correct user")
 	}
+
 	returnUser.Password = nil
 	return returnUser
 }
@@ -89,9 +82,12 @@ func Add(fname string, lname string, uname string, email string, pass string) (i
 	if fname == "" || lname == "" {
 		return 0, errors.New("name cannot be empty")
 	}
-	// TODO: Check if email/username already in database
+
 	t := newUser(fname, lname, uname, email, pass)
-	db.Create(&t)
+	result := db.Create(&t)
+	if result.Error != nil {
+		return -1, result.Error
+	}
 	mtx.Unlock()
 	return t.User_ID, nil
 }
@@ -115,6 +111,7 @@ func Login(uname string, passwd string) (string, error) {
 	currToken = token
 	return token, nil
 }
+
 //TODO: Add Edit Function
 
 // Delete removes a User from the list and deletes them from the database
@@ -130,38 +127,12 @@ func Delete(uid string) error {
 // newUser is a helper function to Add
 func newUser(fname string, lname string, uname string, email string, pass string) User {
 	return User{
-		User_ID:    r.Intn(89999999) + 10000000,
-		First_Name: fname,
-		Last_Name:  lname,
-		Email: email,
-		User_Name: utils.Fix_Username(uname),
-		Password: utils.HashPasswrd(pass),
-		Type: Student,
+		User_ID:	r.Intn(89999999) + 10000000,
+		First_Name:	fname,
+		Last_Name:	lname,
+		Email:		email,
+		User_Name:	utils.Fix_Username(uname),
+		Password:	utils.HashPasswrd(pass),
+		Type:		Student,
 	}
 }
-
-// findUserLocation is a helper function to Delete
-// func findUserLocation(uid string) (int, error) {
-// 	mtx.RLock()
-// 	defer mtx.RUnlock()
-// 	for i, t := range list {
-// 		if strconv.Itoa(t.User_ID) == uid {
-// 			return i, nil
-// 		}
-// 	}
-// 	return 0, errors.New("could not find user based on uid")
-// }
-
-// removeElementByLocation is a helper function to Delete
-// func removeElementByLocation(i int) {
-// 	mtx.Lock()
-// 	list = append(list[:i], list[i+1:]...)
-// 	mtx.Unlock()
-// }
-
-// func editUserByLocation(location int, fname string, lname string) {
-// 	mtx.Lock()
-// 	list[location].First_Name = fname
-// 	list[location].Last_Name = lname
-// 	mtx.Unlock()
-// }

@@ -4,8 +4,6 @@ package handlers
 import (
 	"encoding/json"
 	"io"
-	// TODO: Update
-	"io/ioutil"
 	"net/http"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"
@@ -259,7 +257,7 @@ func GetWeatherForecastHandler(c *gin.Context) {
 
 // HTTP To Class Objects
 func convertHTTPBodyToTodo(httpBody io.ReadCloser) (todo.Todo, int, error) {
-	body, err := ioutil.ReadAll(httpBody)
+	body, err := io.ReadAll(httpBody)
 	if err != nil {
 		return todo.Todo{}, http.StatusInternalServerError, err
 	}
@@ -268,7 +266,7 @@ func convertHTTPBodyToTodo(httpBody io.ReadCloser) (todo.Todo, int, error) {
 }
 
 func convertHTTPBodyToNote(httpBody io.ReadCloser) (notes.Note, int, error) {
-	body, err := ioutil.ReadAll(httpBody)
+	body, err := io.ReadAll(httpBody)
 	if err != nil {
 		return notes.Note{}, http.StatusInternalServerError, err
 	}
@@ -277,7 +275,7 @@ func convertHTTPBodyToNote(httpBody io.ReadCloser) (notes.Note, int, error) {
 }
 
 func convertHTTPBodyToClass(httpBody io.ReadCloser) (CalClass, int, error) {
-	body, err := ioutil.ReadAll(httpBody)
+	body, err := io.ReadAll(httpBody)
 	if err != nil {
 		return CalClass{}, http.StatusInternalServerError, err
 	}
@@ -286,7 +284,7 @@ func convertHTTPBodyToClass(httpBody io.ReadCloser) (CalClass, int, error) {
 }
 
 func convertHTTPBodyToSchedule(httpBody io.ReadCloser) (schedule.StudentSchedule, int, error) {
-	body, err := ioutil.ReadAll(httpBody)
+	body, err := io.ReadAll(httpBody)
 	if err != nil {
 		return schedule.StudentSchedule{}, http.StatusInternalServerError, err
 	}
@@ -295,7 +293,7 @@ func convertHTTPBodyToSchedule(httpBody io.ReadCloser) (schedule.StudentSchedule
 }
 
 func convertHTTPBodyToUserSignup(httpBody io.ReadCloser) (RegisterInput, int, error) {
-	body, err := ioutil.ReadAll(httpBody)
+	body, err := io.ReadAll(httpBody)
 	if err != nil {
 		return RegisterInput{}, http.StatusInternalServerError, err
 	}
@@ -304,7 +302,7 @@ func convertHTTPBodyToUserSignup(httpBody io.ReadCloser) (RegisterInput, int, er
 }
 
 func convertHTTPBodyToUserLogin(httpBody io.ReadCloser) (LoginInput, int, error) {
-	body, err := ioutil.ReadAll(httpBody)
+	body, err := io.ReadAll(httpBody)
 	if err != nil {
 		return LoginInput{}, http.StatusInternalServerError, err
 	}

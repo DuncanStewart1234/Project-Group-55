@@ -76,6 +76,13 @@ func Get(uname string) (User) {
 	return returnUser
 }
 
+func GetAll() ([]User) {
+	var list []User
+	db.Find(&list)
+
+	return list
+}
+
 // Add creates and stores a new User in the list and database
 func Add(fname string, lname string, uname string, email string, pass string) (int, error) {
 	mtx.Lock()

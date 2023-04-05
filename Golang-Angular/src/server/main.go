@@ -14,6 +14,15 @@ func main() {
 	r = gin.Default()
 	r.Use(CORSMiddleware())
 
+	// TODO: Admin Routes
+	authorized := r.Group("/admin")
+	authorized.Use(handlers.JwtAuthMiddleware())
+	{
+		authorized.GET("/users", handlers.GetAdminUsersHandler)
+		// authorized.POST("/users", handlers.AddUsersHandler)
+		authorized.DELETE("/users/:uid", handlers.DeleteAdminUsersHandler)
+	}
+
 	// User Account Signup & Login
 	r.GET("/account/:user", handlers.GetUserHandler)
 	r.POST("/signup", handlers.SignupHandler)
@@ -25,11 +34,6 @@ func main() {
 	r.GET("/weather/forecast", handlers.GetWeatherForecastHandler)
 	r.GET("/weather", handlers.GetWeatherHandler)
 
-	// TODO: Limit to Admin?
-	// Users REST API
-	// r.GET("/users", handlers.GetUsersHandler)
-	// r.POST("/users", handlers.AddUsersHandler)
-	// r.DELETE("/users/:uid", handlers.DeleteUsersHandler)
 
 	// Schedules REST API
 	r.GET("/schedule", handlers.GetSchedulesHandler)

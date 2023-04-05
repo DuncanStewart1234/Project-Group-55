@@ -133,6 +133,27 @@ func DeleteSchedulesHandler(c *gin.Context) {
 }
 
 
+// Admin Routes Handlers
+func GetAdminUsersHandler (c *gin.Context) {
+	// uname := c.Param("user")
+	err := token.TokenValid(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, err)
+		return
+	}	
+
+	c.JSON(http.StatusOK, user.GetAll())
+}
+
+func DeleteAdminUsersHandler(c *gin.Context) {
+	id := c.Param("uid")
+	if err := user.Delete(id); err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, "user deleted successfully")
+}
+
 
 // Users Handlers
 func GetUserHandler (c *gin.Context) {
@@ -144,7 +165,6 @@ func GetUserHandler (c *gin.Context) {
 	}	
 
 	c.JSON(http.StatusOK, gin.H{"User": user.Get(uname)})
-
 }
 
 func SignupHandler(c *gin.Context) {
@@ -347,6 +367,19 @@ func convertJSONBodyToUserLogin(jsonBody []byte) (LoginInput, int, error) {
 		return LoginInput{}, http.StatusBadRequest, err
 	}
 	return item, http.StatusOK, nil
+}
+
+
+func JwtAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := token.TokenValid(c)
+		if err != nil {
+			c.String(http.StatusUnauthorized, "Unauthorized")
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
 }
 
 

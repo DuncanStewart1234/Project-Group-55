@@ -130,29 +130,6 @@ func DeleteSchedulesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, "schedule deleted successfully")
 }
 
-
-// Admin Routes Handlers
-func GetAdminUsersHandler (c *gin.Context) {
-	// uname := c.Param("user")
-	err := token.TokenValid(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, err)
-		return
-	}	
-
-	c.JSON(http.StatusOK, user.GetAll())
-}
-
-func DeleteAdminUsersHandler(c *gin.Context) {
-	id := c.Param("uid")
-	if err := user.Delete(id); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-	c.JSON(http.StatusOK, "user deleted successfully")
-}
-
-
 // Users Handlers
 func GetUserHandler (c *gin.Context) {
 	uname := c.Param("user")
@@ -199,6 +176,12 @@ func DeleteUsersHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, "user deleted successfully")
+}
+
+func LogoutUserHandler(c *gin.Context) {
+	user.Logout()
+
+	c.JSON(http.StatusOK, "user logged out successfully")
 }
 
 

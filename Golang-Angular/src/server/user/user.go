@@ -15,12 +15,6 @@ import (
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils/token"
 )
 
-type UserType int
-const (
-	Student UserType = 0
-	Admin   UserType = 1
-)
-
 var (
 	curr_user User
 	db   *gorm.DB
@@ -40,7 +34,6 @@ type User struct {
 	Email 	   	string		`json:"email" gorm:"not null;unique"`
 	User_Name  	string		`json:"uname" gorm:"not null;unique"`
 	Password	[]byte		`json:"password" gorm:"not null"`
-	Type       	UserType	`json:"utype"`
 }
 
 // init is a constructor that calls initialiseList
@@ -131,6 +124,11 @@ func Delete(uid string) error {
 	return nil
 }
 
+func Logout() {
+	var nullUser User
+	curr_user = nullUser
+}
+
 // newUser is a helper function to Add
 func newUser(fname string, lname string, uname string, email string, pass string) User {
 	return User{
@@ -140,7 +138,6 @@ func newUser(fname string, lname string, uname string, email string, pass string
 		Email:		email,
 		User_Name:	utils.Fix_Username(uname),
 		Password:	utils.HashPasswrd(pass),
-		Type:		Student,
 	}
 }
 

@@ -1,0 +1,27 @@
+Pages:
+-Login (/login): Users login requiring username and password
+-Register (/signup): Register using first name, last name, username, email, and password
+-Account (/account/:user): Displays user info
+-Class (/schedule): Displays courses and also allows user to add new course
+
+Services:
+-Login: Send info to backend
+--JSON Format:
+    type LoginInput struct {
+        Username string `json:"username"`
+        Password string `json:"password"`
+    }
+
+-Register: Send info to backend
+--JSON Format:
+    type RegisterInput struct {
+        First_Name string `json:"first"`
+        Last_Name string `json:"last"`
+        Email string `json:"email"`
+        User_Name string `json:"uname"`
+        Password string `json:"password"`
+    }
+
+-Logout (/logout): Send user to login/signup screen
+
+-Delete Account (/:uid/delete): Button to delete account

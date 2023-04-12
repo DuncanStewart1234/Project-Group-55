@@ -44,3 +44,8 @@ func HashPasswrd(password string) []byte {
 func CheckHashedPasswrd(password string, hash []byte) (error) {
 	return bcrypt.CompareHashAndPassword(hash, []byte(password))
 }
+
+
+// func CheckIfClassExists(cid int) (bool) {
+	
+// }

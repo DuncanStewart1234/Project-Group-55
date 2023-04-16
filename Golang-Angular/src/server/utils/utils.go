@@ -45,7 +45,10 @@ func CheckHashedPasswrd(password string, hash []byte) (error) {
 	return bcrypt.CompareHashAndPassword(hash, []byte(password))
 }
 
+func CheckIfClassExists(cid string) (bool) {
+	var result bool
+	db := GetDB("src/server/databases/classes.db")
+	err := db.Where("Class_ID = ?", cid).Find(&result).Error
 
-// func CheckIfClassExists(cid int) (bool) {
-	
-// }
+	return !errors.Is(err, gorm.ErrRecordNotFound)
+}

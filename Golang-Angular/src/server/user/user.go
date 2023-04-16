@@ -21,13 +21,13 @@ var (
 	mtx  sync.RWMutex
 	once sync.Once
 	r *rand.Rand
-	currToken string
+	// currToken string
 )
 
 // User is the struct used in this package to contain info about the User of this application
 type User struct {
-	gorm.Model
-	ID         	uint
+	// gorm.Model
+	// ID         	uint
 	User_ID    	int   		`json:"uid" gorm:"primaryKey"`
 	First_Name 	string		`json:"first" gorm:"not null"`
 	Last_Name  	string		`json:"last" gorm:"not null"`
@@ -108,11 +108,43 @@ func Login(uname string, passwd string) (string, error) {
 		return "", tokenErr
 	}
 	
-	currToken = token
+	// currToken = token
 	return token, nil
 }
 
 //TODO: Add Edit Function
+func Edit(uid string, fname string, lname string, uname string, email string, new_pass string, old_pass string) error {
+	result := db.Where("User_ID = ?", uid).Take(&curr_user)
+	if result.Error != nil {
+		return result.Error
+	}
+	
+	hashErr := utils.CheckHashedPasswrd(old_pass, curr_user.Password)
+	if hashErr != nil {
+		return hashErr
+	}
+
+	mtx.Lock()
+	if fname != "" {
+		curr_user.First_Name = fname
+	}
+	if lname != "" {
+		curr_user.Last_Name = lname
+	}
+	if email != "" {
+		curr_user.Email = email
+	}
+	if uname != "" {
+		curr_user.User_Name = utils.Fix_Username(uname)
+	}
+	if new_pass != "" {
+		curr_user.Password = utils.HashPasswrd(new_pass)
+	}
+	mtx.Unlock()
+	db.Save(&curr_user)
+
+	return nil
+}
 
 // Delete removes a User from the list and deletes them from the database
 func Delete(uid string) error {
@@ -120,7 +152,7 @@ func Delete(uid string) error {
 	if err != nil || uidValue != curr_user.User_ID {
 		return errors.New("cannot delete this account")
 	}
-	db.Where("User_ID = ?", curr_user.User_ID).Delete(&curr_user)
+	db.Where("User_ID = ?", curr_user.User_ID).Unscoped().Delete(&curr_user)
 	return nil
 }
 
@@ -142,5 +174,8 @@ func newUser(fname string, lname string, uname string, email string, pass string
 }
 
 func GetUID() (int) {
+	if curr_user.User_ID == 0 {
+		panic("not logged in")
+	}
 	return curr_user.User_ID
 }

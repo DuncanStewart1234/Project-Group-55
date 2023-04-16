@@ -28,8 +28,8 @@ var (
 
 // Class is a struct used to contain info about a student's class
 type Class struct {
-	gorm.Model
-	ID uint
+	// gorm.Model
+	// ID uint
 	Class_ID int `json:"cid" gorm:"primaryKey"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
@@ -96,8 +96,8 @@ func Add(name string, abbrv string, loc string, scheduleBlock string) (int, erro
 	return t.Class_ID, nil
 }
 
-func AddCal(title string, loc string, start string, end string) (int, error) {
-	t := newClass(title, "", getCalLocationFromJSON(loc), getScheduleFromJSON(getCalScheduleFromJSON(start, end)))
+func AddCal(title string, abbrv string, loc string, start string, end string) (int, error) {
+	t := newClass(title, abbrv, getCalLocationFromJSON(loc), getScheduleFromJSON(getCalScheduleFromJSON(start, end)))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
@@ -121,7 +121,7 @@ func Delete(cid string) error {
 	if err != nil {
 		return err
 	}
-	db.Where("Class_ID = ?", list[location].Class_ID).Delete(&list[location])
+	db.Where("Class_ID = ?", list[location].Class_ID).Unscoped().Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
 }

@@ -22,8 +22,8 @@ var (
 
 // Note is a struct that holds info needed for notes list
 type Note struct {
-	gorm.Model
-	ID      string `json:"id"`
+	// gorm.Model
+	ID      string `json:"id" gorm:"primarykey"`
 	User_ID int    `json:"uid"`
 	Title   string `json:"title" gorm:"size:256"`
 	Message string `json:"message"`
@@ -37,7 +37,6 @@ func init() {
 // initialiseList creates the notes list and calls initDatabase
 func initialiseList() {
 	list = []Note{}
-	curr_uid = user.GetUID()
 	initDatabase()
 }
 
@@ -47,20 +46,22 @@ func initDatabase() {
 
 	db.AutoMigrate(&Note{})
 
-	result := db.Where("User_ID = ?", curr_uid).Find(&list)
-	if result.Error != nil {
-		panic("failed to connect database")
-	}
+	// result := db.Where("User_ID = ?", curr_uid).Find(&list)
+	// if updateList() != nil {
+	// 	panic("failed to connect database")
+	// }
 }
 
 // Get returns the notes list
 func Get() []Note {
+	updateList()
 	return list
 }
 
 // Add creates and adds a note to the notes list
 func Add(title string, message string) (string, error) {
 	mtx.Lock()
+	updateList()
 	err := utils.CheckIfEmptyOrTooLong(title)
 	if err != nil {
 		return "", err
@@ -75,6 +76,7 @@ func Add(title string, message string) (string, error) {
 
 // Edit finds a note in the list and edits its message
 func Edit(id string, new_title string, new_msg string) error {
+	updateList()
 	location, err := findNoteLocation(id)
 	if err != nil {
 		return err
@@ -86,11 +88,12 @@ func Edit(id string, new_title string, new_msg string) error {
 
 // Delete removes and deletes a note from the notes list
 func Delete(id string) error {
+	updateList()
 	location, err := findNoteLocation(id)
 	if err != nil {
 		return err
 	}
-	db.Delete(&list[location])
+	db.Unscoped().Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
 }
@@ -127,7 +130,18 @@ func removeElementByLocation(i int) {
 // editNoteByLocation is a helper function to Edit
 func editNoteByLocation(location int, title string, msg string) {
 	mtx.Lock()
-	list[location].Title = title
-	list[location].Message = msg
+	if title != "" {
+		list[location].Title = title
+	}
+
+	if msg != "" {
+		list[location].Message = msg
+	}
 	mtx.Unlock()
+}
+
+func updateList() error {
+	curr_uid = user.GetUID()
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
+	return result.Error
 }

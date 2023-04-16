@@ -20,6 +20,7 @@ func main() {
 	r.POST("/login", handlers.LoginHandler)
 	r.POST("/:uid/delete", handlers.DeleteUsersHandler)
 	r.POST("/logout", handlers.LogoutUserHandler)
+	r.PUT("/account/edit", handlers.EditUsersHandler)
 
 	// Weather API
 	r.GET("/weather/forecast", handlers.GetWeatherForecastHandler)

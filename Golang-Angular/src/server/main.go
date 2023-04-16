@@ -2,7 +2,10 @@
 package main
 
 import (
+	// "os"
+
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
+	// "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,6 +14,11 @@ var (
 )
 // main is used to set up the application and implements the API for the todo and notes lists
 func main() {
+	// TODO: Set env file
+	// os.Setenv("TOKEN_HOUR_LIFESPAN", "1")
+	// os.Setenv("API_SECRET", utils.GetPrivKey())
+
+
 	r = gin.Default()
 	r.Use(CORSMiddleware())
 

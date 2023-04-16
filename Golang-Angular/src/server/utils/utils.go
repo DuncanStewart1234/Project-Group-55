@@ -2,8 +2,11 @@
 package utils
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"errors"
 	"html"
+	// "rsa"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
@@ -51,4 +54,13 @@ func CheckIfClassExists(cid string) (bool) {
 	err := db.Where("Class_ID = ?", cid).Find(&result).Error
 
 	return !errors.Is(err, gorm.ErrRecordNotFound)
+}
+
+func GetPrivKey() *rsa.PrivateKey {
+	key, err := rsa.GenerateKey(rand.Reader, 256)
+	if err != nil {
+		panic(err)
+	}
+
+	return key
 }

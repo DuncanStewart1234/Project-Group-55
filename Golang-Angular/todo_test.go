@@ -59,8 +59,8 @@ func TestTodoGetUser(t *testing.T) {
 		t.Errorf("error with get function")
 	}
 	
-	for _, sch := range list {
-		if sch.User_ID != uid {
+	for _, task := range list {
+		if task.User_ID != uid {
 			t.Errorf("returned task that isn't the current users")
 		}
 	}

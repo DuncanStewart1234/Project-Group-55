@@ -29,18 +29,19 @@ func TestCourseAdd(t *testing.T) {
 
 func TestCourseCalAdd(t *testing.T) {
 	name := "Computer Aided Animation"
+	abv := "CAP3034"
 	loc := `{"lat": 38.641546, "lng": -45.351659}`
 	start := "2023-04-17T8:30:00"
 	end := "2023-04-17T9:20:00"
 	
-    _, err := course.AddCal(name, loc, start, end)
+    _, err := course.AddCal(name, abv, loc, start, end)
     if err != nil {
 		t.Errorf("error with add function")
 	}
 }
 
 func TestCourseDelete(t *testing.T) {
-	err := course.Delete("283917")
+	err := course.Delete("388138")
 	if err != nil {
 		t.Errorf("error with delete function")
 	}

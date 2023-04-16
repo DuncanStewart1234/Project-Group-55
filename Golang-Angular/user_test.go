@@ -1,7 +1,9 @@
 package test
 
 import (
+	"fmt"
 	"testing"
+
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
 )
 
@@ -35,6 +37,7 @@ func TestUserLogin(t *testing.T) {
 	uname := "kungfukenny"
 	passwd := "evilsoflucy"
 	token, err := user.Login(uname, passwd)
+	fmt.Print(token)
 	if err != nil || token == "" {
 		t.Errorf("error with login function")
 	}

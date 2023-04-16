@@ -97,7 +97,7 @@ func Add(name string, abbrv string, loc string, scheduleBlock string) (int, erro
 }
 
 func AddCal(title string, loc string, start string, end string) (int, error) {
-	t := newClass(title, "", getCalLocationFromJSON(loc), getCalScheduleFromJSON(start, end))
+	t := newClass(title, "", getCalLocationFromJSON(loc), getScheduleFromJSON(getCalScheduleFromJSON(start, end)))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
@@ -105,12 +105,12 @@ func AddCal(title string, loc string, start string, end string) (int, error) {
 	return t.Class_ID, nil
 }
 
-func Edit(id int, name string, abbrv string, loc string, scheduleBlock string) error {
+func Edit(id int, name string, abbrv string, loc string, start string, end string) error {
 	location, err := findClassLocation(strconv.Itoa(id))
 	if err != nil {
 		return err
 	}
-	editClassByLocation(location, name, abbrv, loc, scheduleBlock)
+	editClassByLocation(location, name, abbrv, loc, getCalScheduleFromJSON(start, end))
 	db.Save(&list[location])
 	return nil
 }
@@ -159,8 +159,7 @@ func getLocationFromJSON(jsonLoc string) Location {
 }
 
 func getCalLocationFromJSON(jsonLoc string) Location {
-	jsonLoc = strings.ReplaceAll(jsonLoc, ":", "\":")
-	jsonLoc = strings.ReplaceAll(jsonLoc, "l", "\"l")
+	jsonLoc = strings.ReplaceAll(jsonLoc, " ", "")
 	var loc map[string]float64
 	json.Unmarshal([]byte(jsonLoc), &loc)
 	return Location{
@@ -189,7 +188,7 @@ func getScheduleFromJSON(jsonSchedule string) Schedule {
 	return s
 }
 
-func getCalScheduleFromJSON(start string, end string) Schedule {
+func getCalScheduleFromJSON(start string, end string) string {
 	const layout = "2006-01-02T15:04:05"
 	dayAbbrMap := make(map[int]string)
 	dayAbbrMap[0] = "Sun"
@@ -210,15 +209,8 @@ func getCalScheduleFromJSON(start string, end string) Schedule {
 
 	sHour = startTime.Hour()
 	eHour = endTime.Hour()
-	if sHour > 12 {
-		sHour = sHour - 12
-	}
-	if eHour > 12 {
-		eHour = eHour - 12
-	}
 
-	temp := fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
-	return getScheduleFromJSON(temp)
+	return fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
 }
 
 
@@ -243,9 +235,20 @@ func removeElementByLocation(i int) {
 
 func editClassByLocation(location int, name string, abbrv string, loc string, scheduleBlock string) {
 	mtx.Lock()
-	list[location].Name = name
-	list[location].Abbrv = abbrv
-	list[location].Location = getLocationFromJSON(loc)
-	list[location].Schedule = getScheduleFromJSON(scheduleBlock)
+	if name != "" {
+		list[location].Name = name
+	}
+
+	if abbrv != "" {
+		list[location].Abbrv = abbrv
+	}
+
+	if loc != "" {
+		list[location].Location = getLocationFromJSON(loc)
+	}
+
+	if scheduleBlock != "" {
+		list[location].Schedule = getScheduleFromJSON(scheduleBlock)
+	}
 	mtx.Unlock()
 }

@@ -1,16 +1,30 @@
 package token
 
 import (
+	"crypto/rsa"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
+var (
+	PRIVATE_KEY *rsa.PrivateKey
+)
+
+func init() {
+	key, err := os.ReadFile("src/server/key.rsa")
+	if err != nil {
+		panic(err)
+	}
+	
+	PRIVATE_KEY, _ = utils.ImportPrivateKey(string(key))
+}
 
 func GenerateToken(uid int) (string, error) {
 	token_lifespan, err := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
@@ -25,7 +39,7 @@ func GenerateToken(uid int) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(os.Getenv("API_SECRET")))
+	return token.SignedString([]byte(utils.ExportPrivateKey(PRIVATE_KEY)))
 }
 
 func TokenValid(c *gin.Context) error {
@@ -34,9 +48,9 @@ func TokenValid(c *gin.Context) error {
 
 	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("API_SECRET")), nil
+		return []byte(utils.ExportPrivateKey(PRIVATE_KEY)), nil
 	})
 
 	if err != nil {
@@ -67,9 +81,9 @@ func ExtractTokenID(c *gin.Context) (uint, error) {
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("API_SECRET")), nil
+		return []byte(utils.ExportPrivateKey(PRIVATE_KEY)), nil
 	})
 
 	if err != nil {

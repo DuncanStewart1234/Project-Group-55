@@ -2,23 +2,35 @@
 package main
 
 import (
-	// "os"
+	"os"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
-	// "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 var (
 	r *gin.Engine
 )
+
+
+func init() {
+	_, err := os.OpenFile("src/server/key.rsa", os.O_RDONLY, 0666)
+	if err != nil {
+		utils.GeneratePrivKey()
+	}
+	
+	envErr := godotenv.Load("src/server/.env")
+	if envErr != nil {
+		os.Create("src/server/.env")
+		thl, _ := godotenv.Unmarshal("TOKEN_HOUR_LIFESPAN=1")
+		godotenv.Write(thl, "src/server/.env")
+	}
+}
+
 // main is used to set up the application and implements the API for the todo and notes lists
 func main() {
-	// TODO: Set env file
-	// os.Setenv("TOKEN_HOUR_LIFESPAN", "1")
-	// os.Setenv("API_SECRET", utils.GetPrivKey())
-
-
 	r = gin.Default()
 	r.Use(CORSMiddleware())
 

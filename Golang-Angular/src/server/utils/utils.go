@@ -4,9 +4,11 @@ package utils
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
 	"errors"
 	"html"
-	// "rsa"
+	"os"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
@@ -56,11 +58,42 @@ func CheckIfClassExists(cid string) (bool) {
 	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 
-func GetPrivKey() *rsa.PrivateKey {
-	key, err := rsa.GenerateKey(rand.Reader, 256)
+func GetPrivKey() []byte {
+	key, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
 		panic(err)
 	}
 
-	return key
+	return ExportPrivateKey(key)
+}
+
+func ExportPrivateKey(privkey *rsa.PrivateKey) []byte {
+    privkey_bytes := x509.MarshalPKCS1PrivateKey(privkey)
+    privkey_pem := pem.EncodeToMemory(
+            &pem.Block{
+                    Type:  "RSA PRIVATE KEY",
+                    Bytes: privkey_bytes,
+            },
+    )
+    return privkey_pem
+}
+
+func ImportPrivateKey(pep_priv string) (*rsa.PrivateKey, error) {
+    block, _ := pem.Decode([]byte(pep_priv))
+    if block == nil {
+            return nil, errors.New("cannot parse")
+    }
+
+    priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+    if err != nil {
+            return nil, err
+    }
+
+    return priv, nil
+}
+
+func GeneratePrivKey() {
+	if err := os.WriteFile("src/server/key.rsa", GetPrivKey(), 0700); err != nil {
+        panic(err)
+    }
 }

@@ -77,13 +77,13 @@ func Add(title string, cat string, message string) (string, error) {
 }
 
 // Edit finds a note in the list and edits its message
-func Edit(id string, new_title string, new_msg string) error {
+func Edit(id string, new_title string, new_cat string, new_msg string) error {
 	updateList()
 	location, err := findNoteLocation(id)
 	if err != nil {
 		return err
 	}
-	editNoteByLocation(location, new_title, new_msg)
+	editNoteByLocation(location, new_title, new_cat, new_msg)
 	db.Save(&list[location])
 	return nil
 }
@@ -131,10 +131,14 @@ func removeElementByLocation(i int) {
 }
 
 // editNoteByLocation is a helper function to Edit
-func editNoteByLocation(location int, title string, msg string) {
+func editNoteByLocation(location int, title string, cat string, msg string) {
 	mtx.Lock()
 	if title != "" {
 		list[location].Title = title
+	}
+
+	if cat != "" {
+		list[location].Category = cat
 	}
 
 	if msg != "" {

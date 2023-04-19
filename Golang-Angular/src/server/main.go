@@ -30,7 +30,7 @@ func main() {
 	r.GET("/account/:user", handlers.GetUserHandler)
 	r.POST("/signup", handlers.SignupHandler)
 	r.POST("/login", handlers.LoginHandler)
-	r.POST("/:uid/delete", handlers.DeleteUsersHandler)
+	r.DELETE("/:uid/delete", handlers.DeleteUsersHandler)
 	r.POST("/logout", handlers.LogoutUserHandler)
 	r.PUT("/account/edit", handlers.EditUsersHandler)
 

@@ -51,3 +51,18 @@ func TestDeleteImaginaryTask(t *testing.T) {
         t.Errorf("Failed to capture error")
     }
 }
+
+func TestTodoGetUser(t *testing.T) {
+	uid := 1005
+	list := todo.Get()
+	if list == nil {
+		t.Errorf("error with get function")
+	}
+	
+	for _, task := range list {
+		if task.User_ID != uid {
+			t.Errorf("returned task that isn't the current users")
+		}
+	}
+
+}

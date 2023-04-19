@@ -96,7 +96,7 @@ func EditNotesHandler(c *gin.Context) {
 		c.JSON(statusCode, err)
 		return
 	}
-	if notes.Edit(item.ID, item.Title, item.Message) != nil {
+	if notes.Edit(item.ID, item.Title, item.Category, item.Message) != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}

@@ -75,7 +75,7 @@ func AddNotesHandler(c *gin.Context) {
 		c.JSON(statusCode, err)
 		return
 	}
-	id, _ := notes.Add(item.Title, item.Message)
+	id, _ := notes.Add(item.Title, item.Category, item.Message)
 	c.JSON(statusCode, gin.H{"id": id})
 }
 

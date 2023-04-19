@@ -70,8 +70,8 @@ func TestProgram(t *testing.T) {
 
 	
 	// Testing Notes
-	note_id_one, _ := notes.Add("Alrights", "So I Went Running For Answers")
-	note_id_two, _ := notes.Add("Money Trees", "Dreams of me getting shaded under a money tree")
+	note_id_one, _ := notes.Add("Alrights", "", "So I Went Running For Answers")
+	note_id_two, _ := notes.Add("Money Trees", "", "Dreams of me getting shaded under a money tree")
 	notes.Edit(note_id_one, "Alright", "")
 	notes.Edit(note_id_two, "", "Dreams of Me Getting Shaded Under A Money Tree")
 

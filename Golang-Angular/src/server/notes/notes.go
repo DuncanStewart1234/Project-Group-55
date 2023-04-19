@@ -25,6 +25,7 @@ type Note struct {
 	ID      string `json:"id" gorm:"primarykey"`
 	User_ID int    `json:"uid"`
 	Title   string `json:"title" gorm:"size:256"`
+	Category string `json:"category"`
 	Message string `json:"message"`
 }
 
@@ -60,7 +61,7 @@ func Get() []Note {
 }
 
 // Add creates and adds a note to the notes list
-func Add(title string, message string) (string, error) {
+func Add(title string, cat string, message string) (string, error) {
 	mtx.Lock()
 	updateList()
 	err := utils.CheckIfEmptyOrTooLong(title)
@@ -68,7 +69,7 @@ func Add(title string, message string) (string, error) {
 		return "", err
 	}
 
-	t := newNote(title, message)
+	t := newNote(title, cat, message)
 	list = append(list, t)
 	db.Create(&t)
 	mtx.Unlock()
@@ -100,11 +101,12 @@ func Delete(id string) error {
 }
 
 // newNote is a helper function to Add
-func newNote(title string, msg string) Note {
+func newNote(title string, cat string, msg string) Note {
 	return Note {
 		ID:      xid.New().String(),
 		User_ID: curr_uid,
 		Title:   title,
+		Category: cat,
 		Message: msg,
 	}
 }

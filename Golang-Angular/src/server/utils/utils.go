@@ -81,7 +81,7 @@ func ExportPrivateKey(privkey *rsa.PrivateKey) []byte {
 func ImportPrivateKey(pep_priv string) (*rsa.PrivateKey, error) {
     block, _ := pem.Decode([]byte(pep_priv))
     if block == nil {
-            return nil, errors.New("cannot parse")
+            return nil, errors.New("cannot parse text")
     }
 
     priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)

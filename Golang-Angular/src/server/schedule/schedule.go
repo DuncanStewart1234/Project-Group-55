@@ -22,15 +22,16 @@ var (
 
 // StudentSchedule is the struct used to create a class schedule
 type StudentSchedule struct {
-	// gorm.Model
 	ID       string `json:"id" gorm:"primarykey"`
 	User_ID  int `json:"uid"`
 	Class_ID string `json:"cid"`
 }
 
 // init is a constructor, calls initialiseList
-func init() {
-	once.Do(initialiseList)
+func Start() {
+	if user.GetUID() != 0 {
+		once.Do(initialiseList)
+	}
 }
 
 // initialiseList creates the schedule array and calls initDatabase
@@ -44,19 +45,19 @@ func initDatabase() {
 	db = utils.GetDB("src/server/databases/schedules.db")
 
 	db.AutoMigrate(&StudentSchedule{})
+}
 
-	// updateList()
-	// result := db.Where("User_ID = ?", curr_uid).Find(&list)
-	// if updateList() != nil {
-	// 	panic("failed to connect database")
-	// }
+func Close() {
+	list = nil
+// 	sqlDB, err := db.DB()
+
+// 	// Close
+// 	sqlDB.Close()
 }
 
 // Get returns the schedule
 func Get() []StudentSchedule {
 	updateList()
-	// curr_uid = user.GetUID()
-	// db.Where("User_ID = ?", curr_uid).Find(&list)
 	return list
 }
 

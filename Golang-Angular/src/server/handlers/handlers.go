@@ -13,11 +13,10 @@ import (
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/weather"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils/token"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/databases"
 
 	"github.com/gin-gonic/gin"
 )
-
-
 
 // To Do Handlers
 // GetTodoListHandler is a handler to request the todo list from the Todo package
@@ -169,7 +168,10 @@ func LoginHandler(c *gin.Context) {
 		c.JSON(400, err)
 		return
 	}	
-
+	
+	if statusCode == 200 {
+		databases.DB_Online()
+	}
 	c.JSON(statusCode, gin.H{"token": token})
 }
 
@@ -197,6 +199,7 @@ func EditUsersHandler(c *gin.Context) {
 
 func LogoutUserHandler(c *gin.Context) {
 	user.Logout()
+	databases.DB_Offline()
 
 	c.JSON(http.StatusOK, "user logged out successfully")
 }
@@ -227,19 +230,6 @@ func DeleteClassHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
 }
-
-// func EditClassHandler(c *gin.Context) {
-// 	item, statusCode, err := convertHTTPBodyToClass(c.Request.Body)
-// 	if err != nil {
-// 		c.JSON(statusCode, err)
-// 		return
-// 	}
-// 	if course.Edit(item.Class_ID, item.Name, item.Abbrv, item.Location, item.Schedule) != nil {
-// 		c.JSON(http.StatusInternalServerError, err)
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, "Operation Completed Successfully!")
-// }
 
 
 

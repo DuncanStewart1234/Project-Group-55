@@ -10,7 +10,6 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/joho/godotenv"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils/token"
 )
@@ -49,11 +48,6 @@ func initialiseList() {
 
 // initDatabase initialises the database for this package
 func initDatabase() {
-	envErr := godotenv.Load("src/server/.env")
-	if envErr != nil {
-		panic(envErr)
-	}
-
 	db = utils.GetDB("src/server/databases/users.db")
 
 	db.AutoMigrate(&User{})
@@ -108,11 +102,9 @@ func Login(uname string, passwd string) (string, error) {
 		return "", tokenErr
 	}
 	
-	// currToken = token
 	return token, nil
 }
 
-//TODO: Add Edit Function
 func Edit(uid string, fname string, lname string, uname string, email string, new_pass string, old_pass string) error {
 	result := db.Where("User_ID = ?", uid).Take(&curr_user)
 	if result.Error != nil {
@@ -174,8 +166,5 @@ func newUser(fname string, lname string, uname string, email string, pass string
 }
 
 func GetUID() (int) {
-	if curr_user.User_ID == 0 {
-		panic("not logged in")
-	}
 	return curr_user.User_ID
 }

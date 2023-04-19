@@ -28,8 +28,6 @@ var (
 
 // Class is a struct used to contain info about a student's class
 type Class struct {
-	// gorm.Model
-	// ID uint
 	Class_ID int `json:"cid" gorm:"primaryKey"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
@@ -72,13 +70,20 @@ func initialiseList() {
 // initDatabase initialises the databse for this package
 func initDatabase() {
 	db = utils.GetDB("src/server/databases/classes.db")
-
 	db.AutoMigrate(&Class{})
 
 	result := db.Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
+}
+
+func Close() {
+	list = nil
+// 	sqlDB, err := db.DB()
+
+// 	// Close
+// 	sqlDB.Close()
 }
 
 // Get returns the list of classes in the schedule

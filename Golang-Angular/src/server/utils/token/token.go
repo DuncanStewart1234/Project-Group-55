@@ -17,7 +17,7 @@ var (
 	PRIVATE_KEY *rsa.PrivateKey
 )
 
-func init() {
+func Start() {
 	key, err := os.ReadFile("src/server/key.rsa")
 	if err != nil {
 		panic(err)
@@ -27,11 +27,8 @@ func init() {
 }
 
 func GenerateToken(uid int) (string, error) {
-	token_lifespan, err := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
-
-	if err != nil {
-		return "", err
-	}
+	Start()
+	token_lifespan := 1
 
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
@@ -43,6 +40,7 @@ func GenerateToken(uid int) (string, error) {
 }
 
 func TokenValid(c *gin.Context) error {
+	Start()
 	tokenString := ExtractToken(c)
 	fmt.Println(tokenString)
 
@@ -76,7 +74,7 @@ func ExtractToken(c *gin.Context) string {
 }
 
 func ExtractTokenID(c *gin.Context) (uint, error) {
-
+	Start()
 	tokenString := ExtractToken(c)
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

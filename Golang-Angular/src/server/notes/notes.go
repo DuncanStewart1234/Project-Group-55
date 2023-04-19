@@ -22,7 +22,6 @@ var (
 
 // Note is a struct that holds info needed for notes list
 type Note struct {
-	// gorm.Model
 	ID      string `json:"id" gorm:"primarykey"`
 	User_ID int    `json:"uid"`
 	Title   string `json:"title" gorm:"size:256"`
@@ -30,8 +29,10 @@ type Note struct {
 }
 
 // init is a constructor and calls initialiseList
-func init() {
-	once.Do(initialiseList)
+func Start() {
+	if user.GetUID() != 0 {
+		once.Do(initialiseList)
+	}
 }
 
 // initialiseList creates the notes list and calls initDatabase
@@ -43,13 +44,15 @@ func initialiseList() {
 // initDatabase initalises the database
 func initDatabase() {
 	db = utils.GetDB("src/server/databases/notes_list.db")
-
 	db.AutoMigrate(&Note{})
+}
 
-	// result := db.Where("User_ID = ?", curr_uid).Find(&list)
-	// if updateList() != nil {
-	// 	panic("failed to connect database")
-	// }
+func Close() {
+	list = nil
+// 	sqlDB, err := db.DB()
+
+// 	// Close
+// 	sqlDB.Close()
 }
 
 // Get returns the notes list

@@ -22,7 +22,6 @@ var (
 
 // Todo is a struct model containing the Todo list item info
 type Todo struct {
-	// gorm.Model
 	ID       string `json:"id" gorm:"primarykey"`
 	User_ID  int	`json:"uid"`
 	Message  string `json:"message" gorm:"size:256"`
@@ -30,8 +29,10 @@ type Todo struct {
 }
 
 // init a constructor, calls the initialise list function
-func init() {
-	once.Do(initialiseList)
+func Start() {
+	if user.GetUID() != 0 {
+		once.Do(initialiseList)
+	}
 }
 
 // initialiseList initialises the Todo list
@@ -43,13 +44,15 @@ func initialiseList() {
 // initDatabase initalises the database
 func initDatabase() {
 	db = utils.GetDB("src/server/databases/todo_list.db")
-
 	db.AutoMigrate(&Todo{})
+}
 
-	// result := db.Where("User_ID = ?", curr_uid).Find(&list)
-	// if updateList() != nil {
-	// 	panic("failed to connect database")
-	// }
+func Close() {
+	list = nil
+// 	sqlDB, err := db.DB()
+
+// 	// Close
+// 	sqlDB.Close()
 }
 
 // Get returns the Todo list

@@ -22,7 +22,7 @@ var (
 func TestAddNote(t *testing.T) {
 
 	for _, test := range addTestNotes {
-		Add("Title", test.arg)
+		Add("Title", "", test.arg)
 		want := false
 
 		testList = Get()

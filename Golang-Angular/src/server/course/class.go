@@ -28,8 +28,6 @@ var (
 
 // Class is a struct used to contain info about a student's class
 type Class struct {
-	gorm.Model
-	ID uint
 	Class_ID int `json:"cid" gorm:"primaryKey"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
@@ -58,7 +56,7 @@ type Schedule struct {
 }
 
 // init is a constructor that calls initialiseList
-func init() {
+func Start() {
 	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	once.Do(initialiseList)
 }
@@ -72,13 +70,18 @@ func initialiseList() {
 // initDatabase initialises the databse for this package
 func initDatabase() {
 	db = utils.GetDB("src/server/databases/classes.db")
-
 	db.AutoMigrate(&Class{})
 
 	result := db.Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
+}
+
+func Close() {
+	list = nil
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
 
 // Get returns the list of classes in the schedule
@@ -96,8 +99,8 @@ func Add(name string, abbrv string, loc string, scheduleBlock string) (int, erro
 	return t.Class_ID, nil
 }
 
-func AddCal(title string, loc string, start string, end string) (int, error) {
-	t := newClass(title, "", getCalLocationFromJSON(loc), getCalScheduleFromJSON(start, end))
+func AddCal(title string, abbrv string, loc string, start string, end string) (int, error) {
+	t := newClass(title, abbrv, getCalLocationFromJSON(loc), getScheduleFromJSON(getCalScheduleFromJSON(start, end)))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
@@ -105,12 +108,12 @@ func AddCal(title string, loc string, start string, end string) (int, error) {
 	return t.Class_ID, nil
 }
 
-func Edit(id int, name string, abbrv string, loc string, scheduleBlock string) error {
+func Edit(id int, name string, abbrv string, loc string, start string, end string) error {
 	location, err := findClassLocation(strconv.Itoa(id))
 	if err != nil {
 		return err
 	}
-	editClassByLocation(location, name, abbrv, loc, scheduleBlock)
+	editClassByLocation(location, name, abbrv, loc, getCalScheduleFromJSON(start, end))
 	db.Save(&list[location])
 	return nil
 }
@@ -121,7 +124,7 @@ func Delete(cid string) error {
 	if err != nil {
 		return err
 	}
-	db.Where("Class_ID = ?", list[location].Class_ID).Delete(&list[location])
+	db.Where("Class_ID = ?", list[location].Class_ID).Unscoped().Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
 }
@@ -159,8 +162,7 @@ func getLocationFromJSON(jsonLoc string) Location {
 }
 
 func getCalLocationFromJSON(jsonLoc string) Location {
-	jsonLoc = strings.ReplaceAll(jsonLoc, ":", "\":")
-	jsonLoc = strings.ReplaceAll(jsonLoc, "l", "\"l")
+	jsonLoc = strings.ReplaceAll(jsonLoc, " ", "")
 	var loc map[string]float64
 	json.Unmarshal([]byte(jsonLoc), &loc)
 	return Location{
@@ -189,7 +191,7 @@ func getScheduleFromJSON(jsonSchedule string) Schedule {
 	return s
 }
 
-func getCalScheduleFromJSON(start string, end string) Schedule {
+func getCalScheduleFromJSON(start string, end string) string {
 	const layout = "2006-01-02T15:04:05"
 	dayAbbrMap := make(map[int]string)
 	dayAbbrMap[0] = "Sun"
@@ -210,15 +212,8 @@ func getCalScheduleFromJSON(start string, end string) Schedule {
 
 	sHour = startTime.Hour()
 	eHour = endTime.Hour()
-	if sHour > 12 {
-		sHour = sHour - 12
-	}
-	if eHour > 12 {
-		eHour = eHour - 12
-	}
 
-	temp := fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
-	return getScheduleFromJSON(temp)
+	return fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
 }
 
 
@@ -243,9 +238,20 @@ func removeElementByLocation(i int) {
 
 func editClassByLocation(location int, name string, abbrv string, loc string, scheduleBlock string) {
 	mtx.Lock()
-	list[location].Name = name
-	list[location].Abbrv = abbrv
-	list[location].Location = getLocationFromJSON(loc)
-	list[location].Schedule = getScheduleFromJSON(scheduleBlock)
+	if name != "" {
+		list[location].Name = name
+	}
+
+	if abbrv != "" {
+		list[location].Abbrv = abbrv
+	}
+
+	if loc != "" {
+		list[location].Location = getLocationFromJSON(loc)
+	}
+
+	if scheduleBlock != "" {
+		list[location].Schedule = getScheduleFromJSON(scheduleBlock)
+	}
 	mtx.Unlock()
 }

@@ -9,7 +9,10 @@ import { NoteService, Note } from '../note.service';
 export class NoteComponent {
 
   activeNotes: Note[];
+  categories: string[];
   noteMessage: string;
+  noteTitle: string;
+  showBox: boolean = false;
 
   constructor(private noteService: NoteService) { }
 
@@ -35,11 +38,21 @@ export class NoteComponent {
       this.getAll();
       this.noteMessage = '';
     });
+
+    this.showBox = false;
   }
 
   deleteNote(note: Note) {
     this.noteService.deleteNote(note).subscribe(() => {
       this.getAll();
     })
+  }
+
+  togglebox(){
+    this.showBox = !this.showBox;
+  }
+
+  addCategory(){
+
   }
 }

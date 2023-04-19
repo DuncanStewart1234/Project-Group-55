@@ -1,7 +1,17 @@
 .map-container {
-    position: absolute;
+    /* position: relative; */
+    height: 300%;
+    width: 200%;
+    /* top: 0px; */
+    right: 170%;
+    top: 20%;
+    /* left: 100px; */
+  }
+
+  /* .map-container:hover {
+    position: center;
     height: 400px;
     width: 400px;
     top: 0px;
     right: 0px;
-  }
+  } */

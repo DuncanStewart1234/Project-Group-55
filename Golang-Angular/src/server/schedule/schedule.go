@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
 	"github.com/rs/xid"
 )
 
@@ -21,22 +22,21 @@ var (
 
 // StudentSchedule is the struct used to create a class schedule
 type StudentSchedule struct {
-	gorm.Model
-	ID       string `json:"id"`
+	ID       string `json:"id" gorm:"primarykey"`
 	User_ID  int `json:"uid"`
 	Class_ID string `json:"cid"`
 }
 
 // init is a constructor, calls initialiseList
-func init() {
-	once.Do(initialiseList)
+func Start() {
+	if user.GetUID() != 0 {
+		once.Do(initialiseList)
+	}
 }
 
 // initialiseList creates the schedule array and calls initDatabase
 func initialiseList() {
 	list = []StudentSchedule{}
-	// TODO: Get curr user uid
-	curr_uid = 1005
 	initDatabase()
 }
 
@@ -45,22 +45,27 @@ func initDatabase() {
 	db = utils.GetDB("src/server/databases/schedules.db")
 
 	db.AutoMigrate(&StudentSchedule{})
+}
 
-	result := db.Where("User_ID = ?", curr_uid).Find(&list)
-	if result.Error != nil {
-		panic("failed to connect database")
-	}
+func Close() {
+	list = nil
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
 
 // Get returns the schedule
 func Get() []StudentSchedule {
+	updateList()
 	return list
 }
 
 // Add creates and adds a class to the schedule
 func Add(cid string) (string, error) {
-	// TODO: Check if cid in ClassDB
 	mtx.Lock()
+	updateList()
+	if !utils.CheckIfClassExists(cid) {
+		panic("class does not exist")
+	}
 	t := newStudentSchedule(cid)
 	list = append(list, t)
 	db.Create(&t)
@@ -70,11 +75,12 @@ func Add(cid string) (string, error) {
 
 // Delete removes and deletes a class from the schedule
 func Delete(id string) error {
+	updateList()
 	location, err := findStudentScheduleLocation(id)
 	if err != nil {
 		return err
 	}
-	db.Where("ID = ?", list[location].ID).Delete(&list[location])
+	db.Where("ID = ?", list[location].ID).Unscoped().Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
 }
@@ -105,4 +111,10 @@ func removeElementByLocation(i int) {
 	mtx.Lock()
 	list = append(list[:i], list[i+1:]...)
 	mtx.Unlock()
+}
+
+func updateList() error {
+	curr_uid = user.GetUID()
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
+	return result.Error
 }

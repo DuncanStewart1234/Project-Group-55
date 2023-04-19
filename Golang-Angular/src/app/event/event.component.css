@@ -1,0 +1,75 @@
+.event-container {
+    position: absolute;
+    height: 100%;
+    /* width: 20%; */
+    top: 20%;
+    right: 0px;
+    /* background-color: gray!important; */
+    /* color: blue; */
+    /* display: inline-block;
+    position: absolute;
+    left: 0; */
+    display: inline-block;
+    /* float: left;  */
+}
+.app-container {
+    position: absolute;
+    height: 0px;
+    width: 0px;
+    top: 0%;
+    right: 0%;
+}
+
+.options{ 
+    /* height: 20%; */
+    margin-top: 500px; 
+    /* position: relative;  */
+}
+
+
+.date{
+    width: 100px;
+}
+
+
+.title{
+    width: 100px;
+}
+.lat{
+    width: 160px;
+}
+.lng{
+    width: 160px;
+}
+
+.add{
+    margin-top: 10px;
+    width: 95px;
+    text-align: center;
+    position: center;
+}
+
+.add_url{
+    width: 60px;
+}
+
+.fc-toolbar h2 {
+    display: inline;
+  }
+
+.add_event{
+    margin-top: 5px;
+    height: 25px;
+    /* position: right; */
+    text-align: center;
+}
+
+.trash{
+    margin-top: 5px;
+}
+
+
+/* THIS IS FOR SLIDERS */
+/* https://www.w3schools.com/howto/howto_css_switch.asp */
+
+/* Dropdown Checkboxes for recurring */

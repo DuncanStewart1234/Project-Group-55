@@ -5,8 +5,20 @@ button {
 
 td {
     vertical-align: unset;
+    color: white;
 }
 
 th {
     padding-right: 4em;
+    color: white;
+}
+
+
+.h2{
+    line-height: 300px;
+}
+
+
+.input{
+    margin-top: -20px;
 }

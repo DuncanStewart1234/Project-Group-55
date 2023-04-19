@@ -2,23 +2,41 @@
 package main
 
 import (
+	"os"
+
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/handlers"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	r *gin.Engine
+)
+
+
+func init() {
+	_, err := os.OpenFile("src/server/key.rsa", os.O_RDONLY, 0666)
+	if err != nil {
+		utils.GeneratePrivKey()
+	}
+}
+
 // main is used to set up the application and implements the API for the todo and notes lists
 func main() {
-	r := gin.Default()
+	r = gin.Default()
 	r.Use(CORSMiddleware())
+
+	// User Account Signup & Login
+	r.GET("/account/:user", handlers.GetUserHandler)
+	r.POST("/signup", handlers.SignupHandler)
+	r.POST("/login", handlers.LoginHandler)
+	r.POST("/:uid/delete", handlers.DeleteUsersHandler)
+	r.POST("/logout", handlers.LogoutUserHandler)
+	r.PUT("/account/edit", handlers.EditUsersHandler)
 
 	// Weather API
 	r.GET("/weather/forecast", handlers.GetWeatherForecastHandler)
 	r.GET("/weather", handlers.GetWeatherHandler)
-
-	// Users REST API
-	r.GET("/users", handlers.GetUsersHandler)
-	r.POST("/users", handlers.AddUsersHandler)
-	r.DELETE("/users/:uid", handlers.DeleteUsersHandler)
 
 	// Schedules REST API
 	r.GET("/schedule", handlers.GetSchedulesHandler)
@@ -29,7 +47,6 @@ func main() {
 	r.GET("/course", handlers.GetClassesHandler)
 	r.POST("/course", handlers.AddClassHandler)
 	r.DELETE("/course/:id", handlers.DeleteClassHandler)
-	// r.PUT("/course", handlers.EditClassHandler)
 
 	// Notes REST API
 	r.GET("/notes", handlers.GetNotesHandler)

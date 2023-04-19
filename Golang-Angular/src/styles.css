@@ -17,6 +17,102 @@ img {
 
 h3 {
     margin-top: 30px;
+    color: white!important;
 }
 
-html { background-color: black; color: white}
+
+html{
+    background-color: black;
+    color: white;
+}
+
+
+
+
+/* EVENT COMPONENT */
+
+/* .fc-prev-button .fc-button .fc-button-primary{
+    width: 10px;
+    height: 100px;
+    margin: 200px;
+} */
+
+.fc-event{
+    background-color: black!important;
+    color: white;
+}
+
+.fc-event:hover{
+    border-color: black!important;
+    background-color: gray!important;
+    color: black;
+}
+
+.fc-list-day-cushion{
+    background-color: white;
+    color: black;
+    height: 20px;
+}
+
+.fc-list-day-text{
+    margin-top: -4px;
+}
+
+.leaflet-bar-part{
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.leaflet-bar-part-single{
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.reset{
+    width: 30px;
+}
+
+.leaflet-bar{
+    height: 30px;
+    
+}
+
+
+.weather{
+    background-color: white;
+    color: white;
+}
+
+
+.fc-toolbar-title{
+    font-size:1em;
+}
+
+
+.fc-prev-button{
+    width: 60px;
+}
+
+.fc-next-button{
+    width: 60px;
+}
+
+.fc-listWeek-button{
+    width: 100px;
+}
+
+.fc-dayGridMonth-button{
+    width: 100px;
+}

@@ -1,15 +1,26 @@
 <h2>Notes</h2>
-<!-- <input placeholder="Note..." [(ngModel)]="noteMessage" (keyup.enter)="addNote()"> -->
 
-<textarea id="freeform" name="freeform" rows="4" cols="50" [(ngModel)]="noteMessage" (keyup.enter)="addNote()">
-    Enter text here...
-</textarea>
+<div class = "buttons">
+  <button class="toggleBox" (click)="togglebox()">
+    New Note
+    <!-- <i class="fa fa-trash">New Note</i>s -->
+  </button>
+  <button class="toggleBox" (click)="addCategory()">
+    New Category
+    <!-- <i class="fa fa-trash">New Note</i>s -->
+  </button>
+</div>
 
+<div *ngIf="showBox">
+<input class = "title" placeholder="Title" [(ngModel)]="noteTitle"><br>
+<textarea id="freeform" name="freeform" rows="4" cols="50" [(ngModel)]="noteMessage" (keyup.enter)="addNote()"></textarea>
 <button class="btn btn-primary" (click)="addNote()">Add</button>
+</div>
+
 <table class="table">
   <thead>
   <tr>
-    <th>Notes</th>
+    <th *ngIf="activeNotes.length > 0" >Notes</th>
   </tr>
   </thead>
   <tbody>

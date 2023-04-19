@@ -1,50 +1,40 @@
-<h2>Todos</h2>
-<input placeholder="description..." [(ngModel)]="todoMessage" (keyup.enter)="addTodo()">
-<button class="btn btn-primary" (click)="addTodo()">Add</button>
+<div class="content">
+  <h2>Todos</h2>
+</div>
+
+<div class = "input">
+  <input placeholder="Task" [(ngModel)]="todoMessage" (keyup.enter)="addTodo()">
+  <button class="btn btn-primary" (click)="addTodo()">Add Task</button>
+</div>
+
 <table class="table">
   <thead>
   <tr>
-    <th>Description</th>
+    <th *ngIf="activeTodos.length > 0">Active</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let todo of activeTodos">
-    <td>{{todo.message}}</td>
     <td>
-      <button *ngIf="!todo.complete" class="btn btn-secondary" (click)="completeTodo(todo)">
-        <i class="fa fa-check">✓</i>
+      <button *ngIf="!todo.complete" class="btn btn-secondary" (click)="completeTodo(todo)">✓
+        <!-- <i class="fa fa-check">✓</i> -->
       </button>
-      <button *ngIf="todo.complete" class="btn btn-success" disabled>
-        <i class="fa fa-check"></i>
-      </button>
-      <button class="btn btn-danger" (click)="deleteTodo(todo)">
-        <i class="fa fa-trash">☓</i>
-      </button>
+      <!-- <button class="btn btn-danger" (click)="deleteTodo(todo)">☓
+      </button> -->
+      {{todo.message}}
     </td>
   </tr>
   </tbody>
 </table>
-<h3>Completed</h3>
+<th *ngIf="completedTodos.length > 0">Completed</th>
 <table class="table">
-  <thead>
-  <tr>
-    <th>Description</th>
-  </tr>
-  </thead>
   <tbody>
   <tr *ngFor="let todo of completedTodos">
-    <td>{{todo.message}}</td>
     <td>
-      <!-- <button *ngIf="!todo.complete" class="btn btn-secondary" (click)="completeTodo(todo)">
-        <i class="fa fa-check"></i>
+      <button class="btn btn-danger" (click)="deleteTodo(todo)">☓
+        <!-- <i class="fa fa-trash">☓</i> -->
       </button>
-      <button *ngIf="todo.complete" class="btn btn-success" disabled>
-        <i class="fa fa-check"></i>
-      </button> -->
-      <button class="btn btn-danger" (click)="deleteTodo(todo)">
-        <i class="fa fa-trash">☓</i>
-      </button>
-    </td>
+      {{todo.message}}</td>
   </tr>
   </tbody>
 </table>

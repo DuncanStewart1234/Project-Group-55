@@ -87,6 +87,7 @@ func Add(fname string, lname string, uname string, email string, pass string) (i
 }
 
 func Login(uname string, passwd string) (string, error) {
+	// TODO: Logout user if logged in
 	result := db.Where("User_Name = ?", uname).Take(&curr_user)
 	if result.Error != nil {
 		return "", result.Error

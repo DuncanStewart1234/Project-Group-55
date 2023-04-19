@@ -56,7 +56,7 @@ type Schedule struct {
 }
 
 // init is a constructor that calls initialiseList
-func init() {
+func Start() {
 	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	once.Do(initialiseList)
 }
@@ -80,10 +80,8 @@ func initDatabase() {
 
 func Close() {
 	list = nil
-// 	sqlDB, err := db.DB()
-
-// 	// Close
-// 	sqlDB.Close()
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
 
 // Get returns the list of classes in the schedule

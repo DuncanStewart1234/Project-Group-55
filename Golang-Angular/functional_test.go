@@ -10,6 +10,7 @@ import (
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/schedule"
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/todo"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/databases"
 
 
 )
@@ -32,6 +33,8 @@ func TestProgram(t *testing.T) {
 	
 	// Logs User In
 	token, err := user.Login(uname, passwd)
+	databases.DB_Online()
+
 	fmt.Println(token)
 	if err != nil || token == "" {
 		t.Errorf("error with login function")
@@ -118,6 +121,8 @@ func TestProgram(t *testing.T) {
 	course.Delete(strconv.Itoa(class_two_id))
 
 
+	databases.DB_Offline()
+
 	// Deletes User Account
 	user.Delete(strconv.Itoa(data.User_ID))
 	// TODO: Check if deleted
@@ -125,4 +130,57 @@ func TestProgram(t *testing.T) {
 	// Logs User Out
 	// user.Logout()
 	// TODO: Check if logged out
+}
+
+func TestMultiUser(t *testing.T) {
+	fname1 := "Endrick"
+	lname1 := "Lafosse"
+	uname1 := "elafosse"
+	email1 := "elafosse@gmail.com"
+	passwd1 := "password"
+
+	fname2 := "Kendrick"
+	lname2 := "Lamar"
+	uname2 := "kdot"
+	email2 := "kungfukenny@outlook.com"
+	passwd2 := "morale"
+
+    _, err1 := user.Add(fname1, lname1, uname1, email1, passwd1)
+    if err1 != nil {
+		t.Errorf("error with add function")
+	}
+    _, err2 := user.Add(fname2, lname2, uname2, email2, passwd2)
+    if err2 != nil {
+		t.Errorf("error with add function")
+	}
+
+	token, err := user.Login(uname1, passwd1)
+	databases.DB_Online()
+
+	fmt.Println(token)
+	if err != nil || token == "" {
+		t.Errorf("error with login function")
+	}
+	
+	data := user.Get(uname1)
+	fmt.Println(data)
+	if data.First_Name == "" {
+		t.Errorf("error with get function")
+	}
+	
+	user.Logout()
+
+	token2, err2 := user.Login(uname2, passwd2)
+	databases.DB_Online()
+
+	fmt.Println(token2)
+	if err2 != nil || token2 == "" {
+		t.Errorf("error with login function")
+	}
+	
+	data2 := user.Get(uname2)
+	fmt.Println(data2)
+	if data2.First_Name == "" {
+		t.Errorf("error with get function")
+	}
 }

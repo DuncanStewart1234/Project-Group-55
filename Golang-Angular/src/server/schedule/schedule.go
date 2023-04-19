@@ -49,10 +49,8 @@ func initDatabase() {
 
 func Close() {
 	list = nil
-// 	sqlDB, err := db.DB()
-
-// 	// Close
-// 	sqlDB.Close()
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
 
 // Get returns the schedule

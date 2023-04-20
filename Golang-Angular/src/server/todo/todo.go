@@ -28,7 +28,7 @@ type Todo struct {
 	Complete bool   `json:"complete"`
 }
 
-// init a constructor, calls the initialise list function
+// Start is a constructor, calls the initialise list function
 func Start() {
 	if user.GetUID() != 0 {
 		once.Do(initialiseList)
@@ -47,6 +47,7 @@ func initDatabase() {
 	db.AutoMigrate(&Todo{})
 }
 
+// Close closes the SQL database
 func Close() {
 	list = nil
 	sqlDB, _ := db.DB()

@@ -1,6 +1,6 @@
 Work Completed in Sprint 4:
 
-    Our goal in this Sprint was mistly to work on the login aspects and implementing that throught the backend and frontend. While also refining other API's to either make them look nicer or just more user friendly. There is still a few kinks that we would like to work out that would be better to make better overtime outside the scope of this class and with less time constrainsts.
+    Our goal in this Sprint was mostly to work on the login aspects and implementing that throught the backend and frontend. While also refining other API's to either make them look nicer or just more user friendly. There is still a few kinks that we would like to work out that would be better to make better overtime outside the scope of this class and with less time constrainsts.
 
 FrontEnd Unit Tests:
 

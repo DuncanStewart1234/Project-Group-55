@@ -14,6 +14,11 @@ import { NoteService } from './note.service';
 import { FormsModule } from '@angular/forms';
 import { MapComponent } from './map/map.component';
 
+import { LoginService } from './login.service'
+import { RegisterService } from './register.service'
+
+import { LoginComponent } from './login/login.component'
+import { RegisterComponent } from './register/register.component'
 
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { EventComponent } from './event/event.component';
@@ -34,7 +39,9 @@ describe('AppComponent', () => {
         MapComponent,
         NoteComponent,
         EventComponent,
-        WeatherComponent
+        WeatherComponent,
+        LoginComponent,
+        RegisterComponent
       ],
       imports: [
         BrowserModule,
@@ -43,7 +50,7 @@ describe('AppComponent', () => {
         LeafletModule,
         FullCalendarModule,
       ],
-      providers: [TodoService, NoteService, EventService],
+      providers: [TodoService, NoteService, EventService, LoginService, RegisterService],
     }).compileComponents();
   });
 

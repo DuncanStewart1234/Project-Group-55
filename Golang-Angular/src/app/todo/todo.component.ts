@@ -31,6 +31,7 @@ export class TodoComponent implements OnInit {
     var newTodo : Todo = {
       message: this.todoMessage,
       id: '',
+      category: '',
       complete: false
     };
 

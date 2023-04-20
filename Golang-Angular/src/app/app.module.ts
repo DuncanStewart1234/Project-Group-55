@@ -29,6 +29,8 @@ import { RegisterComponent } from './register/register.component';
 
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
+import { LoginService } from './login.service';
+import { RegisterService } from './register.service';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,7 @@ import {MatInputModule} from '@angular/material/input';
     MatInputModule
     
   ],
-  providers: [TodoService, NoteService, EventService],
+  providers: [TodoService, NoteService, EventService, LoginService, RegisterService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -33,6 +33,8 @@
         <input type="date" class= "date" name="bday" [(ngModel)]="date"/>
     </label>
     
+    <button class="loc" (click)="toggleMap()">Location</button><br>
+
     <label>
     start time:
     <input type="time" [(ngModel)]="start_time" required>
@@ -41,10 +43,10 @@
     <label>
     stop time:
     <input type="time" [(ngModel)]="end_time" required>
-    </label>
+    </label><br>
 
     <input type="checkbox" name="all_day" [(ngModel)]="all_day">
-    <label for="all_day"> All Day</label><br>
+    <label for="all_day"> All Day</label>
 
     <input type="checkbox" name="daily" [(ngModel)]="daily">
     <label for="daily"> Daily</label><br>

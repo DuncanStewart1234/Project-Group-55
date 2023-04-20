@@ -30,6 +30,6 @@ export class LoginComponent {
     }
 
     returnHome(){
-        this.router.navigate(['']);
+        this.router.navigate(['/home']);
     }
 }

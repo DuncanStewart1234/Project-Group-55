@@ -13,6 +13,10 @@ export class LoginService {
   loginUser(username: string, password: string) {
     return this.httpClient.post(environment.gateway + '/login', { username, password })
   }
+  
+  logoutUser() {
+    return this.httpClient.post(environment.gateway + '/logout', {})
+  }
 
 }
 

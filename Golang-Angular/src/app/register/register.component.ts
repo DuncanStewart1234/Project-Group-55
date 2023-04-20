@@ -33,7 +33,9 @@ export class RegisterComponent {
         }
         // this.registerService.registerUser(newUser)
         this.registerService.registerUser(newUser).subscribe(() => {
-            this.loginService.loginUser(newUser.uname, newUser.password)
+            this.loginService.loginUser(newUser.uname, newUser.password).subscribe(() => {
+                
+            })
         });
         // this.loginService.loginUser(this.username, this.password);
         this.clear();
@@ -49,6 +51,6 @@ export class RegisterComponent {
     }
 
     returnHome(){
-        this.router.navigate(['']);
+        this.router.navigate(['/home']);
     }
 }

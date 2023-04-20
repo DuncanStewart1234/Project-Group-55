@@ -1,0 +1,69 @@
+<app-map [hidden]="!showMap" #mapComponent></app-map>
+
+<div class="app-container"> 
+    <!-- <div> -->
+        <!-- <label>
+            Lat:
+            <input class = "lat" placeholder="latitude" [(ngModel)]="mapComponent.lat">
+        </label>
+        <label>
+            Lng:
+            <input class = "lng" placeholder="longitude" [(ngModel)]="mapComponent.lng">
+        </label> -->
+        <div class="event-container"> 
+            <full-calendar #fullcalendar [options]="calendarOptions"></full-calendar>
+            <!-- <input class = "url" placeholder="URL" [(ngModel)]="url">
+            <button class="add_url" (click)="addiCal()">Add</button> -->
+        </div>
+        <!-- <full-calendar [options]="calendarOptions" [events]="eventsPromise | async"></full-calendar> -->
+        <!-- <h2>Events</h2> -->
+    
+    
+        <!-- <input class = "lat" placeholder="latitude" [(ngModel)]="mapComponent.lat">
+        <input class = "lng" placeholder="longitude" [(ngModel)]="mapComponent.lng"> -->
+</div>
+
+<div class = "options">
+    <div class="add_event">Add Event</div>
+
+    <input class = "title" placeholder="Title" [(ngModel)]="title">
+
+    <label>
+        Date:
+        <input type="date" class= "date" name="bday" [(ngModel)]="date"/>
+    </label>
+    
+    <button class="loc" (click)="toggleMap()">Location</button><br>
+
+    <label>
+    start time:
+    <input type="time" [(ngModel)]="start_time" required>
+    </label>
+    
+    <label>
+    stop time:
+    <input type="time" [(ngModel)]="end_time" required>
+    </label><br>
+
+    <input type="checkbox" name="all_day" [(ngModel)]="all_day">
+    <label for="all_day"> All Day</label>
+
+    <input type="checkbox" name="daily" [(ngModel)]="daily">
+    <label for="daily"> Daily</label><br>
+
+
+    <label for="cars" >Color:</label>
+    <select name="cars" id="cars" [(ngModel)]="color">
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+        <option value="green">Green</option>
+        <option value="orange">Orange</option>
+    </select>
+
+
+    <button class="add" (click)="createEvent()">Add</button>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <input type="checkbox" name="trash" class="trash" [(ngModel)]="trash">
+    <label for="trash"> Trash <i class='fa-solid fa-trash-can'></i></label><br>
+</div>

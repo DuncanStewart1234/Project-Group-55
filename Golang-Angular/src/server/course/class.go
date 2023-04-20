@@ -28,8 +28,6 @@ var (
 
 // Class is a struct used to contain info about a student's class
 type Class struct {
-	gorm.Model
-	ID uint
 	Class_ID int `json:"cid" gorm:"primaryKey"`
 	Name string `json:"name"`
 	Abbrv string `json:"abbrv"`
@@ -57,8 +55,8 @@ type Schedule struct {
     Sun []Period `json:"Sun"`
 }
 
-// init is a constructor that calls initialiseList
-func init() {
+// Start is a constructor that calls initialiseList
+func Start() {
 	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	once.Do(initialiseList)
 }
@@ -72,13 +70,19 @@ func initialiseList() {
 // initDatabase initialises the databse for this package
 func initDatabase() {
 	db = utils.GetDB("src/server/databases/classes.db")
-
 	db.AutoMigrate(&Class{})
 
 	result := db.Find(&list)
 	if result.Error != nil {
 		panic("failed to connect database")
 	}
+}
+
+// Close simply closes the SDQ database being used.
+func Close() {
+	list = nil
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
 
 // Get returns the list of classes in the schedule
@@ -96,8 +100,10 @@ func Add(name string, abbrv string, loc string, scheduleBlock string) (int, erro
 	return t.Class_ID, nil
 }
 
-func AddCal(title string, loc string, start string, end string) (int, error) {
-	t := newClass(title, "", getCalLocationFromJSON(loc), getCalScheduleFromJSON(start, end))
+// AddCal creates and adds a class to the calender list. It is similar in functionality to Add,
+// except that a start and end time are now inputted too.
+func AddCal(title string, abbrv string, loc string, start string, end string) (int, error) {
+	t := newClass(title, abbrv, getCalLocationFromJSON(loc), getScheduleFromJSON(getCalScheduleFromJSON(start, end)))
 	mtx.Lock()
 	list = append(list, t)
 	db.Create(&t)
@@ -105,12 +111,14 @@ func AddCal(title string, loc string, start string, end string) (int, error) {
 	return t.Class_ID, nil
 }
 
-func Edit(id int, name string, abbrv string, loc string, scheduleBlock string) error {
+// Edit finds a class item by its location in the list and then edits it. All inputs required to add
+// a calender item are required for this function.
+func Edit(id int, name string, abbrv string, loc string, start string, end string) error {
 	location, err := findClassLocation(strconv.Itoa(id))
 	if err != nil {
 		return err
 	}
-	editClassByLocation(location, name, abbrv, loc, scheduleBlock)
+	editClassByLocation(location, name, abbrv, loc, getCalScheduleFromJSON(start, end))
 	db.Save(&list[location])
 	return nil
 }
@@ -121,7 +129,7 @@ func Delete(cid string) error {
 	if err != nil {
 		return err
 	}
-	db.Where("Class_ID = ?", list[location].Class_ID).Delete(&list[location])
+	db.Where("Class_ID = ?", list[location].Class_ID).Unscoped().Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
 }
@@ -137,6 +145,7 @@ func newClass(name string, abbrv string, loc Location, s Schedule) Class {
 	}
 }
 
+// newPeriod creates and adds a periods array item with the start and end times for each period listed.
 func newPeriod(l [][]string) []Period {
 	var periods []Period
 	for _, t := range l {
@@ -159,8 +168,7 @@ func getLocationFromJSON(jsonLoc string) Location {
 }
 
 func getCalLocationFromJSON(jsonLoc string) Location {
-	jsonLoc = strings.ReplaceAll(jsonLoc, ":", "\":")
-	jsonLoc = strings.ReplaceAll(jsonLoc, "l", "\"l")
+	jsonLoc = strings.ReplaceAll(jsonLoc, " ", "")
 	var loc map[string]float64
 	json.Unmarshal([]byte(jsonLoc), &loc)
 	return Location{
@@ -189,7 +197,7 @@ func getScheduleFromJSON(jsonSchedule string) Schedule {
 	return s
 }
 
-func getCalScheduleFromJSON(start string, end string) Schedule {
+func getCalScheduleFromJSON(start string, end string) string {
 	const layout = "2006-01-02T15:04:05"
 	dayAbbrMap := make(map[int]string)
 	dayAbbrMap[0] = "Sun"
@@ -210,15 +218,8 @@ func getCalScheduleFromJSON(start string, end string) Schedule {
 
 	sHour = startTime.Hour()
 	eHour = endTime.Hour()
-	if sHour > 12 {
-		sHour = sHour - 12
-	}
-	if eHour > 12 {
-		eHour = eHour - 12
-	}
 
-	temp := fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
-	return getScheduleFromJSON(temp)
+	return fmt.Sprintf(`{"%s":[["%d:%d", "%d:%d"]]}`, dayAbbrMap[int(startDay)], sHour, startTime.Minute(), eHour, endTime.Minute())
 }
 
 
@@ -241,11 +242,24 @@ func removeElementByLocation(i int) {
 	mtx.Unlock()
 }
 
+
+// editClassByLocation is a helper function to Edit which does the actual editing of the class item.
 func editClassByLocation(location int, name string, abbrv string, loc string, scheduleBlock string) {
 	mtx.Lock()
-	list[location].Name = name
-	list[location].Abbrv = abbrv
-	list[location].Location = getLocationFromJSON(loc)
-	list[location].Schedule = getScheduleFromJSON(scheduleBlock)
+	if name != "" {
+		list[location].Name = name
+	}
+
+	if abbrv != "" {
+		list[location].Abbrv = abbrv
+	}
+
+	if loc != "" {
+		list[location].Location = getLocationFromJSON(loc)
+	}
+
+	if scheduleBlock != "" {
+		list[location].Schedule = getScheduleFromJSON(scheduleBlock)
+	}
 	mtx.Unlock()
 }

@@ -5,10 +5,16 @@ button {
 
 td {
     vertical-align: unset;
+    color: white;
 }
 
 th {
     padding-right: 4em;
+    color: white;
+}
+
+.buttons{
+    margin-top: -20px;
 }
 
 /* 

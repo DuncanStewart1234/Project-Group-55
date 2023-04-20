@@ -26,5 +26,6 @@ export class TodoService {
 export class Todo {
   id: string;
   message: string;
+  category: string;
   complete: boolean;
 }

@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/utils"
+	"github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"
 	"github.com/rs/xid"
 )
 
@@ -21,46 +22,48 @@ var (
 
 // Todo is a struct model containing the Todo list item info
 type Todo struct {
-	gorm.Model
-	ID       string `json:"id"`
+	ID       string `json:"id" gorm:"primarykey"`
 	User_ID  int	`json:"uid"`
 	Message  string `json:"message" gorm:"size:256"`
 	Complete bool   `json:"complete"`
 }
 
-// init a constructor, calls the initialise list function
-func init() {
-	once.Do(initialiseList)
+// Start is a constructor, calls the initialise list function
+func Start() {
+	if user.GetUID() != 0 {
+		once.Do(initialiseList)
+	}
 }
 
 // initialiseList initialises the Todo list
 func initialiseList() {
 	list = []Todo{}
-	// TODO: GET UID
-	curr_uid = 1005
 	initDatabase()
 }
 
 // initDatabase initalises the database
 func initDatabase() {
 	db = utils.GetDB("src/server/databases/todo_list.db")
-
 	db.AutoMigrate(&Todo{})
+}
 
-	result := db.Where("User_ID = ?", curr_uid).Find(&list)
-	if result.Error != nil {
-		panic("failed to connect database")
-	}
+// Close closes the SQL database
+func Close() {
+	list = nil
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
 
 // Get returns the Todo list
 func Get() []Todo {
+	updateList()
 	return list
 }
 
 // Add a new item to the Todo list based off message input
 func Add(message string) (string, error) {
 	mtx.Lock()
+	updateList()
 	err := utils.CheckIfEmptyOrTooLong(message)
 	if err != nil {
 		return "", err
@@ -75,6 +78,7 @@ func Add(message string) (string, error) {
 
 // Complete marks a Todo list item as complete
 func Complete(id string) error {
+	updateList()
 	location, err := findTodoLocation(id)
 	if err != nil {
 		return err
@@ -86,11 +90,12 @@ func Complete(id string) error {
 
 // Delete a Todo list item
 func Delete(id string) error {
+	updateList()
 	location, err := findTodoLocation(id)
 	if err != nil {
 		return err
 	}
-	db.Where("ID = ?", list[location].ID).Delete(&list[location])
+	db.Where("ID = ?", list[location].ID).Unscoped().Delete(&list[location])
 	removeElementByLocation(location)
 	return nil
 }
@@ -129,4 +134,10 @@ func setTodoCompleteByLocation(location int) {
 	mtx.Lock()
 	list[location].Complete = true
 	mtx.Unlock()
+}
+
+func updateList() error {
+	curr_uid = user.GetUID()
+	result := db.Where("User_ID = ?", curr_uid).Find(&list)
+	return result.Error
 }

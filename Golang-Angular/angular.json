@@ -27,7 +27,7 @@
                 "glob": "**/*",
                 "input": "./node_modules/leaflet/dist/images",
                 "output": "assets/"
-              }
+            }
             ],
             "styles": [
               "src/styles.css",
@@ -102,43 +102,6 @@
               "src/styles.css"
             ],
             "scripts": []
-          }
-        },
-        "cypress-run": {
-          "builder": "@briebug/cypress-schematic:cypress",
-          "options": {
-            "devServerTarget": "ui:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "ui:serve:production"
-            }
-          }
-        },
-        "cypress-open": {
-          "builder": "@briebug/cypress-schematic:cypress",
-          "options": {
-            "devServerTarget": "ui:serve",
-            "watch": true,
-            "headless": false
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "ui:serve:production"
-            }
-          }
-        },
-        "e2e": {
-          "builder": "@briebug/cypress-schematic:cypress",
-          "options": {
-            "devServerTarget": "ui:serve",
-            "watch": true,
-            "headless": false
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "ui:serve:production"
-            }
           }
         }
       }

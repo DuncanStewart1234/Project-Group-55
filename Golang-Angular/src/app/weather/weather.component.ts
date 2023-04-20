@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './weather.component.html',
   styleUrls: ['./weather.component.css']
 })
-export class WeatherWidgetMainComponent implements OnInit {
+export class WeatherComponent implements OnInit {
 
   WeatherData:any;
   constructor() { }

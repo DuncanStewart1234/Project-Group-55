@@ -1,0 +1,48 @@
+<!-- <h1>Date & Time Component</h1> -->
+<!-- <app-datetime></app-datetime> -->
+<!-- <h1>Todo Component</h1> -->
+<!-- <app-todo></app-todo> -->
+
+<!-- <app-note></app-note> -->
+
+<html>
+<style>
+
+/* THIS controls every widget BUT event */
+div {
+  background-color: black;
+  color: white;
+}
+
+p {
+  background-color: black;
+  color: black;
+}
+
+html{
+    /* background-color: black; */
+    color: white;
+} 
+
+
+</style>
+
+<div class = "left">
+    <app-datetime></app-datetime>
+    <app-todo></app-todo>
+    <app-note></app-note>
+    <button mat-raised-button color="primary" (click)="logOut()">Log Out</button>
+</div>
+
+<div class = "right">
+    <!-- <div class = "map"> -->
+        <!-- <app-map></app-map> -->
+    <!-- </div> -->
+    <app-event></app-event> 
+</div>
+
+<div class="weather">
+    <app-weather></app-weather>
+</div>
+
+</html>

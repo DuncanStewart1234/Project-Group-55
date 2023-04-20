@@ -24,7 +24,7 @@ var (
 func TestAddNote(t *testing.T) {
 
 	for _, test := range addTestNotes {
-		notes.Add("Title", test.arg)
+		notes.Add("Title", "", test.arg)
 		want := false
 
 		testList = notes.Get()
@@ -50,9 +50,9 @@ func TestNoteGetUser(t *testing.T) {
 		t.Errorf("error with get function")
 	}
 	
-	for _, sch := range list {
-		if sch.User_ID != uid {
-			t.Errorf("returned schedule that isn't the current users")
+	for _, note := range list {
+		if note.User_ID != uid {
+			t.Errorf("returned note that isn't the current users")
 		}
 	}
 

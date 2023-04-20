@@ -302,6 +302,91 @@ FrontEnd Unit Tests:
 
 ## Updated Documentation For Backend API:
 
+### Package **course**
+
+*import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"*
+
+Overview:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A package used to create a schedule of classes that a college student may use.
+
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(name string, abbrv string, loc string, scheduleBlock string) (int, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func AddCal(title string, abbrv string, loc string, start string, end string) (int, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Close()`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(cid string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Edit(id int, name string, abbrv string, loc string, start string, end string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Start()`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Class  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Class`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Location  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Period  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Schedule  
+
+Package files  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class.go  
+
+func Add  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(name string, abbrv string, loc string, scheduleBlock string) (int, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add creates and adds a class element to the list  
+
+func AddCal  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func AddCal(title string, abbrv string, loc string, start string, end string) (int, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddCal creates and adds a class to the calender list. It is similar in functionality to Add, except that a start and end time are now inputted too.  
+
+func Close  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Close()`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close simply closes the SDQ database being used.  
+
+func Delete  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(cid string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete removes and deletes a class element from the list  
+
+func Edit  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Edit(id int, name string, abbrv string, loc string, start string, end string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit finds a class item by its location in the list and then edits it. All inputs required to add a calender item are required for this function.  
+
+func Start  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Start()`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start is a constructor that calls initialiseList  
+
+type Class  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class is a struct used to contain info about a student's class  
+
+type Class struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class_ID int      `json:"cid" gorm:"primaryKey"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name     string   `json:"name"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Abbrv    string   `json:"abbrv"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Location Location `json:"loc" gorm:"serializer:json"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Schedule Schedule `json:"schedule" gorm:"serializer:json"`  
+}  
+
+func Get  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Class`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the list of classes in the schedule  
+
+type Location  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Location struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`Lat  float64`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`Long float64`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}  
+
+type Period  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Period struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`S_Time string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`E_Time string`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}  
+
+type Schedule  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Schedule struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mon  []Period `json:"Mon"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tues []Period `json:"Tues"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wed  []Period `json:"Wed"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thur []Period `json:"Thur"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fri  []Period `json:"Fri"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sat  []Period `json:"Sat"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sun  []Period `json:"Sun"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}  
+
 ### Package **class**
 
 *import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/class"*

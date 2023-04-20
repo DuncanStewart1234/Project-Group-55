@@ -22,8 +22,8 @@
 
 .options{ 
     /* height: 20%; */
-    margin-top: 500px; 
-    /* position: relative;  */
+    top: 500px; 
+    position: absolute; 
 }
 
 
@@ -31,6 +31,9 @@
     width: 100px;
 }
 
+.loc{
+    width: 100px;
+}
 
 .title{
     width: 100px;

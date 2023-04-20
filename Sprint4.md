@@ -302,6 +302,70 @@ FrontEnd Unit Tests:
 
 ## Updated Documentation For Backend API:
 
+### Package **user**
+
+*import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/user"*
+
+Overview:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This package implements and maintains a list of users for the application
+
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(fname string, lname string, uname string, email string, pass string) (int, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(uid string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Edit(uid string, fname string, lname string, uname string, email string, new_pass string, old_pass string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetUID() int`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Login(uname string, passwd string) (string, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Logout()`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type User  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get(uname string) User`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetAll() []User`  
+
+Package files:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.go  
+
+func Add  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(fname string, lname string, uname string, email string, pass string) (int, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add creates and stores a new User in the list and database  
+
+func Delete  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(uid string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete removes a User from the list and deletes them from the database  
+
+func Edit  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Edit(uid string, fname string, lname string, uname string, email string, new_pass string, old_pass string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit takes all the available information about a user as string inputs and checks the database to replace the old string values with the new ones. In this way an edit is made to the current user information.  
+
+func GetUID  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetUID() int`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetUID simply gets the user ID of the current user and returns it.  
+
+func Login  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Login(uname string, passwd string) (string, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login takes user's username and password as string inputs and checks the users database to find a match. If not match is found, an error is returned. If a match is found, a login token is returned.  
+
+func Logout  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Logout()`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logout sets the current user to nullUser, effectively logging them out and rendering the user as unable to be looked up in the database until logged in again.  
+
+type User  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User is the struct used in this package to contain info about the User of this application  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type User struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// gorm.Model  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ID         	uint  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User_ID    int    `json:"uid" gorm:"primaryKey"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;First_Name string `json:"first" gorm:"not null"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last_Name  string `json:"last" gorm:"not null"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email      string `json:"email" gorm:"not null;unique"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User_Name  string `json:"uname" gorm:"not null;unique"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Password   []byte `json:"password" gorm:"not null"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}  
+
+func Get  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get(uname string) User`  
+
+func GetAll  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func GetAll() []User`  
+
 ### Package **course**
 
 *import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/course"*

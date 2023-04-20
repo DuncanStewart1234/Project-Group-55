@@ -86,6 +86,8 @@ func Add(fname string, lname string, uname string, email string, pass string) (i
 	return t.User_ID, nil
 }
 
+// Login takes user's username and password as string inputs and checks the users database to find a match.
+// If not match is found, an error is returned. If a match is found, a login token is returned.
 func Login(uname string, passwd string) (string, error) {
 	// TODO: Logout user if logged in
 	result := db.Where("User_Name = ?", uname).Take(&curr_user)
@@ -106,6 +108,8 @@ func Login(uname string, passwd string) (string, error) {
 	return token, nil
 }
 
+// Edit takes all the available information about a user as string inputs and checks the database to replace the old
+// string values with the new ones. In this way an edit is made to the current user information.
 func Edit(uid string, fname string, lname string, uname string, email string, new_pass string, old_pass string) error {
 	result := db.Where("User_ID = ?", uid).Take(&curr_user)
 	if result.Error != nil {
@@ -149,6 +153,8 @@ func Delete(uid string) error {
 	return nil
 }
 
+// Logout sets the current user to nullUser, effectively logging them out and rendering
+// the user as unable to be looked up in the database until logged in again.
 func Logout() {
 	var nullUser User
 	curr_user = nullUser
@@ -166,6 +172,7 @@ func newUser(fname string, lname string, uname string, email string, pass string
 	}
 }
 
+// GetUID simply gets the user ID of the current user and returns it.
 func GetUID() (int) {
 	return curr_user.User_ID
 }

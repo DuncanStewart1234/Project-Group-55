@@ -11,6 +11,9 @@
     </mat-form-field>
 
     <button *ngIf="!show" mat-raised-button color="primary" (click)="submit()">Login</button>
+
+    <button *ngIf="!show" mat-raised-button color="primary" (click)="gotoRegister()">Register</button>
+
     <span *ngIf="show"> 
         <h3> Login Successful! </h3>
         <button mat-raised-button color="primary" (click)="returnHome()">Return</button>

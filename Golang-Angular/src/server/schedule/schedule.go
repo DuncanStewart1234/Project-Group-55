@@ -27,7 +27,7 @@ type StudentSchedule struct {
 	Class_ID string `json:"cid"`
 }
 
-// init is a constructor, calls initialiseList
+// Start is a constructor, calls initialiseList
 func Start() {
 	if user.GetUID() != 0 {
 		once.Do(initialiseList)
@@ -47,6 +47,7 @@ func initDatabase() {
 	db.AutoMigrate(&StudentSchedule{})
 }
 
+// Close closed the SQL database
 func Close() {
 	list = nil
 	sqlDB, _ := db.DB()

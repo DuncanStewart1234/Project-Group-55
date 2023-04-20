@@ -55,7 +55,7 @@ type Schedule struct {
     Sun []Period `json:"Sun"`
 }
 
-// init is a constructor that calls initialiseList
+// Start is a constructor that calls initialiseList
 func Start() {
 	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	once.Do(initialiseList)
@@ -78,6 +78,7 @@ func initDatabase() {
 	}
 }
 
+// Close simply closes the SDQ database being used.
 func Close() {
 	list = nil
 	sqlDB, _ := db.DB()
@@ -99,6 +100,8 @@ func Add(name string, abbrv string, loc string, scheduleBlock string) (int, erro
 	return t.Class_ID, nil
 }
 
+// AddCal creates and adds a class to the calender list. It is similar in functionality to Add,
+// except that a start and end time are now inputted too.
 func AddCal(title string, abbrv string, loc string, start string, end string) (int, error) {
 	t := newClass(title, abbrv, getCalLocationFromJSON(loc), getScheduleFromJSON(getCalScheduleFromJSON(start, end)))
 	mtx.Lock()
@@ -108,6 +111,8 @@ func AddCal(title string, abbrv string, loc string, start string, end string) (i
 	return t.Class_ID, nil
 }
 
+// Edit finds a class item by its location in the list and then edits it. All inputs required to add
+// a calender item are required for this function.
 func Edit(id int, name string, abbrv string, loc string, start string, end string) error {
 	location, err := findClassLocation(strconv.Itoa(id))
 	if err != nil {
@@ -140,6 +145,7 @@ func newClass(name string, abbrv string, loc Location, s Schedule) Class {
 	}
 }
 
+// newPeriod creates and adds a periods array item with the start and end times for each period listed.
 func newPeriod(l [][]string) []Period {
 	var periods []Period
 	for _, t := range l {
@@ -236,6 +242,8 @@ func removeElementByLocation(i int) {
 	mtx.Unlock()
 }
 
+
+// editClassByLocation is a helper function to Edit which does the actual editing of the class item.
 func editClassByLocation(location int, name string, abbrv string, loc string, scheduleBlock string) {
 	mtx.Lock()
 	if name != "" {

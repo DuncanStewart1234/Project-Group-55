@@ -28,12 +28,14 @@ export class NoteComponent {
   }
 
   addNote() {
-    console.log(this.noteMessage);
+    // console.log(this.noteMessage);
     var newNote : Note = {
-      message: this.noteMessage,
+      id: '',
+      title: this.noteTitle,
       category: '',
-      id: ''
+      message: this.noteMessage
     };
+    console.log(newNote);
 
     this.noteService.addNote(newNote).subscribe(() => {
       this.getAll();

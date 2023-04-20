@@ -14,7 +14,6 @@ export class NoteService {
     return this.httpClient.post(environment.gateway + '/notes', note);
   }
 
-
   deleteNote(note: Note) {
     return this.httpClient.delete(environment.gateway + '/notes/' + note.id);
   }
@@ -22,6 +21,7 @@ export class NoteService {
 
 export class Note {
   id: string;
+  title: string;
   category: string;
   message: string;
 }

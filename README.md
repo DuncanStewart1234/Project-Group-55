@@ -18,3 +18,7 @@ Members:
 2. Endrick Lafosse (Backend)
 3. Scott Barcomb (Backend)
 4. Sean McNeil (Frontend)
+
+
+### Start Guide
+After downloading the files, run the command `npm start` in the **Golang-Angular** folder

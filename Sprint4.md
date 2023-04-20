@@ -302,6 +302,44 @@ FrontEnd Unit Tests:
 
 ## Updated Documentation For Backend API:
 
+### Package **class**
+
+*import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/class"*
+
+Overview:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A package used to create a schedule of classes that a college student may use.
+
+Index:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(loc string) (string, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(cid string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type Class  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Class`  
+
+Package files:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class.go  
+
+func Add  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Add(loc string) (string, error)`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add creates and adds a class element to the list  
+
+func Delete  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Delete(cid string) error`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete removes and deletes a class element from the list  
+
+type Class  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class is a struct used to contain info about a student's class  
+
+type Class struct {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gorm.Model  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ID       string `json:"id"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class_ID string `json:"cid"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Location string `json:"loc"`  
+}  
+
+func Get  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`func Get() []Class`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get returns the list of classes in the schedule  
+
 ### Package **notes**
 
 *import "github.com/DuncanStewart1234/Project-Group-55/Golang-Angular/src/server/notes"*

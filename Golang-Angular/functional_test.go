@@ -19,10 +19,10 @@ import (
 func TestProgram(t *testing.T) {
 	// TODO: Randomize and loop
 	fname := "Endrick"
-	lname := "Lafosse"
-	uname := "elafosse"
-	email := "elafosse@gmail.com"
-	passwd := "password"
+	lname := "Lamar"
+	uname := "kungfukenny"
+	email := "kdot@gmail.com"
+	passwd := "morale"
 
 	// Creates User
     _, err := user.Add(fname, lname, uname, email, passwd)
@@ -30,7 +30,6 @@ func TestProgram(t *testing.T) {
 		t.Errorf("error with add function")
 	}
 
-	
 	// Logs User In
 	token, err := user.Login(uname, passwd)
 	databases.DB_Online()
@@ -48,7 +47,7 @@ func TestProgram(t *testing.T) {
 	}
 	
 	// Edits User
-	user.Edit(strconv.Itoa(data.User_ID), "Kendrick", "Lamar", "kungfukenny", "kdot@gmail.com", "", passwd)
+	user.Edit(strconv.Itoa(data.User_ID), "Kendrick", "", "", "", "", passwd)
 	
 	// Testing Todo
     task_id_one, _ := todo.Add("Finish Project")
@@ -96,8 +95,8 @@ func TestProgram(t *testing.T) {
 	class_two_name := "Intro to Computer Aided Animation"
 	class_two_abv := "CAP3034"
 	class_two_loc := `{"lat": 38.641546, "lng": -45.351659}`
-	class_two_start := "2023-04-17T8:30:00"
-	class_two_end := "2023-04-17T9:20:00"
+	class_two_start := "2023-04-21T8:30:00"
+	class_two_end := "2023-04-21T9:20:00"
 	
     class_one_id, _ := course.Add(class_one_name, class_one_abv, class_one_loc, class_one_sch)
     class_two_id, _ := course.AddCal(class_two_name, class_two_abv, class_two_loc, class_two_start, class_two_end)
@@ -125,11 +124,9 @@ func TestProgram(t *testing.T) {
 
 	// Deletes User Account
 	user.Delete(strconv.Itoa(data.User_ID))
-	// TODO: Check if deleted
 
 	// Logs User Out
 	// user.Logout()
-	// TODO: Check if logged out
 }
 
 func TestMultiUser(t *testing.T) {
@@ -169,6 +166,7 @@ func TestMultiUser(t *testing.T) {
 	}
 	
 	user.Logout()
+	// user.Delete(strconv.Itoa(data.User_ID))
 
 	token2, err2 := user.Login(uname2, passwd2)
 	databases.DB_Online()
@@ -183,4 +181,6 @@ func TestMultiUser(t *testing.T) {
 	if data2.First_Name == "" {
 		t.Errorf("error with get function")
 	}
+
+	user.Delete(strconv.Itoa(data2.User_ID))
 }

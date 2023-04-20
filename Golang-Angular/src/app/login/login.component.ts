@@ -14,11 +14,13 @@ export class LoginComponent {
     show: boolean= false;
 
     // constructor(private loginService: LoginService) { }
-    constructor(private router: Router){ }
+    constructor(private router: Router, private loginService: LoginService){ }
+
     submit(){
         console.log("user name is " + this.username)
-        // this.loginService.loginUser(this.username, this.password);
-        this.clear();
+        this.loginService.loginUser(this.username, this.password).subscribe(() => {
+            this.clear();
+        });
     }
 
     clear(){

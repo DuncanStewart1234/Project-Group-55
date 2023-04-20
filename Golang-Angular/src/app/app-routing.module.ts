@@ -9,8 +9,8 @@ import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: HomepageComponent
+    path: 'home',
+    component: HomepageComponent,
   },
   {
     path: 'login',
@@ -19,6 +19,10 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent
+  },
+  {
+    path: '**',
+    redirectTo: 'login'
   }
 ]; // sets up routes constant where you define your routes
 

@@ -23,15 +23,16 @@ export class NoteComponent {
   getAll() {
     this.noteService.getNoteList().subscribe((data: any) => 
     {
-      this.activeNotes = data;
+      this.activeNotes = data.filter((a: Note) => a);
     });
   }
 
   addNote() {
-    // console.log(this.noteMessage);
+    console.log(this.noteMessage);
     var newNote : Note = {
       message: this.noteMessage,
-      id: '',
+      category: '',
+      id: ''
     };
 
     this.noteService.addNote(newNote).subscribe(() => {

@@ -22,5 +22,6 @@ export class NoteService {
 
 export class Note {
   id: string;
+  category: string;
   message: string;
 }

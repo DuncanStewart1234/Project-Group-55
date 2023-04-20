@@ -17,6 +17,6 @@ export class LoginService {
 }
 
 export class UserLogin {
-  uname: string;
-  passwd: string;
+  username: string;
+  password: string;
 }

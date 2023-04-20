@@ -40,11 +40,11 @@ export class EventComponent implements OnInit{
   showMap: boolean = true;
 
   calendarOptions: CalendarOptions = {
-    // height: 500,
+    height: 500,
     headerToolbar: {
-      left: 'dayGridMonth',
+      left: 'today',
       center: 'prev,next',
-      right: 'listWeek'
+      right: 'listWeek,dayGridMonth'
     },
     // headerToolbar: false,
     plugins: [dayGridPlugin, interactionPlugin, listPlugin, timegridplugin, iCalendarPlugin],
@@ -65,8 +65,8 @@ export class EventComponent implements OnInit{
     this.events = [
       {
         title: 'Meeting',
-        start: '2023-04-03T14:30:00',
-        end: '2023-04-03T15:30:00',
+        start: '2023-04-19T14:30:00',
+        end: '2023-04-19T15:30:00',
         backgroundColor: 'green',
         extendedProps: {
           lat: 29.643946,
@@ -75,7 +75,7 @@ export class EventComponent implements OnInit{
       },
       {
         title: 'Birthday Party',
-        start: '2023-04-04T07:00:00',
+        start: '2023-04-20T07:00:00',
         extendedProps: {
           lat: 29.643946,
           lng: -82.355659
@@ -270,8 +270,12 @@ export class EventComponent implements OnInit{
     this.cd.detectChanges();
     this.calendarOptions.events = this.events;
   }
+
+  toggleMap()
+  {
+    this.showMap = !this.showMap;
+    // this.mapComponent.markers = [];
+    // this.cd.detectChanges();
+  }
   
 }
-
-
-
